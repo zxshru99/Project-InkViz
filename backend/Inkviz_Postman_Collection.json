@@ -1,0 +1,762 @@
+{
+  "info": {
+    "_postman_id": "9b0e6b12-83b6-4352-8eb6-ca3ba35c120e",
+    "name": "Inkviz API",
+    "description": "Official, production-grade Postman Collection for Inkviz SaaS Invoice Generator running on port 5001. Compliant with Postman Collection Schema v2.1.0.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTk5N2JmMDU2Y2Q0MDdlOWZhNGU3MjUiLCJpYXQiOjE3ODg0NDM2MzcsImV4cCI6MTc4ODQ0NDUzN30.qnVfx_ZjccBfAbI1omyQQuAvC7tV0MOKmjY8fdhFm5A",
+      "type": "string"
+    },
+    {
+      "key": "templateId",
+      "value": "6a9874e598be009a93af641b",
+      "type": "string"
+    },
+    {
+      "key": "invoiceId",
+      "value": "6a987c4f47e38986ab434343",
+      "type": "string"
+    },
+    {
+      "key": "tempEmail",
+      "value": "alex.mercer@example.com",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const timestamp = Date.now();",
+                  "pm.collectionVariables.set('tempEmail', 'user_' + timestamp + '@example.com');"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alex Mercer\",\n  \"email\": \"{{tempEmail}}\",\n  \"password\": \"Password123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "id": "5a72fc61-3df8-48d6-aeb6-c9ef7720e6c2"
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{tempEmail}}\",\n  \"password\": \"Password123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "id": "f9eec3be-b314-42b3-a596-ed340bb90f0c"
+        },
+        {
+          "name": "Refresh Access Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh"
+              ]
+            }
+          },
+          "id": "048722ad-1154-47b7-a4eb-c11272854620",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.accessToken) {",
+                  "    pm.collectionVariables.set('accessToken', res.data.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{tempEmail}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "id": "9b10a501-f4a1-44e9-9a4c-702a3453c841"
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"PUT_RESET_TOKEN_HERE\",\n  \"password\": \"NewPassword123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "id": "36e8634d-9f30-4632-bc3c-2bea54950f2d"
+        },
+        {
+          "name": "Logout User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success) {",
+                  "    pm.collectionVariables.set('accessToken', '');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "id": "3f2a9b9c-5e6d-46af-90ed-6ac10417ce1f"
+        }
+      ],
+      "id": "80dbebc9-cfe9-47ab-a0d9-80bc671c60e8"
+    },
+    {
+      "name": "2. Users & Profile",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "id": "23544378-3522-43a3-93c6-dd543284522a"
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alex Mercer\",\n  \"defaultCurrency\": \"USD\",\n  \"invoicePrefix\": \"INV-\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "id": "ccb57ea3-e94c-4811-b5d9-37ed3fc4cef7"
+        },
+        {
+          "name": "Export User Data (GDPR)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/export",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "export"
+              ]
+            }
+          },
+          "id": "f33d4bae-13be-473e-9e5b-933dfef3f62e"
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"confirmText\": \"delete my account\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "id": "9b0231e3-0f63-471d-b79c-267ddf26216f"
+        }
+      ],
+      "id": "96214424-0aef-43d5-9d5d-b759cc400af6"
+    },
+    {
+      "name": "3. Templates",
+      "item": [
+        {
+          "name": "List Invoice Templates",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.templates && res.data.templates.length > 0) {",
+                  "    pm.collectionVariables.set('templateId', res.data.templates[0]._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/templates",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "templates"
+              ]
+            }
+          },
+          "id": "b322bcb5-9b81-4f84-9472-d163b4b81651"
+        }
+      ],
+      "id": "5b09a8dd-7399-4b48-b4ba-cfed4a31d114"
+    },
+    {
+      "name": "4. Invoices",
+      "item": [
+        {
+          "name": "List Invoices (Active)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices?page=1&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          },
+          "id": "cdfedeea-3c8e-49b4-9dc1-87ae6e7c8b38"
+        },
+        {
+          "name": "Create Invoice (Draft)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.success && res.data && res.data.invoice) {",
+                  "    pm.collectionVariables.set('invoiceId', res.data.invoice._id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateId\": \"{{templateId}}\",\n  \"clientName\": \"Acme Innovations\",\n  \"clientEmail\": \"billing@acme.com\",\n  \"clientAddress\": \"123 Tech Blvd, Suite 400, San Francisco, CA\",\n  \"items\": [\n    {\n      \"description\": \"Fullstack AI Application Engineering\",\n      \"quantity\": 20,\n      \"price\": 125\n    },\n    {\n      \"description\": \"Cloud Infrastructure Deployment\",\n      \"quantity\": 1,\n      \"price\": 500\n    }\n  ],\n  \"taxRate\": 10,\n  \"discountRate\": 5,\n  \"currency\": \"USD\",\n  \"issueDate\": \"2026-09-01T00:00:00.000Z\",\n  \"dueDate\": \"2026-09-15T00:00:00.000Z\",\n  \"notes\": \"Payment due within 14 days\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices"
+              ]
+            }
+          },
+          "id": "6a6ab673-55e4-462b-a283-efd476d74200"
+        },
+        {
+          "name": "Get Invoice by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/{{invoiceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "{{invoiceId}}"
+              ]
+            }
+          },
+          "id": "9c67f57d-96b4-46f4-bf76-149d425661e5"
+        },
+        {
+          "name": "Update Invoice (Change Line Items & Recalculate)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"sent\",\n  \"items\": [\n    {\n      \"description\": \"Fullstack AI Application Engineering\",\n      \"quantity\": 25,\n      \"price\": 125\n    },\n    {\n      \"description\": \"Cloud Infrastructure Deployment\",\n      \"quantity\": 1,\n      \"price\": 500\n    }\n  ],\n  \"notes\": \"Updated terms: Net 30\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/{{invoiceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "{{invoiceId}}"
+              ]
+            }
+          },
+          "id": "ea8d3e5f-6ebe-442e-a266-404c2c1149ab"
+        },
+        {
+          "name": "Mark Invoice as Paid",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"paid\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/{{invoiceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "{{invoiceId}}"
+              ]
+            }
+          },
+          "id": "8c32099b-6c71-4ab7-8091-143c09a0cd25"
+        },
+        {
+          "name": "Soft Delete Invoice (Move to Trash)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/{{invoiceId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "{{invoiceId}}"
+              ]
+            }
+          },
+          "id": "d5d5a72b-d36d-401d-a88b-1cd3077722bf"
+        },
+        {
+          "name": "List Trashed Invoices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/trash",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "trash"
+              ]
+            }
+          },
+          "id": "b8d03f77-cf77-43c3-9a8e-81dc3695a4e3"
+        },
+        {
+          "name": "Restore Invoice from Trash",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/{{invoiceId}}/restore",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "{{invoiceId}}",
+                "restore"
+              ]
+            }
+          },
+          "id": "2bdab165-3cbb-49b7-8e75-bb6ae57d828f"
+        }
+      ],
+      "id": "29ba0cdc-f041-4469-9557-c7d6fb11028e"
+    },
+    {
+      "name": "5. PDF Generation",
+      "item": [
+        {
+          "name": "Download Invoice PDF",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/invoices/{{invoiceId}}/download",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "invoices",
+                "{{invoiceId}}",
+                "download"
+              ]
+            }
+          },
+          "id": "26d4a778-1b17-433a-a284-d61715961118"
+        }
+      ],
+      "id": "126d0e04-c1e9-48b9-bca4-1517eee4b468"
+    },
+    {
+      "name": "6. Health & System",
+      "item": [
+        {
+          "name": "Health Check Probe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "id": "82852118-8a99-467e-af79-359dc7617f39"
+        },
+        {
+          "name": "Readiness DB Probe",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/ready",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ready"
+              ]
+            }
+          },
+          "id": "a6900fa2-e0b7-408a-94cd-c60d9ae1893a"
+        }
+      ],
+      "id": "7ef4f7f0-b01f-4560-94e8-87217903f17f"
+    }
+  ]
+}

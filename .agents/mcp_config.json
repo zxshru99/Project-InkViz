@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "mongodb": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mongodb-mcp-server@latest",
+        "--connectionString",
+        "mongodb+srv://sinhasadhusharan_db_user:ZzKXa5LqUhKD7Vb7@inkviz.t7ouoo2.mongodb.net/inkviz"
+      ]
+    },
+    "postman": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@postman/postman-mcp-server@latest"
+      ],
+      "env": {
+        "POSTMAN_API_KEY": "YOUR_POSTMAN_API_KEY_HERE"
+      }
+    }
+  }
+}
