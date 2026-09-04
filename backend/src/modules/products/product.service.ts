@@ -20,12 +20,15 @@ export const listProducts = async (userId: string, search?: string, type?: strin
 };
 
 export const createProduct = async (userId: string, data: any) => {
-  const existingProduct = await Product.findOne({ userId, sku: data.sku });
-  if (existingProduct) {
-    throw Object.assign(new Error('A product with this SKU already exists'), {
-      statusCode: 400,
-      code: 'PRODUCT_EXISTS',
-    });
+  // Only check SKU uniqueness if an SKU was provided
+  if (data.sku) {
+    const existingProduct = await Product.findOne({ userId, sku: data.sku });
+    if (existingProduct) {
+      throw Object.assign(new Error('A product with this SKU already exists'), {
+        statusCode: 400,
+        code: 'PRODUCT_EXISTS',
+      });
+    }
   }
 
   const product = new Product({

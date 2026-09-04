@@ -9,9 +9,11 @@ export const validate = (schema: ZodSchema) => {
         query: req.query,
         params: req.params,
       });
+      // req.body is writable; req.query and req.params are getter-only in newer
+      // Express/Node versions, so we must mutate them in-place with Object.assign.
       if (parsed?.body !== undefined) req.body = parsed.body;
-      if (parsed?.query !== undefined) (req as any).query = parsed.query;
-      if (parsed?.params !== undefined) (req as any).params = parsed.params;
+      if (parsed?.query !== undefined) Object.assign(req.query, parsed.query);
+      if (parsed?.params !== undefined) Object.assign(req.params, parsed.params);
       next();
     } catch (error: any) {
       if (error instanceof ZodError || error.name === 'ZodError' || Array.isArray(error.issues)) {

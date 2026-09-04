@@ -15,6 +15,10 @@ import templateRoutes from './modules/templates/template.routes';
 import invoiceRoutes from './modules/invoices/invoice.routes';
 import * as invoiceRoutesModule from './modules/invoices/invoice.controller';
 import clientRoutes from './modules/clients/client.routes';
+import productRoutes from './modules/products/product.routes';
+import expenseRoutes from './modules/expenses/expense.routes';
+import vendorRoutes from './modules/vendors/vendor.routes';
+import quotationRoutes from './modules/quotations/quotation.routes';
 import pdfRoutes from './modules/pdf/pdf.routes';
 import * as pdfRoutesModule from './modules/pdf/pdf.controller';
 
@@ -109,7 +113,8 @@ app.get('/ready', (req, res) => {
 // 8. Global API Rate Limiting
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // 100 requests per IP
+  // Relaxed in development/test for running test suites
+  max: env.NODE_ENV === 'production' ? 100 : 2000,
   message: { success: false, error: { code: 'TOO_MANY_REQUESTS', message: 'Too many requests' } },
 });
 app.use('/api', apiLimiter);
@@ -120,6 +125,10 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/templates', templateRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
 app.use('/api/v1/clients', clientRoutes);
+app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/expenses', expenseRoutes);
+app.use('/api/v1/vendors', vendorRoutes);
+app.use('/api/v1/quotations', quotationRoutes);
 
 // Public routes
 app.get('/api/v1/share/:token', invoiceRoutesModule.getPublicInvoice);

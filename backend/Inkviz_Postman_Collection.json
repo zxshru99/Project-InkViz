@@ -757,6 +757,52 @@
         }
       ],
       "id": "7ef4f7f0-b01f-4560-94e8-87217903f17f"
+    },
+    {
+      "name": "8. Products",
+      "item": [
+        { "name": "List Products", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products"] } } },
+        { "name": "Create Product", "request": { "method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Sample Product\",\n  \"sku\": \"SKU-001\",\n  \"type\": \"Goods\",\n  \"sellingPrice\": 1000,\n  \"purchaseCost\": 600,\n  \"unit\": \"Pcs\",\n  \"taxRate\": 18,\n  \"stock\": 100\n}" }, "url": { "raw": "{{baseUrl}}/api/v1/products", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products"] } } },
+        { "name": "Get Product by ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/products/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", ":id"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Update Product", "request": { "method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\"sellingPrice\": 1200}" }, "url": { "raw": "{{baseUrl}}/api/v1/products/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", ":id"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Adjust Stock", "request": { "method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\"adjustment\": 10}" }, "url": { "raw": "{{baseUrl}}/api/v1/products/:id/stock", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", ":id", "stock"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Delete Product", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/products/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "products", ":id"], "variable": [{"key": "id", "value": ""}] } } }
+      ],
+      "id": "products-folder-001"
+    },
+    {
+      "name": "9. Expenses",
+      "item": [
+        { "name": "List Expenses", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/expenses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "expenses"] } } },
+        { "name": "Create Expense", "request": { "method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\n  \"title\": \"Office Supplies\",\n  \"category\": \"Office\",\n  \"amount\": 500,\n  \"date\": \"2026-09-01\",\n  \"paymentMethod\": \"Credit Card\",\n  \"taxDeductible\": true\n}" }, "url": { "raw": "{{baseUrl}}/api/v1/expenses", "host": ["{{baseUrl}}"], "path": ["api", "v1", "expenses"] } } },
+        { "name": "Get Expense by ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/expenses/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "expenses", ":id"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Update Expense", "request": { "method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\"amount\": 750}" }, "url": { "raw": "{{baseUrl}}/api/v1/expenses/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "expenses", ":id"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Delete Expense", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/expenses/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "expenses", ":id"], "variable": [{"key": "id", "value": ""}] } } }
+      ],
+      "id": "expenses-folder-001"
+    },
+    {
+      "name": "10. Vendors",
+      "item": [
+        { "name": "List Vendors", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/vendors", "host": ["{{baseUrl}}"], "path": ["api", "v1", "vendors"] } } },
+        { "name": "Create Vendor", "request": { "method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\n  \"name\": \"Acme Corp\",\n  \"email\": \"acme@vendor.com\",\n  \"phone\": \"9123456789\",\n  \"category\": \"General\"\n}" }, "url": { "raw": "{{baseUrl}}/api/v1/vendors", "host": ["{{baseUrl}}"], "path": ["api", "v1", "vendors"] } } },
+        { "name": "Get Vendor by ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/vendors/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "vendors", ":id"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Update Vendor", "request": { "method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\"name\": \"Updated Vendor\"}" }, "url": { "raw": "{{baseUrl}}/api/v1/vendors/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "vendors", ":id"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Delete Vendor", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/vendors/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "vendors", ":id"], "variable": [{"key": "id", "value": ""}] } } }
+      ],
+      "id": "vendors-folder-001"
+    },
+    {
+      "name": "11. Quotations",
+      "item": [
+        { "name": "List Quotations", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/quotations", "host": ["{{baseUrl}}"], "path": ["api", "v1", "quotations"] } } },
+        { "name": "Create Quotation", "request": { "method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\n  \"clientName\": \"John Doe\",\n  \"clientEmail\": \"john@client.com\",\n  \"date\": \"2026-09-01\",\n  \"expiryDate\": \"2026-09-15\",\n  \"items\": [{\"description\": \"Web Design\", \"quantity\": 1, \"rate\": 5000, \"amount\": 5000}],\n  \"subtotal\": 5000,\n  \"taxAmount\": 900,\n  \"total\": 5900\n}" }, "url": { "raw": "{{baseUrl}}/api/v1/quotations", "host": ["{{baseUrl}}"], "path": ["api", "v1", "quotations"] } } },
+        { "name": "Get Quotation by ID", "request": { "method": "GET", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/quotations/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "quotations", ":id"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Update Quotation", "request": { "method": "PATCH", "header": [{"key": "Content-Type", "value": "application/json"}], "body": { "mode": "raw", "raw": "{\"status\": \"Sent\"}" }, "url": { "raw": "{{baseUrl}}/api/v1/quotations/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "quotations", ":id"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Convert to Invoice", "request": { "method": "POST", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/quotations/:id/convert", "host": ["{{baseUrl}}"], "path": ["api", "v1", "quotations", ":id", "convert"], "variable": [{"key": "id", "value": ""}] } } },
+        { "name": "Delete Quotation", "request": { "method": "DELETE", "header": [], "url": { "raw": "{{baseUrl}}/api/v1/quotations/:id", "host": ["{{baseUrl}}"], "path": ["api", "v1", "quotations", ":id"], "variable": [{"key": "id", "value": ""}] } } }
+      ],
+      "id": "quotations-folder-001"
     }
   ]
 }

@@ -2,8 +2,10 @@ import { User } from './user.model';
 import { Invoice } from '../invoices/invoice.model';
 import { NotFoundError } from '../../utils/ownershipCheck';
 
+const SAFE_USER_FIELDS = '-passwordHash -refreshTokenHash -emailVerificationToken -passwordResetToken -passwordResetExpires -loginAttempts -lockUntil';
+
 export const getMe = async (userId: string) => {
-  const user = await User.findById(userId).select('-passwordHash -refreshTokenHash');
+  const user = await User.findById(userId).select(SAFE_USER_FIELDS);
   if (!user) {
     throw new NotFoundError('User not found');
   }
@@ -14,7 +16,8 @@ export const updateMe = async (userId: string, data: any) => {
   const user = await User.findByIdAndUpdate(userId, data, {
     new: true,
     runValidators: true,
-  }).select('-passwordHash -refreshTokenHash');
+    returnDocument: 'after',
+  }).select(SAFE_USER_FIELDS);
 
   if (!user) {
     throw new NotFoundError('User not found');
@@ -23,7 +26,7 @@ export const updateMe = async (userId: string, data: any) => {
 };
 
 export const exportData = async (userId: string) => {
-  const user = await User.findById(userId).select('-passwordHash -refreshTokenHash').lean();
+  const user = await User.findById(userId).select(SAFE_USER_FIELDS).lean();
   if (!user) {
     throw new NotFoundError('User not found');
   }

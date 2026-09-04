@@ -20,6 +20,10 @@
    - [E. Clients Module](#e-clients-module)
    - [F. Invoices Module](#f-invoices-module)
    - [G. PDF Generation Module](#g-pdf-generation-module)
+   - [H. Products Module](#h-products-module)
+   - [I. Expenses Module](#i-expenses-module)
+   - [J. Vendors Module](#j-vendors-module)
+   - [K. Quotations Module](#k-quotations-module)
 6. [Security & Rate Limiting Guidelines](#6-security--rate-limiting-guidelines)
 
 ---
@@ -628,3 +632,89 @@ flowchart TD
 1. **Information Enumeration Shield:** Any attempt to read or modify a resource owned by another user yields `404 Not Found` instead of `403 Forbidden` to prevent malicious attackers from probing valid resource IDs.
 2. **Dual-Token Storage:** `refreshToken` is never accessible via JavaScript (`HttpOnly: true`), securing sessions against Cross-Site Scripting (XSS).
 3. **Zod Parsing:** All payloads are validated before reaching controller/service logic, ensuring zero unhandled database cast exceptions.
+4. **Rate Limits:** Production: 100 req/15 min/IP globally. Development/test: 2000 req/15 min/IP to facilitate automated test suites.
+
+---
+
+## H. Products Module
+
+**Base:** `/api/v1/products` | Auth: Bearer token required on all routes.
+
+| Method | Endpoint | Description | Status |
+|:---|:---|:---|:---|
+| GET | `/products` | List all products (with optional `?search=&type=`) | 200 |
+| POST | `/products` | Create product | 201 |
+| GET | `/products/:id` | Get single product | 200/404 |
+| PATCH | `/products/:id` | Update product details | 200/404 |
+| POST | `/products/:id/stock` | Adjust stock `{ adjustment: number }` | 200/404 |
+| DELETE | `/products/:id` | Hard delete product | 200/404 |
+
+**Create Body:** `{ name, sku?, type?, sellingPrice, purchaseCost?, unit?, taxRate?, stock?, lowStockThreshold? }`  
+**Response shape:** `{ success: true, data: { product: { _id, name, sku, type, sellingPrice, stock, ... } } }`
+
+---
+
+## I. Expenses Module
+
+**Base:** `/api/v1/expenses` | Auth: Bearer token required on all routes.
+
+| Method | Endpoint | Description | Status |
+|:---|:---|:---|:---|
+| GET | `/expenses` | List all expenses (with optional `?category=&search=`) | 200 |
+| POST | `/expenses` | Create expense | 201 |
+| GET | `/expenses/:id` | Get single expense | 200/404 |
+| PATCH | `/expenses/:id` | Update expense | 200/404 |
+| DELETE | `/expenses/:id` | Hard delete expense | 200/404 |
+
+**Create Body:** `{ title, category, amount, date (YYYY-MM-DD), paymentMethod, taxDeductible?, taxAmount?, notes? }`  
+**Response shape:** `{ success: true, data: { expense: { _id, expenseNumber, title, amount, ... } } }`
+
+---
+
+## J. Vendors Module
+
+**Base:** `/api/v1/vendors` | Auth: Bearer token required on all routes.
+
+| Method | Endpoint | Description | Status |
+|:---|:---|:---|:---|
+| GET | `/vendors` | List all vendors (with optional `?search=&category=&status=`) | 200 |
+| POST | `/vendors` | Create vendor | 201 |
+| GET | `/vendors/:id` | Get single vendor | 200/404 |
+| PATCH | `/vendors/:id` | Update vendor | 200/404 |
+| DELETE | `/vendors/:id` | Hard delete vendor | 200/404 |
+
+**Create Body:** `{ name, email?, phone?, category?, gstin?, address?, paymentTerms? }`  
+**Response shape:** `{ success: true, data: { vendor: { _id, name, email, status, ... } } }`
+
+---
+
+## K. Quotations Module
+
+**Base:** `/api/v1/quotations` | Auth: Bearer token required on all routes.
+
+| Method | Endpoint | Description | Status |
+|:---|:---|:---|:---|
+| GET | `/quotations` | List all quotations (with optional `?search=&status=`) | 200 |
+| POST | `/quotations` | Create quotation | 201 |
+| GET | `/quotations/:id` | Get single quotation | 200/404 |
+| PATCH | `/quotations/:id` | Update quotation | 200/404 |
+| POST | `/quotations/:id/convert` | Convert quotation to invoice | 200/404 |
+| DELETE | `/quotations/:id` | Hard delete quotation | 200/404 |
+
+**Create Body:**
+```json
+{
+  "clientName": "string (required)",
+  "clientEmail": "email (required)",
+  "date": "YYYY-MM-DD (required)",
+  "expiryDate": "YYYY-MM-DD (required)",
+  "items": [{ "description": "string", "quantity": number, "rate": number, "amount": number }],
+  "subtotal": number,
+  "taxAmount": number,
+  "total": number,
+  "status": "Draft|Sent|Accepted|Declined|Expired",
+  "notes": "string?"
+}
+```
+**Response shape:** `{ success: true, data: { quotation: { _id, clientName, status, total, ... } } }`
+
