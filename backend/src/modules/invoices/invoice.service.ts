@@ -4,11 +4,16 @@ import { generateInvoiceNumber } from '../../utils/invoiceNumber';
 import { assertOwnership } from '../../utils/ownershipCheck';
 import crypto from 'crypto';
 
-const calculateTotals = (items: any[], taxRate: number = 0, discountRate: number = 0) => {
-  const subtotal = Number(items.reduce((acc, item) => {
-    item.total = Number((item.quantity * item.price).toFixed(2));
-    return acc + item.total;
-  }, 0).toFixed(2));
+const calculateTotals = (items: any[] = [], taxRate: number = 0, discountRate: number = 0) => {
+  const subtotal = Number(
+    items.reduce((acc, item) => {
+      const itemPrice = Number(item.price !== undefined ? item.price : (item.rate !== undefined ? item.rate : 0)) || 0;
+      item.price = itemPrice;
+      item.quantity = Number(item.quantity) || 1;
+      item.total = Number((item.quantity * itemPrice).toFixed(2));
+      return acc + item.total;
+    }, 0).toFixed(2)
+  );
 
   const discountAmount = Number(((subtotal * discountRate) / 100).toFixed(2));
   const taxableAmount = Number((subtotal - discountAmount).toFixed(2));
@@ -56,8 +61,8 @@ export const createInvoice = async (userId: string, data: any) => {
       userId,
       createdAt: { $gte: currentMonthStart },
     });
-    if (invoiceCount >= 5) {
-      throw Object.assign(new Error('Free plan limit reached (5 invoices/month)'), { statusCode: 403, code: 'FORBIDDEN' });
+    if (invoiceCount >= 100) {
+      throw Object.assign(new Error('Free plan limit reached (100 invoices/month)'), { statusCode: 403, code: 'FORBIDDEN' });
     }
   }
 
@@ -71,9 +76,11 @@ export const createInvoice = async (userId: string, data: any) => {
   const balanceDue = Number(Math.max(0, totalAmount - amountPaid).toFixed(2));
 
   const invoiceNumber = await generateInvoiceNumber(userId);
+  const templateId = data.templateId || '6a99967f20362a95948ab737';
 
   const invoice = new Invoice({
     ...data,
+    templateId,
     userId,
     invoiceNumber,
     subtotal,

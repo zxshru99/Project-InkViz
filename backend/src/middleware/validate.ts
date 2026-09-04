@@ -4,11 +4,14 @@ import { ZodSchema, ZodError, ZodIssue } from 'zod';
 export const validate = (schema: ZodSchema) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      await schema.parseAsync({
+      const parsed: any = await schema.parseAsync({
         body: req.body,
         query: req.query,
         params: req.params,
       });
+      if (parsed?.body !== undefined) req.body = parsed.body;
+      if (parsed?.query !== undefined) (req as any).query = parsed.query;
+      if (parsed?.params !== undefined) (req as any).params = parsed.params;
       next();
     } catch (error: any) {
       if (error instanceof ZodError || error.name === 'ZodError' || Array.isArray(error.issues)) {

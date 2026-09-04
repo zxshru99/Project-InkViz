@@ -14,9 +14,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Trash2, Search, RefreshCw, Check, ArrowLeft } from "lucide-react"
+import { invoicesApi } from "@/lib/api"
 
 export interface TrashItem {
   id: string
+  _id?: string
   client: string
   amount: number
   deletedAt: string
@@ -39,7 +41,28 @@ export default function TrashPage() {
     setTimeout(() => setToastMessage(null), 3000)
   }
 
-  const loadTrash = useCallback(() => {
+  const loadTrash = useCallback(async () => {
+    try {
+      const liveTrash = await invoicesApi.getTrash()
+      if (liveTrash && liveTrash.length > 0) {
+        const mapped: TrashItem[] = liveTrash.map((inv: any) => ({
+          id: inv.invoiceNumber || inv._id,
+          _id: inv._id,
+          client: inv.clientName || "Client",
+          amount: inv.totalAmount || inv.subtotal || 0,
+          deletedAt: inv.deletedAt ? new Date(inv.deletedAt).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+          type: "invoice",
+        }))
+        setTrash(mapped)
+        if (typeof window !== "undefined") {
+          localStorage.setItem("inkviz_trash", JSON.stringify(mapped))
+        }
+        return
+      }
+    } catch (e) {
+      // Fallback to local storage if user is offline
+    }
+
     if (typeof window === "undefined") return
     try {
       const raw = localStorage.getItem("inkviz_trash")
@@ -65,7 +88,14 @@ export default function TrashPage() {
     }
   }, [loadTrash])
 
-  const handleRestore = (item: TrashItem) => {
+  const handleRestore = async (item: TrashItem) => {
+    try {
+      if (item._id || item.id) {
+        await invoicesApi.restore(item._id || item.id)
+      }
+    } catch (apiErr) {
+      console.warn("Backend restore failed, continuing locally:", apiErr)
+    }
     if (typeof window === "undefined") return
     try {
       // 1. Remove from trash

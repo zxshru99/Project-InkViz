@@ -1,18 +1,26 @@
 import { z } from 'zod';
 
-const itemSchema = z.object({
-  description: z.string().min(1, 'Description is required'),
-  quantity: z.number().min(0),
-  price: z.number().min(0),
-});
+const itemSchema = z
+  .object({
+    description: z.string().min(1, 'Description is required'),
+    quantity: z.number().min(0).default(1),
+    price: z.number().min(0).optional(),
+    rate: z.number().min(0).optional(),
+  })
+  .transform((item) => ({
+    description: item.description,
+    quantity: item.quantity,
+    price: item.price !== undefined ? item.price : item.rate !== undefined ? item.rate : 0,
+  }));
 
 export const createInvoiceSchema = z.object({
   body: z.object({
-    templateId: z.string().min(1, 'Template ID is required'),
+    templateId: z.string().optional().default('6a99967f20362a95948ab737'),
     clientId: z.string().optional(), // Optional since they might not use address book
-    clientName: z.string().min(1, 'Client name is required'),
-    clientEmail: z.string().email('Invalid client email format'),
+    clientName: z.string().optional().default('Client'),
+    clientEmail: z.string().email('Invalid client email format').optional().or(z.literal('')).default('client@example.com'),
     clientAddress: z.string().optional(),
+    status: z.enum(['draft', 'sent', 'published', 'paid', 'overdue']).optional().default('draft'),
     
     poNumber: z.string().optional(),
     paymentTerms: z.string().optional(),
@@ -39,10 +47,10 @@ export const createInvoiceSchema = z.object({
 
 export const updateInvoiceSchema = z.object({
   body: z.object({
-    status: z.enum(['draft', 'sent', 'paid', 'overdue']).optional(),
+    status: z.enum(['draft', 'sent', 'published', 'paid', 'overdue']).optional(),
     clientId: z.string().optional(),
     clientName: z.string().min(1).optional(),
-    clientEmail: z.string().email().optional(),
+    clientEmail: z.string().email().optional().or(z.literal('')),
     clientAddress: z.string().optional(),
     
     poNumber: z.string().optional(),
@@ -70,7 +78,7 @@ export const updateInvoiceSchema = z.object({
 
 export const listInvoicesSchema = z.object({
   query: z.object({
-    status: z.enum(['draft', 'sent', 'paid', 'overdue']).optional(),
+    status: z.enum(['draft', 'sent', 'published', 'paid', 'overdue']).optional(),
     page: z.string().regex(/^\d+$/).transform(Number).optional(),
     limit: z.string().regex(/^\d+$/).transform(Number).refine((val) => val <= 100, { message: 'Limit cannot exceed 100' }).optional(),
   }),

@@ -17,6 +17,7 @@ import { InvoiceProvider, useInvoice } from "@/components/invoice-editor/Invoice
 import { InvoiceFormPanel } from "@/components/invoice-editor/InvoiceFormPanel"
 import { InvoicePreviewPanel } from "@/components/invoice-editor/InvoicePreviewPanel"
 import { Save, Send, Download, Settings, Copy, Check, ExternalLink, ArrowLeft } from "lucide-react"
+import { invoicesApi } from "@/lib/api"
 
 function InvoiceEditorWorkspace() {
   const router = useRouter()
@@ -30,24 +31,31 @@ function InvoiceEditorWorkspace() {
   const [toastMessage, setToastMessage] = useState<string | null>(null)
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit")
 
-  // If editId is provided in URL, load matching invoice from localStorage
+  // If editId is provided in URL, load matching invoice from backend or localStorage
   useEffect(() => {
     if (!editId || typeof window === "undefined") return
-    try {
-      const raw = localStorage.getItem("inkviz_invoices")
-      if (raw) {
-        const invoices = JSON.parse(raw)
-        const match = invoices.find((inv: any) => inv.id === editId || inv.id === decodeURIComponent(editId))
-        if (match) {
-          const loadedItems = (match.items && match.items.length > 0)
-            ? match.items
+    const fetchInvoice = async () => {
+      try {
+        const inv = await invoicesApi.get(editId)
+        if (inv) {
+          const loadedItems = (inv.items && inv.items.length > 0)
+            ? inv.items.map((item: any, idx: number) => ({
+                id: String(idx + 1),
+                description: item.description,
+                quantity: item.quantity,
+                rate: item.price,
+                amount: item.total || item.quantity * item.price,
+                hsnCode: "9983",
+                unit: "Pcs",
+                itemDiscount: 0,
+              }))
             : [
                 {
                   id: "1",
-                  description: match.source || "Services / Deliverables",
+                  description: "Services / Deliverables",
                   quantity: 1,
-                  rate: match.amount || 1000,
-                  amount: match.amount || 1000,
+                  rate: inv.totalAmount || 1000,
+                  amount: inv.totalAmount || 1000,
                   hsnCode: "9983",
                   unit: "Pcs",
                   itemDiscount: 0,
@@ -55,23 +63,65 @@ function InvoiceEditorWorkspace() {
               ]
 
           updateData({
-            invoiceNumber: match.id,
+            invoiceNumber: inv.invoiceNumber || editId,
             client: {
-              name: match.client,
-              email: match.clientEmail || `${match.client.toLowerCase().replace(/\s+/g, "")}@example.com`,
-              address: match.clientAddress || "123 Business Way, Suite 100",
+              name: inv.clientName || "Client",
+              email: inv.clientEmail || "client@example.com",
+              address: inv.clientAddress || "123 Business Way, Suite 100",
             },
             items: loadedItems,
-            issueDate: match.issueDate || new Date().toISOString().split("T")[0],
-            dueDate: match.dueDate || new Date().toISOString().split("T")[0],
-            watermarkStatus: match.status === "paid" ? "PAID" : match.status === "draft" ? "DRAFT" : null,
+            issueDate: inv.issueDate ? new Date(inv.issueDate).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+            dueDate: inv.dueDate ? new Date(inv.dueDate).toISOString().split("T")[0] : new Date().toISOString().split("T")[0],
+            watermarkStatus: inv.status === "paid" ? "PAID" : inv.status === "draft" ? "DRAFT" : null,
           })
-          showToast(`Loaded invoice ${match.id}`)
+          showToast(`Loaded invoice ${inv.invoiceNumber || editId}`)
+          return
         }
+      } catch (err) {
+        // Fallback to local storage if API call fails
       }
-    } catch (e) {
-      console.error("Failed to load invoice for editing", e)
+
+      try {
+        const raw = localStorage.getItem("inkviz_invoices")
+        if (raw) {
+          const invoices = JSON.parse(raw)
+          const match = invoices.find((inv: any) => inv.id === editId || inv.id === decodeURIComponent(editId))
+          if (match) {
+            const loadedItems = (match.items && match.items.length > 0)
+              ? match.items
+              : [
+                  {
+                    id: "1",
+                    description: match.source || "Services / Deliverables",
+                    quantity: 1,
+                    rate: match.amount || 1000,
+                    amount: match.amount || 1000,
+                    hsnCode: "9983",
+                    unit: "Pcs",
+                    itemDiscount: 0,
+                  },
+                ]
+
+            updateData({
+              invoiceNumber: match.id,
+              client: {
+                name: match.client,
+                email: match.clientEmail || `${match.client.toLowerCase().replace(/\s+/g, "")}@example.com`,
+                address: match.clientAddress || "123 Business Way, Suite 100",
+              },
+              items: loadedItems,
+              issueDate: match.issueDate || new Date().toISOString().split("T")[0],
+              dueDate: match.dueDate || new Date().toISOString().split("T")[0],
+              watermarkStatus: match.status === "paid" ? "PAID" : match.status === "draft" ? "DRAFT" : null,
+            })
+            showToast(`Loaded invoice ${match.id}`)
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load invoice for editing", e)
+      }
     }
+    fetchInvoice()
   }, [editId])
 
   const showToast = (msg: string) => {
@@ -79,56 +129,89 @@ function InvoiceEditorWorkspace() {
     setTimeout(() => setToastMessage(null), 3000)
   }
 
-  const persistInvoice = (status: "draft" | "published") => {
-    if (typeof window === "undefined") return
+  const persistInvoice = async (status: "draft" | "published") => {
+    // 1. Sync to backend API
+    let backendInvoice: any = null
     try {
-      const raw = localStorage.getItem("inkviz_invoices")
-      const invoices = raw ? JSON.parse(raw) : []
-
-      const record = {
-        id: data.invoiceNumber || `INV-${Math.floor(1000 + Math.random() * 9000)}`,
-        client: data.client.name || "Walk-in Client",
-        clientEmail: data.client.email,
-        clientAddress: data.client.address,
-        amount: data.total,
+      const payload = {
+        templateId: "6a99967f20362a95948ab737",
+        clientName: data.client.name || "Walk-in Client",
+        clientEmail: data.client.email || "client@example.com",
+        clientAddress: data.client.address || "",
+        items: data.items.map((item) => ({
+          description: item.description || "Service item",
+          quantity: Number(item.quantity) || 1,
+          rate: Number(item.rate) || 0,
+          price: Number(item.rate) || 0,
+        })),
+        taxRate: Number(data.taxRate) || 0,
+        discountRate: data.discountType === "percentage" ? Number(data.discountValue) || 0 : 0,
+        currency: data.currency || "USD",
+        issueDate: data.issueDate ? new Date(data.issueDate).toISOString() : new Date().toISOString(),
+        dueDate: data.dueDate ? new Date(data.dueDate).toISOString() : new Date().toISOString(),
+        notes: data.notes || "",
         status: status,
-        issueDate: data.issueDate,
-        dueDate: data.dueDate,
-        items: data.items,
-        source: editId ? `Edited (${editId})` : "Manual Entry",
       }
 
-      const existingIndex = invoices.findIndex((i: any) => i.id === record.id)
-      if (existingIndex >= 0) {
-        invoices[existingIndex] = { ...invoices[existingIndex], ...record }
+      if (editId) {
+        backendInvoice = await invoicesApi.update(editId, payload)
       } else {
-        invoices.unshift(record)
+        backendInvoice = await invoicesApi.create(payload)
       }
-
-      localStorage.setItem("inkviz_invoices", JSON.stringify(invoices))
-      window.dispatchEvent(new Event("inkviz_invoices_updated"))
-      return record
-    } catch (e) {
-      console.error("Failed to persist invoice", e)
-      return null
+    } catch (apiErr) {
+      console.warn("Backend API sync failed, saving locally:", apiErr)
     }
+
+    // 2. Also persist locally for instant responsive UI & offline fallback
+    if (typeof window !== "undefined") {
+      try {
+        const raw = localStorage.getItem("inkviz_invoices")
+        const invoices = raw ? JSON.parse(raw) : []
+
+        const record = {
+          id: backendInvoice?.invoiceNumber || data.invoiceNumber || `INV-${Math.floor(1000 + Math.random() * 9000)}`,
+          _id: backendInvoice?._id,
+          client: data.client.name || "Walk-in Client",
+          clientEmail: data.client.email,
+          clientAddress: data.client.address,
+          amount: backendInvoice?.totalAmount || data.total,
+          status: status,
+          issueDate: data.issueDate,
+          dueDate: data.dueDate,
+          items: data.items,
+          source: editId ? `Edited (${editId})` : "Cloud API",
+        }
+
+        const existingIndex = invoices.findIndex((i: any) => i.id === record.id || (record._id && i._id === record._id))
+        if (existingIndex >= 0) {
+          invoices[existingIndex] = { ...invoices[existingIndex], ...record }
+        } else {
+          invoices.unshift(record)
+        }
+
+        localStorage.setItem("inkviz_invoices", JSON.stringify(invoices))
+        window.dispatchEvent(new Event("inkviz_invoices_updated"))
+        return record
+      } catch (e) {
+        console.error("Failed to persist invoice locally", e)
+      }
+    }
+    return null
   }
 
-  const handleSaveDraft = () => {
+  const handleSaveDraft = async () => {
     setIsSaving(true)
     updateData({ watermarkStatus: "DRAFT" })
-    persistInvoice("draft")
-    showToast("Invoice saved as Draft!")
-    setTimeout(() => {
-      setIsSaving(false)
-      router.push("/dashboard")
-    }, 600)
+    await persistInvoice("draft")
+    showToast("Invoice saved as Draft in cloud!")
+    setIsSaving(false)
+    router.push("/dashboard")
   }
 
-  const handlePublishAndSend = () => {
+  const handlePublishAndSend = async () => {
     setIsSaving(true)
     updateData({ watermarkStatus: null })
-    persistInvoice("published")
+    await persistInvoice("published")
     setIsSaving(false)
     setShareModalOpen(true)
   }

@@ -115,6 +115,14 @@ export const invoicesApi = {
     const res = await apiClient.delete(`/invoices/${id}`);
     return res.data.data;
   },
+  getTrash: async () => {
+    const res = await apiClient.get('/invoices/trash');
+    return res.data.data.invoices;
+  },
+  restore: async (id: string) => {
+    const res = await apiClient.post(`/invoices/${id}/restore`);
+    return res.data.data;
+  },
 };
 
 // Clients API

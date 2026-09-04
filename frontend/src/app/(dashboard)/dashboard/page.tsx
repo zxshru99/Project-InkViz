@@ -28,8 +28,11 @@ import {
   Check,
 } from "lucide-react"
 
+import { invoicesApi } from "@/lib/api"
+
 export interface InvoiceRecord {
   id: string
+  _id?: string
   client: string
   amount: number
   status: "published" | "draft" | "paid" | "overdue" | "archived"
@@ -57,7 +60,31 @@ export default function DashboardPage() {
     setTimeout(() => setToastMessage(null), 3000)
   }
 
-  const loadInvoices = () => {
+  const loadInvoices = async () => {
+    // 1. Fetch live invoices from backend API
+    try {
+      const res = await invoicesApi.list({ limit: 50 })
+      if (res && res.invoices && res.invoices.length > 0) {
+        const backendRecords: InvoiceRecord[] = res.invoices.map((inv: any) => ({
+          id: inv.invoiceNumber || inv._id,
+          _id: inv._id,
+          client: inv.clientName || "Client",
+          amount: inv.totalAmount || inv.subtotal || 0,
+          status: (inv.status === "sent" ? "published" : inv.status) || "published",
+          issueDate: inv.issueDate ? new Date(inv.issueDate).toISOString().split("T")[0] : "",
+          dueDate: inv.dueDate ? new Date(inv.dueDate).toISOString().split("T")[0] : "",
+          source: "Cloud API",
+        }))
+        setInvoices(backendRecords)
+        if (typeof window !== "undefined") {
+          localStorage.setItem("inkviz_invoices", JSON.stringify(backendRecords))
+        }
+        return
+      }
+    } catch (e) {
+      // Fallback to local storage if user is offline
+    }
+
     if (typeof window === "undefined") return
     try {
       const raw = localStorage.getItem("inkviz_invoices")
@@ -114,7 +141,15 @@ export default function DashboardPage() {
     }
   }, [invoices])
 
-  const handleMoveToTrash = (inv: InvoiceRecord) => {
+  const handleMoveToTrash = async (inv: InvoiceRecord) => {
+    try {
+      if (inv._id || inv.id) {
+        await invoicesApi.delete(inv._id || inv.id)
+      }
+    } catch (apiErr) {
+      console.warn("Backend soft-delete failed, continuing locally:", apiErr)
+    }
+
     if (typeof window === "undefined") return
     try {
       const currentInvoices = invoices.filter((i) => i.id !== inv.id)
@@ -126,6 +161,7 @@ export default function DashboardPage() {
       const trashList = rawTrash ? JSON.parse(rawTrash) : []
       trashList.unshift({
         id: inv.id,
+        _id: inv._id,
         client: inv.client,
         amount: inv.amount,
         deletedAt: new Date().toISOString().split("T")[0],

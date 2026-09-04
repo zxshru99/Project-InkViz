@@ -27,10 +27,16 @@ export const assertOwnership = async <T>(
   resourceId: string,
   userId: string,
 ): Promise<Document<unknown, {}, T> & T> => {
-  if (!mongoose.isValidObjectId(resourceId) || !mongoose.isValidObjectId(userId)) {
+  if (!mongoose.isValidObjectId(userId)) {
     throw new NotFoundError();
   }
-  const doc = await model.findOne({ _id: resourceId, userId });
+  let query: any = { userId };
+  if (mongoose.isValidObjectId(resourceId)) {
+    query._id = resourceId;
+  } else {
+    query.invoiceNumber = resourceId;
+  }
+  const doc = await model.findOne(query);
   if (!doc) {
     throw new NotFoundError();
   }

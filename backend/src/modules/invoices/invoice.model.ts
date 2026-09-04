@@ -15,7 +15,7 @@ export interface IInvoice extends Document {
   invoiceNumber: string; // e.g., INV-0001
   poNumber?: string;
   paymentTerms?: string;
-  status: 'draft' | 'sent' | 'paid' | 'overdue';
+  status: 'draft' | 'sent' | 'published' | 'paid' | 'overdue';
   
   clientName: string;
   clientEmail: string;
@@ -72,7 +72,7 @@ const invoiceSchema = new Schema<IInvoice>(
     invoiceNumber: { type: String, required: true },
     poNumber: { type: String },
     paymentTerms: { type: String },
-    status: { type: String, enum: ['draft', 'sent', 'paid', 'overdue'], default: 'draft' },
+    status: { type: String, enum: ['draft', 'sent', 'published', 'paid', 'overdue'], default: 'draft' },
     
     clientName: { type: String, required: true },
     clientEmail: { type: String, required: true },
