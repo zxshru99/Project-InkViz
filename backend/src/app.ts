@@ -67,6 +67,16 @@ if (env.NODE_ENV === 'development') {
 }
 
 // 7. Health & Readiness (Bypass rate limits)
+app.get('/', (_req, res) => {
+  res.status(200).json({
+    name: 'Inkviz API',
+    version: '1.0.0',
+    status: 'online',
+    health: '/health',
+    ready: '/ready',
+  });
+});
+
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', uptime: process.uptime() });
 });
