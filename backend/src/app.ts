@@ -32,7 +32,24 @@ app.use(helmet());
 // 3. CORS
 app.use(
   cors({
-    origin: env.CORS_ORIGINS.split(','),
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, server-to-server)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = env.CORS_ORIGINS.split(',').map((o) => o.trim());
+
+      if (
+        allowedOrigins.includes('*') ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1')
+      ) {
+        return callback(null, true);
+      }
+
+      return callback(null, false);
+    },
     credentials: true,
   })
 );
