@@ -64,3 +64,30 @@ export const restore = async (req: Request, res: Response, next: NextFunction): 
     next(error);
   }
 };
+
+export const duplicateInvoice = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const invoice = await invoiceService.duplicateInvoice((req as any).user._id, req.params.id as string);
+    res.status(201).json({ success: true, data: { invoice } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const shareInvoice = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const invoice = await invoiceService.generateShareToken((req as any).user._id, req.params.id as string);
+    res.status(200).json({ success: true, data: { shareToken: invoice.shareToken } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPublicInvoice = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const invoice = await invoiceService.getPublicInvoice(req.params.token as string);
+    res.status(200).json({ success: true, data: { invoice } });
+  } catch (error) {
+    next(error);
+  }
+};

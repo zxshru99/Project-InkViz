@@ -9,19 +9,28 @@ const itemSchema = z.object({
 export const createInvoiceSchema = z.object({
   body: z.object({
     templateId: z.string().min(1, 'Template ID is required'),
+    clientId: z.string().optional(), // Optional since they might not use address book
     clientName: z.string().min(1, 'Client name is required'),
     clientEmail: z.string().email('Invalid client email format'),
     clientAddress: z.string().optional(),
     
+    poNumber: z.string().optional(),
+    paymentTerms: z.string().optional(),
+    
     items: z.array(itemSchema).min(1, 'At least one item is required'),
     
     taxRate: z.number().min(0).max(100).optional(),
-    discountRate: z.number().min(0).max(100).optional(),
+    taxLabel: z.string().optional(),
+    discountRate: z.number().min(0).optional(),
+    discountType: z.enum(['percentage', 'fixed']).optional(),
+    shippingFee: z.number().min(0).optional(),
+    amountPaid: z.number().min(0).optional(),
     currency: z.string().length(3).optional(),
     
     issueDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid issue date' }).transform((val) => new Date(val).toISOString()),
     dueDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid due date' }).transform((val) => new Date(val).toISOString()),
     notes: z.string().optional(),
+    paymentDetails: z.string().optional(),
     
     colorScheme: z.string().optional(),
     font: z.string().optional(),
@@ -31,19 +40,28 @@ export const createInvoiceSchema = z.object({
 export const updateInvoiceSchema = z.object({
   body: z.object({
     status: z.enum(['draft', 'sent', 'paid', 'overdue']).optional(),
+    clientId: z.string().optional(),
     clientName: z.string().min(1).optional(),
     clientEmail: z.string().email().optional(),
     clientAddress: z.string().optional(),
     
+    poNumber: z.string().optional(),
+    paymentTerms: z.string().optional(),
+    
     items: z.array(itemSchema).min(1).optional(),
     
     taxRate: z.number().min(0).max(100).optional(),
-    discountRate: z.number().min(0).max(100).optional(),
+    taxLabel: z.string().optional(),
+    discountRate: z.number().min(0).optional(),
+    discountType: z.enum(['percentage', 'fixed']).optional(),
+    shippingFee: z.number().min(0).optional(),
+    amountPaid: z.number().min(0).optional(),
     currency: z.string().length(3).optional(),
     
     issueDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid issue date' }).transform((val) => new Date(val).toISOString()).optional(),
     dueDate: z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid due date' }).transform((val) => new Date(val).toISOString()).optional(),
     notes: z.string().optional(),
+    paymentDetails: z.string().optional(),
     
     colorScheme: z.string().optional(),
     font: z.string().optional(),

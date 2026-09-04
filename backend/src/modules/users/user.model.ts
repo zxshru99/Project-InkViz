@@ -10,6 +10,20 @@ export interface IUser extends Document {
   defaultCurrency: string;
   refreshTokenHash?: string;
   
+  // Customization & Business
+  businessProfile?: {
+    companyName: string;
+    address?: string;
+    phone?: string;
+    website?: string;
+    logoUrl?: string;
+    taxId?: string;
+  };
+  preferences?: {
+    themeColor: string;
+    defaultPaymentTerms?: string;
+  };
+  
   // Security fields
   isEmailVerified: boolean;
   emailVerificationToken?: string;
@@ -32,6 +46,20 @@ const userSchema = new Schema<IUser>(
     invoiceCounter: { type: Number, default: 1 },
     defaultCurrency: { type: String, default: 'USD' },
     refreshTokenHash: { type: String },
+    
+    // Customization & Business
+    businessProfile: {
+      companyName: { type: String },
+      address: { type: String },
+      phone: { type: String },
+      website: { type: String },
+      logoUrl: { type: String },
+      taxId: { type: String },
+    },
+    preferences: {
+      themeColor: { type: String, default: '#000000' },
+      defaultPaymentTerms: { type: String },
+    },
     
     // Security fields
     isEmailVerified: { type: Boolean, default: false },

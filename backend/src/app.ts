@@ -13,7 +13,10 @@ import authRoutes from './modules/auth/auth.routes';
 import userRoutes from './modules/users/user.routes';
 import templateRoutes from './modules/templates/template.routes';
 import invoiceRoutes from './modules/invoices/invoice.routes';
+import * as invoiceRoutesModule from './modules/invoices/invoice.controller';
+import clientRoutes from './modules/clients/client.routes';
 import pdfRoutes from './modules/pdf/pdf.routes';
+import * as pdfRoutesModule from './modules/pdf/pdf.controller';
 
 const app = express();
 
@@ -89,6 +92,12 @@ app.use('/api/v1/auth', authRoutes); // Note: /api/v1/auth has its own stricter 
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/templates', templateRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
+app.use('/api/v1/clients', clientRoutes);
+
+// Public routes
+app.get('/api/v1/share/:token', invoiceRoutesModule.getPublicInvoice);
+app.get('/api/v1/share/:token/download', pdfRoutesModule.downloadPublicInvoicePdf);
+
 app.use('/api/v1', pdfRoutes); // registers /invoices/:id/download
 
 // 10. Sentry Error Handler (must be before custom error handler)

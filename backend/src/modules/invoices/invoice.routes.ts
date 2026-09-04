@@ -24,5 +24,7 @@ router.get('/:id', invoiceController.getInvoice);
 router.patch('/:id', validate(updateInvoiceSchema), invoiceController.updateInvoice);
 router.delete('/:id', invoiceController.softDelete);
 router.post('/:id/restore', invoiceController.restore);
+router.post('/:id/duplicate', invoiceController.duplicateInvoice);
+router.post('/:id/share', invoiceController.shareInvoice);
 
 export default router;

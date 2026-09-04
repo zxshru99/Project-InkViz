@@ -1,7 +1,7 @@
 # Inkviz API Specification & Reference Documentation
 
 **Version:** 1.0.0  
-**Base URL:** `http://localhost:5001` (Development) / `https://api.inkviz.app` (Production)  
+**Base URL:** `http://localhost:${PORT:-5001}` (Development — dynamic/configurable via `PORT` env) / `https://api.inkviz.app` (Production)  
 **Protocol:** REST over HTTPS  
 **Authentication Scheme:** Dual-token JWT (Access Token in `Authorization: Bearer <token>` + Refresh Token in `HttpOnly` Cookie)
 
@@ -17,8 +17,9 @@
    - [B. Authentication Module](#b-authentication-module)
    - [C. User Profile Module](#c-user-profile-module)
    - [D. Invoice Templates Module](#d-invoice-templates-module)
-   - [E. Invoices Module](#e-invoices-module)
-   - [F. PDF Generation Module](#f-pdf-generation-module)
+   - [E. Clients Module](#e-clients-module)
+   - [F. Invoices Module](#f-invoices-module)
+   - [G. PDF Generation Module](#g-pdf-generation-module)
 6. [Security & Rate Limiting Guidelines](#6-security--rate-limiting-guidelines)
 
 ---
@@ -390,7 +391,32 @@ An invoice in Inkviz transitions through various states based on client actions:
 
 ---
 
-### E. Invoices Module
+### E. Clients Module
+
+#### 1. List Clients
+* **Endpoint:** `GET /api/v1/clients`
+* **Auth:** `Bearer <accessToken>`
+* **Query Parameters:** `search` (optional)
+* **Success Response (`200 OK`):** Array of clients.
+
+#### 2. Create Client
+* **Endpoint:** `POST /api/v1/clients`
+* **Auth:** `Bearer <accessToken>`
+* **Success Response (`201 Created`):** Returns created client object.
+
+#### 3. Update Client
+* **Endpoint:** `PATCH /api/v1/clients/:id`
+* **Auth:** `Bearer <accessToken>`
+* **Success Response (`200 OK`):** Returns updated client.
+
+#### 4. Delete Client
+* **Endpoint:** `DELETE /api/v1/clients/:id`
+* **Auth:** `Bearer <accessToken>`
+* **Success Response (`200 OK`):** Hard deletes the client.
+
+---
+
+### F. Invoices Module
 
 #### 1. List Invoices
 * **Endpoint:** `GET /api/v1/invoices`
@@ -530,7 +556,31 @@ An invoice in Inkviz transitions through various states based on client actions:
 
 ---
 
-### F. PDF Generation Module
+#### 7. Duplicate Invoice
+* **Endpoint:** `POST /api/v1/invoices/:id/duplicate`
+* **Auth:** `Bearer <accessToken>`
+* **Description:** Creates a new draft invoice with copied data but a new invoice number and dates.
+* **Success Response (`201 Created`):** Returns duplicated invoice.
+
+---
+
+#### 8. Generate Share Link
+* **Endpoint:** `POST /api/v1/invoices/:id/share`
+* **Auth:** `Bearer <accessToken>`
+* **Description:** Generates or retrieves a unique `shareToken` for public viewing.
+* **Success Response (`200 OK`):** Returns `{ "shareToken": "uuid" }`.
+
+---
+
+#### 9. Get Public Invoice
+* **Endpoint:** `GET /api/v1/share/:token`
+* **Auth:** Public
+* **Description:** Retrieves invoice for client-facing view.
+* **Success Response (`200 OK`):** Returns public invoice data.
+
+---
+
+### G. PDF Generation Module
 
 #### 1. Download Rendered Invoice PDF
 * **Endpoint:** `GET /api/v1/invoices/:id/download`
@@ -545,6 +595,15 @@ An invoice in Inkviz transitions through various states based on client actions:
   * `500 Internal Error` (`INTERNAL_ERROR`): Headless browser rendering failure.
 
 ---
+
+#### 2. Download Public Invoice PDF
+* **Endpoint:** `GET /api/v1/share/:token/download`
+* **Auth:** Public
+* **Response Headers:** `Content-Type: application/pdf`
+* **Success Response (`200 OK`):** Binary PDF Stream.
+
+---
+
 
 ## 6. Security & Rate Limiting Guidelines
 

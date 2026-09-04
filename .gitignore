@@ -1,42 +1,100 @@
 # ==============================================================================
-# Inkviz — Production-Grade Git Ignore (Root)
+# Inkviz — Enterprise Production-Grade Git Ignore (Root)
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# 1. Credentials, Environment Variables & API Secrets (CRITICAL)
+# 1. Environment Variables, Secrets & Configuration (CRITICAL - DO NOT REMOVE)
 # ------------------------------------------------------------------------------
 .env
 .env.*
-!.env.example
 *.env
+*.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
+backend/.env
+backend/.env.*
+frontend/.env
+frontend/.env.*
+frontend/.env.local
+frontend/.env*.local
 
-# Secret files, keys, and specific token dumps
-db_pass
-secrets/
-credentials.json
-token.txt
-tokens.json
+# Allow safe example environment template files only
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# ------------------------------------------------------------------------------
+# 2. Security Credentials, Keys, Certificates & Tokens
+# ------------------------------------------------------------------------------
 *.pem
 *.key
 *.cert
 *.pfx
 *.p12
 *.crt
+*.csr
+*.cer
+*.der
+*.id_rsa
+id_rsa*
+*.pub
+*.keystore
+*.jks
+credentials.json
+client_secret*.json
+service-account*.json
+gcp-key*.json
+aws-credentials*
+firebase-adminsdk*.json
+secrets/
+backend/secrets/
 
-# Cookies, auth session dumps & manual scripts with API keys
+# Passwords, tokens & cookie session dumps
+db_pass
+passwords.txt
+token.txt
+tokens.json
 cookies.txt
 qa_cookies.txt
 *.cookie
-sync-postman.js
-fix_types*.js
-backend/fix_types*.js
 
 # ------------------------------------------------------------------------------
-# 2. Dependencies & Package Managers (Installed automatically by cloud build)
+# 3. Customer Data, Uploads, Storage & Generated PDFs (PII Protection)
+# ------------------------------------------------------------------------------
+*.pdf
+invoice_curl.pdf
+qa_invoice.pdf
+*.csv
+*.xlsx
+*.xls
+inkviz-export*.json
+uploads/
+backend/uploads/
+frontend/uploads/
+exports/
+backend/exports/
+temp/
+tmp/
+backend/temp/
+backend/tmp/
+
+# ------------------------------------------------------------------------------
+# 4. Databases, Local Dumps & Storage Files
+# ------------------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+dump/
+data/
+*.rdb
+*.seed
+
+# ------------------------------------------------------------------------------
+# 5. Dependencies & Package Managers
 # ------------------------------------------------------------------------------
 node_modules/
 backend/node_modules/
@@ -50,23 +108,40 @@ frontend/node_modules/
 *.tgz
 
 # ------------------------------------------------------------------------------
-# 3. Build Artifacts & Caches (Compiled on cloud server via npm run build)
+# 6. Build Outputs, Deployments & Framework Caches
 # ------------------------------------------------------------------------------
 dist/
+backend/dist/
 build/
 out/
+frontend/out/
 .next/
-backend/dist/
+frontend/.next/
+.vercel/
+frontend/.vercel/
 *.tsbuildinfo
 .cache/
 .parcel-cache/
 .turbo/
 
 # ------------------------------------------------------------------------------
-# 4. Logs & Diagnostics
+# 7. Diagnostic Scripts, One-off Scaffolds & Scratch Artifacts
+# ------------------------------------------------------------------------------
+scratch/
+backend/scratch/
+test-routes.js
+scaffold*.js
+sync-postman.js
+fix_types*.js
+backend/fix_types*.js
+test_all_endpoints.js
+
+# ------------------------------------------------------------------------------
+# 8. Logs & Diagnostics
 # ------------------------------------------------------------------------------
 logs/
 backend/logs/
+frontend/logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -75,34 +150,15 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # ------------------------------------------------------------------------------
-# 5. Testing, Coverage & Scratch Directories
+# 9. Test Results & Code Coverage
 # ------------------------------------------------------------------------------
 coverage/
 backend/coverage/
+frontend/coverage/
 .nyc_output/
-scratch/
-backend/scratch/
 
 # ------------------------------------------------------------------------------
-# 6. Generated Client Documents & Export Artifacts
-# ------------------------------------------------------------------------------
-*.pdf
-invoice_curl.pdf
-qa_invoice.pdf
-*.csv
-*.xlsx
-inkviz-export*.json
-
-# ------------------------------------------------------------------------------
-# 7. Databases & Local Dumps
-# ------------------------------------------------------------------------------
-*.sqlite
-*.sqlite3
-*.db
-*.dump
-
-# ------------------------------------------------------------------------------
-# 8. OS & IDE Metadata
+# 10. OS & Operating System Metadata
 # ------------------------------------------------------------------------------
 .DS_Store
 .DS_Store?
@@ -113,7 +169,9 @@ ehthumbs.db
 Thumbs.db
 Desktop.ini
 
-# IDEs & Editors
+# ------------------------------------------------------------------------------
+# 11. IDEs & Editors
+# ------------------------------------------------------------------------------
 .idea/
 .vscode/*
 !.vscode/extensions.json
@@ -125,13 +183,15 @@ Desktop.ini
 *.sublime-workspace
 *.sublime-project
 
-# AI Assistant & IDE Internal Artifacts
+# ------------------------------------------------------------------------------
+# 12. AI Tooling & Internal IDE Artifacts
+# ------------------------------------------------------------------------------
+.gemini/
 .antigravity/
 
 # ------------------------------------------------------------------------------
-# 9. Whitelist Critical Source Directories (Never ignore source code)
+# 13. Whitelist Critical Source Directories (Never ignore source code)
 # ------------------------------------------------------------------------------
 !backend/src/**
 !frontend/src/**
-!frontend/app/**
-!frontend/components/**
+!frontend/public/**

@@ -1,44 +1,112 @@
 # ==============================================================================
-# Inkviz — Production-Grade Git Ignore (Backend)
+# Inkviz — Enterprise Production-Grade Git Ignore (Backend)
 # ==============================================================================
 
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
-.pnpm-store/
-
-# Build & Compilation
-dist/
-build/
-*.tsbuildinfo
-.cache/
-
-# Environment variables & secrets (CRITICAL)
+# ------------------------------------------------------------------------------
+# 1. Environment variables & secrets (CRITICAL)
+# ------------------------------------------------------------------------------
 .env
 .env.*
-!.env.example
 *.env
+*.env.*
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env*.local
 
+# Allow example template only
+!.env.example
+
+# ------------------------------------------------------------------------------
+# 2. Security Keys, Certificates, Tokens & Secrets
+# ------------------------------------------------------------------------------
 *.pem
 *.key
 *.cert
 *.pfx
 *.p12
 *.crt
+*.csr
+*.cer
+*.der
+*.id_rsa
+id_rsa*
+*.pub
+*.keystore
+*.jks
+credentials.json
+client_secret*.json
+service-account*.json
+gcp-key*.json
+secrets/
+db_pass
+passwords.txt
+token.txt
+tokens.json
+cookies.txt
+qa_cookies.txt
+*.cookie
 
-# Test, Coverage & Scratch Scripts
+# ------------------------------------------------------------------------------
+# 3. Dependencies & Package Managers
+# ------------------------------------------------------------------------------
+node_modules/
+.pnp
+.pnp.js
+.pnpm-store/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+*.tgz
+
+# ------------------------------------------------------------------------------
+# 4. Build & Compilation Outputs
+# ------------------------------------------------------------------------------
+dist/
+build/
+*.tsbuildinfo
+.cache/
+
+# ------------------------------------------------------------------------------
+# 5. Customer PII, Generated Documents & Storage
+# ------------------------------------------------------------------------------
+*.pdf
+invoice_curl.pdf
+qa_invoice.pdf
+*.csv
+*.xlsx
+inkviz-export*.json
+uploads/
+exports/
+temp/
+tmp/
+
+# ------------------------------------------------------------------------------
+# 6. Database Dumps & Local Data
+# ------------------------------------------------------------------------------
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+dump/
+data/
+*.rdb
+
+# ------------------------------------------------------------------------------
+# 7. Test, Coverage & Diagnostic Scripts
+# ------------------------------------------------------------------------------
 coverage/
 .nyc_output/
 scratch/
 test_all_endpoints.js
 fix_types*.js
+scaffold*.js
+test-routes.js
 
-# Logs
+# ------------------------------------------------------------------------------
+# 8. Logs
+# ------------------------------------------------------------------------------
 logs/
 *.log
 npm-debug.log*
@@ -46,15 +114,15 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Generated PDF test outputs & exports
-*.pdf
-inkviz-export*.json
-
-# OS & IDE
+# ------------------------------------------------------------------------------
+# 9. OS & IDE
+# ------------------------------------------------------------------------------
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
 
-# Whitelist source files
+# ------------------------------------------------------------------------------
+# 10. Whitelist source files
+# ------------------------------------------------------------------------------
 !src/**

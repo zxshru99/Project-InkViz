@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const uri = 'mongodb+srv://sinhasadhusharan_db_user:ZzKXa5LqUhKD7Vb7@inkviz.t7ouoo2.mongodb.net/inkviz';
+require('dotenv').config({ path: require('path').resolve(__dirname, '../.env') });
+const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/inkviz';
 
 async function seedUser() {
   await mongoose.connect(uri);

@@ -2,6 +2,7 @@ import { Invoice } from './invoice.model';
 import { User } from '../users/user.model';
 import { generateInvoiceNumber } from '../../utils/invoiceNumber';
 import { assertOwnership } from '../../utils/ownershipCheck';
+import crypto from 'crypto';
 
 const calculateTotals = (items: any[], taxRate: number = 0, discountRate: number = 0) => {
   const subtotal = Number(items.reduce((acc, item) => {
@@ -66,6 +67,9 @@ export const createInvoice = async (userId: string, data: any) => {
     data.discountRate || 0
   );
 
+  const amountPaid = data.amountPaid || 0;
+  const balanceDue = Number(Math.max(0, totalAmount - amountPaid).toFixed(2));
+
   const invoiceNumber = await generateInvoiceNumber(userId);
 
   const invoice = new Invoice({
@@ -76,6 +80,8 @@ export const createInvoice = async (userId: string, data: any) => {
     discountAmount,
     taxAmount,
     totalAmount,
+    amountPaid,
+    balanceDue,
   });
 
   await invoice.save();
@@ -99,6 +105,10 @@ export const updateInvoice = async (userId: string, invoiceId: string, data: any
     data.discountAmount = discountAmount;
     data.taxAmount = taxAmount;
     data.totalAmount = totalAmount;
+    const paid = data.amountPaid !== undefined ? data.amountPaid : (invoice.amountPaid || 0);
+    data.balanceDue = Number(Math.max(0, totalAmount - paid).toFixed(2));
+  } else if (data.amountPaid !== undefined) {
+    data.balanceDue = Number(Math.max(0, invoice.totalAmount - data.amountPaid).toFixed(2));
   }
 
   Object.assign(invoice, data);
@@ -129,5 +139,50 @@ export const restore = async (userId: string, invoiceId: string) => {
   invoice.isDeleted = false;
   invoice.deletedAt = undefined as any;
   await invoice.save();
+  return invoice;
+};
+
+export const duplicateInvoice = async (userId: string, invoiceId: string) => {
+  const invoice = await assertOwnership(Invoice, invoiceId, userId);
+  
+  const invoiceNumber = await generateInvoiceNumber(userId);
+  
+  const duplicatedData = invoice.toObject() as any;
+  delete duplicatedData._id;
+  delete duplicatedData.createdAt;
+  delete duplicatedData.updatedAt;
+  delete duplicatedData.shareToken; // don't duplicate token
+  
+  const newInvoice = new Invoice({
+    ...duplicatedData,
+    invoiceNumber,
+    status: 'draft',
+    issueDate: new Date(),
+    dueDate: new Date(new Date().setDate(new Date().getDate() + 7)), // +7 days from now
+  });
+  
+  await newInvoice.save();
+  return newInvoice;
+};
+
+export const generateShareToken = async (userId: string, invoiceId: string) => {
+  const invoice = await assertOwnership(Invoice, invoiceId, userId);
+  
+  if (!invoice.shareToken) {
+    invoice.shareToken = crypto.randomUUID();
+    await invoice.save();
+  }
+  
+  return invoice;
+};
+
+export const getPublicInvoice = async (shareToken: string) => {
+  const invoice = await Invoice.findOne({ shareToken, isDeleted: false })
+    .populate('userId', 'name email businessProfile')
+    .lean();
+    
+  if (!invoice) {
+    throw Object.assign(new Error('Invoice not found or expired'), { statusCode: 404, code: 'NOT_FOUND' });
+  }
   return invoice;
 };
