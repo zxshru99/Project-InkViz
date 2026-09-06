@@ -80,7 +80,7 @@ export default function PricingPage() {
               { text: "Custom Brand Colors", included: true },
               { text: "Public Share Links", included: true },
               { text: "WhatsApp Sharing", included: true },
-              { text: "Bank &amp; UPI Details", included: true },
+              { text: "Bank &amp; Wire Details", included: true },
             ].map((item) => (
               <li key={item.text} className="flex items-center gap-2.5 text-[13px] text-foreground">
                 <Check />

@@ -26,10 +26,11 @@ function SettingsContent() {
 
   // Local storage states for demo persistence
   const [settings, setSettings] = useState({
-    // Bank & UPI
+    // Banking & Wire
     bankName: "",
     accountName: "",
     accountNumber: "",
+    routingNumber: "",
     ifsc: "",
     swift: "",
     branch: "",
@@ -43,9 +44,11 @@ function SettingsContent() {
     // Defaults
     paymentTerms: "Net 15",
     defaultNotes: "Thank you for your business!",
-    defaultPaymentInstructions: "Please make payment via UPI or Bank Transfer.",
+    defaultPaymentInstructions: "Please make payment via Wire Transfer or Bank Transfer.",
     // Business
+    taxId: "",
     gstin: "",
+    companyReg: "",
     pan: "",
     billingAddress: "",
     shippingAddress: ""
@@ -111,7 +114,7 @@ function SettingsContent() {
             {[
               { id: "profile", label: "Profile" },
               { id: "business", label: "Business Details" },
-              { id: "bank", label: "Bank & UPI Details" },
+              { id: "bank", label: "Bank & Wire Transfer" },
               { id: "numbering", label: "Document Numbering" },
               { id: "defaults", label: "Defaults & Terms" },
               { id: "appearance", label: "Appearance" },
@@ -187,21 +190,21 @@ function SettingsContent() {
                     <Input className="rounded-xl" type="email" defaultValue="hello@mycompany.com" />
                   </div>
                   <div className="grid gap-2">
-                    <Label>GSTIN / VAT Number</Label>
+                    <Label>Tax ID / VAT / EIN Number</Label>
                     <Input 
                       className="rounded-xl"
-                      value={settings.gstin} 
-                      onChange={e => setSettings({...settings, gstin: e.target.value})} 
-                      placeholder="22AAAAA0000A1Z5" 
+                      value={settings.taxId || settings.gstin} 
+                      onChange={e => setSettings({...settings, taxId: e.target.value, gstin: e.target.value})} 
+                      placeholder="e.g. US-EIN-94-3214567 or GB123456789" 
                     />
                   </div>
                   <div className="grid gap-2">
-                    <Label>PAN Number</Label>
+                    <Label>Company Registration / CRN</Label>
                     <Input 
                       className="rounded-xl"
-                      value={settings.pan} 
-                      onChange={e => setSettings({...settings, pan: e.target.value})} 
-                      placeholder="ABCDE1234F" 
+                      value={settings.companyReg || settings.pan} 
+                      onChange={e => setSettings({...settings, companyReg: e.target.value, pan: e.target.value})} 
+                      placeholder="e.g. 12345678 or REG-9921" 
                     />
                   </div>
                   <div className="grid gap-2 col-span-1 sm:col-span-2">
@@ -231,40 +234,34 @@ function SettingsContent() {
           {activeTab === "bank" && (
             <Card className="rounded-2xl border shadow-xs">
               <CardHeader>
-                <CardTitle>Bank & UPI Details</CardTitle>
-                <CardDescription>Set up the payment details displayed on invoices.</CardDescription>
+                <CardTitle>Bank & Wire Transfer Details</CardTitle>
+                <CardDescription>Configure global banking and wire transfer details displayed on your invoices.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                   <div className="grid gap-2 col-span-1 sm:col-span-2">
                     <Label>Bank Name</Label>
-                    <Input className="rounded-xl" value={settings.bankName} onChange={e => setSettings({...settings, bankName: e.target.value})} />
+                    <Input className="rounded-xl" value={settings.bankName} onChange={e => setSettings({...settings, bankName: e.target.value})} placeholder="e.g. Silicon Valley Bank" />
                   </div>
                   <div className="grid gap-2">
                     <Label>Account Holder Name</Label>
-                    <Input className="rounded-xl" value={settings.accountName} onChange={e => setSettings({...settings, accountName: e.target.value})} />
+                    <Input className="rounded-xl" value={settings.accountName} onChange={e => setSettings({...settings, accountName: e.target.value})} placeholder="e.g. Acme Corporation LLC" />
                   </div>
                   <div className="grid gap-2">
-                    <Label>Account Number</Label>
-                    <Input className="rounded-xl" value={settings.accountNumber} onChange={e => setSettings({...settings, accountNumber: e.target.value})} />
+                    <Label>Account Number / IBAN</Label>
+                    <Input className="rounded-xl" value={settings.accountNumber} onChange={e => setSettings({...settings, accountNumber: e.target.value})} placeholder="e.g. US12SVB0000009876543210" />
                   </div>
                   <div className="grid gap-2">
-                    <Label>IFSC Code</Label>
-                    <Input className="rounded-xl" value={settings.ifsc} onChange={e => setSettings({...settings, ifsc: e.target.value})} />
+                    <Label>Routing Number / Sort Code</Label>
+                    <Input className="rounded-xl" value={settings.routingNumber || settings.ifsc} onChange={e => setSettings({...settings, routingNumber: e.target.value, ifsc: e.target.value})} placeholder="e.g. 121000358" />
                   </div>
                   <div className="grid gap-2">
-                    <Label>Branch</Label>
-                    <Input className="rounded-xl" value={settings.branch} onChange={e => setSettings({...settings, branch: e.target.value})} />
+                    <Label>SWIFT / BIC Code</Label>
+                    <Input className="rounded-xl" value={settings.swift} onChange={e => setSettings({...settings, swift: e.target.value})} placeholder="e.g. SVB0US6S" />
                   </div>
-                  <div className="grid gap-2 col-span-1 sm:col-span-2 mt-2 border-t pt-4">
-                    <Label>UPI ID / VPA</Label>
-                    <Input 
-                      className="rounded-xl"
-                      placeholder="example@upi" 
-                      value={settings.upiId} 
-                      onChange={e => setSettings({...settings, upiId: e.target.value})} 
-                    />
-                    <p className="text-xs text-muted-foreground">This is used to generate the Scan-to-Pay QR code on your invoices.</p>
+                  <div className="grid gap-2 col-span-1 sm:col-span-2">
+                    <Label>Bank Branch / Address</Label>
+                    <Input className="rounded-xl" value={settings.branch} onChange={e => setSettings({...settings, branch: e.target.value})} placeholder="e.g. 3003 Tasman Dr, Santa Clara, CA 95054" />
                   </div>
                 </div>
               </CardContent>

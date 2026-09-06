@@ -81,7 +81,7 @@ const defaultInvoiceData: InvoiceData = {
   client: { name: '', email: '', address: '' },
   billFrom: { name: 'My Company', email: 'hello@mycompany.com', address: '123 Business Rd\nCity, State 12345' },
   items: [
-    { id: '1', description: 'Web Design Services', quantity: 1, rate: 1000, amount: 1000, hsnCode: '9983', unit: 'Hrs', itemDiscount: 0 }
+    { id: '1', description: 'Web Design & Consulting Services', quantity: 1, rate: 1000, amount: 1000, hsnCode: '', unit: 'Hrs', itemDiscount: 0 }
   ],
   subtotal: 1000,
   taxRate: 0,
@@ -99,7 +99,7 @@ const defaultInvoiceData: InvoiceData = {
   amountPaid: 0,
   balanceDue: 1000,
   notes: 'Thank you for your business!',
-  paymentDetails: 'Please make payment via bank transfer to:\nBank: Example Bank\nAccount: 1234567890\nSort Code: 12-34-56',
+  paymentDetails: 'Please make payment via Wire Transfer or Bank Transfer to:\nBank: Silicon Valley Bank\nAccount: 1234567890\nRouting: 121000358\nSWIFT: SVB0US6S',
   bankName: '',
   accountHolderName: '',
   accountNumber: '',

@@ -23,14 +23,14 @@ import { Trash2, Plus, Settings2, Search, Package, Briefcase, Boxes, Sparkles } 
 
 const getCurrencySymbol = (currency: string) => {
   switch (currency) {
-    case 'INR': return '₹';
     case 'EUR': return '€';
     case 'GBP': return '£';
-    case 'AED': return 'AED ';
     case 'CAD': return 'CA$';
     case 'AUD': return 'A$';
+    case 'CHF': return 'CHF ';
     case 'SGD': return 'S$';
     case 'JPY': return '¥';
+    case 'AED': return 'AED ';
     case 'USD':
     default: return '$';
   }
@@ -48,9 +48,9 @@ export function InvoiceFormPanel() {
       description: product.name,
       rate: product.sellingPrice,
       unit: product.unit,
-      hsnCode: product.hsnSac,
+      hsnCode: product.sku || '',
     });
-    if (product.taxRate > 0 && data.taxRate === 0 && data.cgstRate === 0 && data.igstRate === 0) {
+    if (product.taxRate > 0 && data.taxRate === 0) {
       updateData({ taxRate: product.taxRate });
     }
     setActiveAutocompleteId(null);
@@ -90,12 +90,12 @@ export function InvoiceFormPanel() {
                       <SelectItem value="USD">USD ($ - US Dollar)</SelectItem>
                       <SelectItem value="EUR">EUR (€ - Euro)</SelectItem>
                       <SelectItem value="GBP">GBP (£ - British Pound)</SelectItem>
-                      <SelectItem value="INR">INR (₹ - Indian Rupee)</SelectItem>
-                      <SelectItem value="AED">AED (د.إ - UAE Dirham)</SelectItem>
                       <SelectItem value="CAD">CAD (CA$ - Canadian Dollar)</SelectItem>
                       <SelectItem value="AUD">AUD (A$ - Australian Dollar)</SelectItem>
+                      <SelectItem value="CHF">CHF (CHF - Swiss Franc)</SelectItem>
                       <SelectItem value="SGD">SGD (S$ - Singapore Dollar)</SelectItem>
                       <SelectItem value="JPY">JPY (¥ - Japanese Yen)</SelectItem>
+                      <SelectItem value="AED">AED (AED - UAE Dirham)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -229,7 +229,6 @@ export function InvoiceFormPanel() {
                                       </div>
                                       <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
                                         {prod.sku && <span className="font-mono bg-muted px-1 rounded">{prod.sku}</span>}
-                                        {prod.hsnSac && <span>HSN: {prod.hsnSac}</span>}
                                         <Badge variant="outline" className="text-[9px] h-4 py-0">
                                           {prod.type}
                                         </Badge>
@@ -263,15 +262,15 @@ export function InvoiceFormPanel() {
                       </Button>
                     </div>
 
-                    {/* Middle: HSN/SAC + Unit */}
+                    {/* Middle: SKU / Code + Unit */}
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <Label className="text-[11px] text-muted-foreground">HSN/SAC</Label>
+                        <Label className="text-[11px] text-muted-foreground">SKU / Code</Label>
                         <Input 
                           className="h-8 text-xs font-mono rounded-lg" 
                           value={item.hsnCode} 
                           onChange={(e) => updateItem(item.id, { hsnCode: e.target.value })} 
-                          placeholder="Code" 
+                          placeholder="Optional" 
                         />
                       </div>
                       <div className="space-y-1">
@@ -399,7 +398,6 @@ export function InvoiceFormPanel() {
                           </div>
                           <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-2 sm:gap-3">
                             {prod.sku && <span>SKU: {prod.sku}</span>}
-                            {prod.hsnSac && <span>HSN: {prod.hsnSac}</span>}
                             <span>Type: {prod.type}</span>
                             {prod.taxRate > 0 && <span className="text-emerald-600 font-medium">Tax: {prod.taxRate}%</span>}
                           </div>
@@ -433,13 +431,13 @@ export function InvoiceFormPanel() {
                                       quantity: 1,
                                       rate: prod.sellingPrice,
                                       amount: prod.sellingPrice,
-                                      hsnCode: prod.hsnSac,
+                                      hsnCode: prod.sku || '',
                                       unit: prod.unit,
                                       itemDiscount: 0
                                     }
                                   ]
                                 };
-                                if (prod.taxRate > 0 && data.taxRate === 0 && data.cgstRate === 0 && data.igstRate === 0) {
+                                if (prod.taxRate > 0 && data.taxRate === 0) {
                                   updates.taxRate = prod.taxRate;
                                 }
                                 updateData(updates);
@@ -483,27 +481,13 @@ export function InvoiceFormPanel() {
 
         <TabsContent value="taxes" className="space-y-4">
           <Card className="rounded-2xl border shadow-xs">
-            <CardHeader><CardTitle>Taxes (GST/VAT)</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Tax & VAT Settings</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Total Tax Rate (%)</Label>
-                  <Input className="rounded-xl" type="number" value={data.taxRate} onChange={(e) => updateData({ taxRate: Number(e.target.value) })} placeholder="General Tax" />
-                  <p className="text-xs text-muted-foreground">Use this for single tax system.</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 border-t pt-4">
-                <div className="space-y-2">
-                  <Label>CGST (%)</Label>
-                  <Input className="rounded-xl" type="number" value={data.cgstRate} onChange={(e) => updateData({ cgstRate: Number(e.target.value) })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>SGST (%)</Label>
-                  <Input className="rounded-xl" type="number" value={data.sgstRate} onChange={(e) => updateData({ sgstRate: Number(e.target.value) })} />
-                </div>
-                <div className="space-y-2">
-                  <Label>IGST (%)</Label>
-                  <Input className="rounded-xl" type="number" value={data.igstRate} onChange={(e) => updateData({ igstRate: Number(e.target.value) })} />
+                  <Label>Tax / VAT Rate (%)</Label>
+                  <Input className="rounded-xl" type="number" value={data.taxRate} onChange={(e) => updateData({ taxRate: Number(e.target.value) })} placeholder="e.g. 20 for VAT or 8.25 for Sales Tax" />
+                  <p className="text-xs text-muted-foreground">Standard tax applied to net subtotal.</p>
                 </div>
               </div>
             </CardContent>
@@ -543,38 +527,33 @@ export function InvoiceFormPanel() {
 
         <TabsContent value="banking" className="space-y-4">
           <Card className="rounded-2xl border shadow-xs">
-            <CardHeader><CardTitle>Bank Details</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Bank & Wire Details</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 <div className="space-y-2">
                   <Label>Bank Name</Label>
-                  <Input className="rounded-xl" value={data.bankName} onChange={(e) => updateData({ bankName: e.target.value })} />
+                  <Input className="rounded-xl" value={data.bankName} onChange={(e) => updateData({ bankName: e.target.value })} placeholder="e.g. Silicon Valley Bank" />
                 </div>
                 <div className="space-y-2">
                   <Label>Account Name</Label>
-                  <Input className="rounded-xl" value={data.accountHolderName} onChange={(e) => updateData({ accountHolderName: e.target.value })} />
+                  <Input className="rounded-xl" value={data.accountHolderName} onChange={(e) => updateData({ accountHolderName: e.target.value })} placeholder="e.g. Acme Corporation LLC" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Account Number</Label>
-                  <Input className="rounded-xl" value={data.accountNumber} onChange={(e) => updateData({ accountNumber: e.target.value })} />
+                  <Label>Account Number / IBAN</Label>
+                  <Input className="rounded-xl" value={data.accountNumber} onChange={(e) => updateData({ accountNumber: e.target.value })} placeholder="e.g. US12SVB0000009876543210" />
                 </div>
                 <div className="space-y-2">
-                  <Label>IFSC / Routing Code</Label>
-                  <Input className="rounded-xl" value={data.ifscCode} onChange={(e) => updateData({ ifscCode: e.target.value })} />
+                  <Label>Routing Number / Sort Code</Label>
+                  <Input className="rounded-xl" value={data.ifscCode} onChange={(e) => updateData({ ifscCode: e.target.value })} placeholder="e.g. 121000358" />
                 </div>
                 <div className="space-y-2">
                   <Label>SWIFT / BIC Code</Label>
-                  <Input className="rounded-xl" value={data.swiftCode} onChange={(e) => updateData({ swiftCode: e.target.value })} />
+                  <Input className="rounded-xl" value={data.swiftCode} onChange={(e) => updateData({ swiftCode: e.target.value })} placeholder="e.g. SVB0US6S" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Branch</Label>
-                  <Input className="rounded-xl" value={data.branch} onChange={(e) => updateData({ branch: e.target.value })} />
+                  <Label>Branch / City</Label>
+                  <Input className="rounded-xl" value={data.branch} onChange={(e) => updateData({ branch: e.target.value })} placeholder="e.g. Santa Clara, CA" />
                 </div>
-              </div>
-              
-              <div className="space-y-2 border-t pt-4">
-                <Label>UPI ID (For India)</Label>
-                <Input className="rounded-xl" value={data.upiId} onChange={(e) => updateData({ upiId: e.target.value })} placeholder="e.g. yourname@upi" />
               </div>
             </CardContent>
           </Card>
@@ -628,7 +607,7 @@ export function InvoiceFormPanel() {
             <CardHeader><CardTitle>Visual Elements Toggles</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label className="flex flex-col"><span className="font-medium">Show QR Code</span><span className="font-normal text-xs text-muted-foreground">For UPI or Payment Links</span></Label>
+                <Label className="flex flex-col"><span className="font-medium">Show QR Code</span><span className="font-normal text-xs text-muted-foreground">For digital invoice link or online pay</span></Label>
                 <Switch checked={data.showQRCode} onCheckedChange={(val) => updateData({ showQRCode: val })} />
               </div>
               <div className="flex items-center justify-between">

@@ -8,7 +8,7 @@ export interface ClientTransaction {
   type: 'Invoice' | 'Payment' | 'Credit Note'
   reference: string
   amount: number
-  paymentMethod?: 'Cash' | 'Bank Transfer' | 'UPI' | 'Cheque' | 'Card'
+  paymentMethod?: 'Cash' | 'Bank Transfer' | 'Wire Transfer' | 'Cheque' | 'Card'
   balanceAfter: number
   notes?: string
 }
@@ -22,6 +22,7 @@ export interface ClientRecord {
   mobile?: string // for WhatsApp
   billingAddress: string
   shippingAddress?: string
+  taxId?: string
   gstin?: string
   pan?: string
   currency: string
@@ -40,6 +41,7 @@ export interface VendorRecord {
   email: string
   phone: string
   category: 'Raw Materials' | 'Software & Subscriptions' | 'Office & Utilities' | 'Logistics' | 'Professional Services' | 'Hardware'
+  taxId?: string
   gstin?: string
   address: string
   paymentTerms: string
@@ -59,7 +61,7 @@ export interface ExpenseRecord {
   taxDeductible: boolean
   taxAmount: number
   date: string
-  paymentMethod: 'Cash' | 'Bank Wire' | 'UPI' | 'Credit Card'
+  paymentMethod: 'Cash' | 'Bank Wire' | 'Wire Transfer' | 'Credit Card'
   isBillable: boolean
   clientId?: string
   clientName?: string
@@ -101,23 +103,23 @@ export interface PurchaseOrderRecord {
 export const DEFAULT_CLIENTS: ClientRecord[] = [
   {
     id: 'client-1',
-    name: 'Nexus FinTech Solutions Pvt Ltd',
-    contactPerson: 'Arun Varma (Head of Finance)',
-    email: 'billing@nexusfintech.io',
-    phone: '+91 98765 43210',
-    mobile: '919876543210',
-    billingAddress: 'Plot 42, Cyber Gateway, Hitech City, Hyderabad, Telangana 500081',
-    shippingAddress: 'Plot 42, Cyber Gateway, Hitech City, Hyderabad, Telangana 500081',
-    gstin: '36AABCN1234F1Z8',
-    pan: 'AABCN1234F',
-    currency: 'INR',
-    totalBilled: 153400,
-    totalPaid: 100000,
-    balanceDue: 53400,
+    name: 'Nexus Global Tech Inc.',
+    contactPerson: 'Arthur Vance (VP Finance)',
+    email: 'billing@nexusglobaltech.io',
+    phone: '+1 (415) 555-0192',
+    mobile: '14155550192',
+    billingAddress: '500 Howard St, Suite 400, San Francisco, CA 94105',
+    shippingAddress: '500 Howard St, Suite 400, San Francisco, CA 94105',
+    taxId: 'US-EIN-94-3214567',
+    gstin: 'US-EIN-94-3214567',
+    currency: 'USD',
+    totalBilled: 15340,
+    totalPaid: 10000,
+    balanceDue: 5340,
     status: 'Active',
     transactions: [
-      { id: 'tx-1', date: '2026-02-15', type: 'Invoice', reference: 'INV/2026/0014', amount: 153400, balanceAfter: 153400, notes: 'Cloud infrastructure & web application contract' },
-      { id: 'tx-2', date: '2026-02-22', type: 'Payment', reference: 'UPI/2026/9021', amount: 100000, paymentMethod: 'UPI', balanceAfter: 53400, notes: 'First milestone advance received' }
+      { id: 'tx-1', date: '2026-02-15', type: 'Invoice', reference: 'INV/2026/0014', amount: 15340, balanceAfter: 15340, notes: 'Cloud infrastructure & web application contract' },
+      { id: 'tx-2', date: '2026-02-22', type: 'Payment', reference: 'WIRE/2026/9021', amount: 10000, paymentMethod: 'Wire Transfer', balanceAfter: 5340, notes: 'First milestone advance received' }
     ],
     createdAt: '2026-01-10T10:00:00.000Z'
   },
@@ -126,11 +128,12 @@ export const DEFAULT_CLIENTS: ClientRecord[] = [
     name: 'Acme Global Corporation',
     contactPerson: 'Sarah Jenkins',
     email: 'contact@acme.com',
-    phone: '+1 555-0100',
-    mobile: '15550100',
+    phone: '+1 (212) 555-0100',
+    mobile: '12125550100',
     billingAddress: '123 Business Rd, Suite 400, New York, NY 10001',
     shippingAddress: 'Acme Fulfillment Ctr, 500 River St, Jersey City, NJ 07302',
-    gstin: 'US-EIN-94-3214567',
+    taxId: 'US-EIN-13-8829102',
+    gstin: 'US-EIN-13-8829102',
     currency: 'USD',
     totalBilled: 12450,
     totalPaid: 12450,
@@ -144,44 +147,44 @@ export const DEFAULT_CLIENTS: ClientRecord[] = [
   },
   {
     id: 'client-3',
-    name: 'Zenith Retail Distribution Hub',
-    contactPerson: 'Rajesh Nair',
-    email: 'ap@zenithretail.in',
-    phone: '+91 99000 88776',
-    mobile: '919900088776',
-    billingAddress: 'Warehouse #4, Bhiwandi Logistics Park, Thane, Maharashtra 421302',
-    shippingAddress: 'Warehouse #4, Bhiwandi Logistics Park, Thane, Maharashtra 421302',
-    gstin: '27AAACZ4321D1ZO',
-    pan: 'AAACZ4321D',
-    currency: 'INR',
-    totalBilled: 95000,
-    totalPaid: 47500,
-    balanceDue: 47500,
+    name: 'Zenith Distribution Logistics LLC',
+    contactPerson: 'Robert Miller',
+    email: 'ap@zenithdistribution.com',
+    phone: '+1 (214) 555-0188',
+    mobile: '12145550188',
+    billingAddress: '450 Logistics Way, Suite 10, Dallas, TX 75201',
+    shippingAddress: '450 Logistics Way, Suite 10, Dallas, TX 75201',
+    taxId: 'US-EIN-75-9988123',
+    gstin: 'US-EIN-75-9988123',
+    currency: 'USD',
+    totalBilled: 9500,
+    totalPaid: 4750,
+    balanceDue: 4750,
     status: 'Active',
     transactions: [
-      { id: 'tx-5', date: '2026-02-10', type: 'Invoice', reference: 'INV/2026/0022', amount: 95000, balanceAfter: 95000, notes: 'Retail fixtures & equipment' },
-      { id: 'tx-6', date: '2026-02-18', type: 'Payment', reference: 'NEFT-AXIS-4412', amount: 47500, paymentMethod: 'Bank Transfer', balanceAfter: 47500, notes: '50% advance payment' }
+      { id: 'tx-5', date: '2026-02-10', type: 'Invoice', reference: 'INV/2026/0022', amount: 9500, balanceAfter: 9500, notes: 'Retail fixtures & equipment' },
+      { id: 'tx-6', date: '2026-02-18', type: 'Payment', reference: 'ACH-CHASE-4412', amount: 4750, paymentMethod: 'Bank Transfer', balanceAfter: 4750, notes: '50% advance payment' }
     ],
     createdAt: '2026-01-15T11:45:00.000Z'
   },
   {
     id: 'client-4',
-    name: 'Starlight E-Commerce Ventures',
-    contactPerson: 'Kavita Rao',
+    name: 'Starlight E-Commerce Ventures Ltd',
+    contactPerson: 'Katherine Reynolds',
     email: 'billing@starlight.store',
-    phone: '+91 98220 54321',
-    mobile: '919822054321',
-    billingAddress: 'B-Wing, Prestige Commercial Plaza, Koramangala, Bengaluru, Karnataka 560034',
-    gstin: '29AABCS8899K1ZR',
-    pan: 'AABCS8899K',
-    currency: 'INR',
-    totalBilled: 78000,
-    totalPaid: 20000,
-    balanceDue: 58000,
+    phone: '+44 20 7946 0912',
+    mobile: '442079460912',
+    billingAddress: '10 Finsbury Square, London EC2A 1AF, United Kingdom',
+    taxId: 'GB-VAT-9921448',
+    gstin: 'GB-VAT-9921448',
+    currency: 'USD',
+    totalBilled: 7800,
+    totalPaid: 2000,
+    balanceDue: 5800,
     status: 'Active',
     transactions: [
-      { id: 'tx-7', date: '2026-02-01', type: 'Invoice', reference: 'INV/2026/0009', amount: 78000, balanceAfter: 78000, notes: 'Annual catalog photography & digital marketing' },
-      { id: 'tx-8', date: '2026-02-14', type: 'Payment', reference: 'UPI/2026/1098', amount: 20000, paymentMethod: 'UPI', balanceAfter: 58000, notes: 'Interim payment' }
+      { id: 'tx-7', date: '2026-02-01', type: 'Invoice', reference: 'INV/2026/0009', amount: 7800, balanceAfter: 7800, notes: 'Annual catalog photography & digital marketing' },
+      { id: 'tx-8', date: '2026-02-14', type: 'Payment', reference: 'CARD/2026/1098', amount: 2000, paymentMethod: 'Card', balanceAfter: 5800, notes: 'Interim payment' }
     ],
     createdAt: '2026-01-18T14:10:00.000Z'
   }
@@ -191,60 +194,64 @@ export const DEFAULT_CLIENTS: ClientRecord[] = [
 export const DEFAULT_VENDORS: VendorRecord[] = [
   {
     id: 'vendor-1',
-    name: 'Amazon Web Services India Pvt Ltd',
+    name: 'Amazon Web Services Inc.',
     contactPerson: 'Enterprise Cloud Support',
-    email: 'aws-in-billing@amazon.com',
-    phone: '+91 80 4000 1100',
+    email: 'aws-billing@amazon.com',
+    phone: '+1 800-200-2222',
     category: 'Software & Subscriptions',
-    gstin: '29AAACA6180Q1ZV',
-    address: 'World Trade Centre, Brigade Gateway, Bengaluru, Karnataka 560055',
+    taxId: 'US-EIN-91-1234567',
+    gstin: 'US-EIN-91-1234567',
+    address: '410 Terry Ave N, Seattle, WA 98109',
     paymentTerms: 'Net 30',
-    totalPurchased: 85000,
+    totalPurchased: 8500,
     balanceOwed: 0,
     status: 'Active',
     createdAt: '2026-01-01T00:00:00.000Z'
   },
   {
     id: 'vendor-2',
-    name: 'SafeX Logistics Fleet & Surface Cargo',
-    contactPerson: 'Manish Pandey',
-    email: 'dispatch@safexlogistics.com',
-    phone: '+91 98220 11223',
+    name: 'FedEx Freight Direct',
+    contactPerson: 'Logistics Fleet Operations',
+    email: 'dispatch@fedex.com',
+    phone: '+1 800-463-3339',
     category: 'Logistics',
-    gstin: '27AAACS9988P1ZM',
-    address: 'Plot 18, MIDC Industrial Area, Pune, Maharashtra 411018',
+    taxId: 'US-EIN-71-0427007',
+    gstin: 'US-EIN-71-0427007',
+    address: '1715 Aaron Brenner Dr, Memphis, TN 38120',
     paymentTerms: 'Net 15',
-    totalPurchased: 42000,
-    balanceOwed: 12000,
+    totalPurchased: 4200,
+    balanceOwed: 1200,
     status: 'Active',
     createdAt: '2026-01-10T09:00:00.000Z'
   },
   {
     id: 'vendor-3',
-    name: 'Godrej Interio Manufacturing Division',
-    contactPerson: 'Vikram Joshi',
-    email: 'b2b@godrejinterio.com',
-    phone: '+91 22 6796 1234',
+    name: 'Steelcase Commercial Solutions',
+    contactPerson: 'Corporate Sales Team',
+    email: 'b2b@steelcase.com',
+    phone: '+1 800-333-9939',
     category: 'Hardware',
-    gstin: '27AAACG0582B1Z8',
-    address: 'Pirojshanagar, Vikhroli, Mumbai, Maharashtra 400079',
+    taxId: 'US-EIN-38-0819050',
+    gstin: 'US-EIN-38-0819050',
+    address: '901 44th St SE, Grand Rapids, MI 49508',
     paymentTerms: 'Net 30',
-    totalPurchased: 174000,
-    balanceOwed: 34000,
+    totalPurchased: 17400,
+    balanceOwed: 3400,
     status: 'Active',
     createdAt: '2026-01-15T10:30:00.000Z'
   },
   {
     id: 'vendor-4',
-    name: 'Airtel Enterprise Business Solutions',
-    contactPerson: 'Corporate Accounts Team',
-    email: 'telecom@airtel.in',
-    phone: '+91 1800 102 9000',
+    name: 'Verizon Business Enterprise',
+    contactPerson: 'Enterprise Accounts',
+    email: 'telecom@verizon.com',
+    phone: '+1 800-922-0204',
     category: 'Office & Utilities',
-    gstin: '07AAACA1234P1Z5',
-    address: 'Bharti Crescent, 1 Nelson Mandela Marg, Vasant Kunj, New Delhi 110070',
+    taxId: 'US-EIN-13-2641010',
+    gstin: 'US-EIN-13-2641010',
+    address: '1095 Avenue of the Americas, New York, NY 10036',
     paymentTerms: 'Net 15',
-    totalPurchased: 18500,
+    totalPurchased: 1850,
     balanceOwed: 0,
     status: 'Active',
     createdAt: '2026-01-20T12:00:00.000Z'
@@ -258,15 +265,15 @@ export const DEFAULT_EXPENSES: ExpenseRecord[] = [
     expenseNumber: 'EXP/2026/001',
     title: 'AWS Production Kubernetes Cluster & Aurora DB',
     category: 'Software & Subscriptions',
-    vendorName: 'Amazon Web Services India Pvt Ltd',
-    amount: 24500,
+    vendorName: 'Amazon Web Services Inc.',
+    amount: 2450,
     taxDeductible: true,
-    taxAmount: 3737.28,
+    taxAmount: 245.00,
     date: '2026-02-10',
     paymentMethod: 'Credit Card',
     isBillable: true,
     clientId: 'client-1',
-    clientName: 'Nexus FinTech Solutions Pvt Ltd',
+    clientName: 'Nexus Global Tech Inc.',
     receiptName: 'aws-invoice-feb2026.pdf',
     notes: 'Primary production cloud infrastructure. Reimbursable as cloud hosting SLA.',
     createdAt: '2026-02-10T15:00:00.000Z'
@@ -274,17 +281,17 @@ export const DEFAULT_EXPENSES: ExpenseRecord[] = [
   {
     id: 'exp-2',
     expenseNumber: 'EXP/2026/002',
-    title: 'Office Dedicated High-Speed Leased Line',
+    title: 'Dedicated High-Speed Fiber Internet Leased Line',
     category: 'Office & Utilities',
-    vendorName: 'Airtel Enterprise Business Solutions',
-    amount: 8500,
+    vendorName: 'Verizon Business Enterprise',
+    amount: 850,
     taxDeductible: true,
-    taxAmount: 1296.61,
+    taxAmount: 85.00,
     date: '2026-02-15',
     paymentMethod: 'Bank Wire',
     isBillable: false,
-    receiptName: 'airtel-leasedline-feb.pdf',
-    notes: 'Monthly 500 Mbps symmetrical fiber internet connection.',
+    receiptName: 'verizon-leasedline-feb.pdf',
+    notes: 'Monthly 500 Mbps symmetrical fiber connection.',
     createdAt: '2026-02-15T11:20:00.000Z'
   },
   {
@@ -292,17 +299,17 @@ export const DEFAULT_EXPENSES: ExpenseRecord[] = [
     expenseNumber: 'EXP/2026/003',
     title: 'Inter-State Material Transportation & Delivery',
     category: 'Logistics & Shipping',
-    vendorName: 'SafeX Logistics Fleet & Surface Cargo',
-    amount: 14200,
+    vendorName: 'FedEx Freight Direct',
+    amount: 1420,
     taxDeductible: true,
-    taxAmount: 2166.10,
+    taxAmount: 142.00,
     date: '2026-02-21',
-    paymentMethod: 'UPI',
+    paymentMethod: 'Credit Card',
     isBillable: true,
     clientId: 'client-3',
-    clientName: 'Zenith Retail Distribution Hub',
-    receiptName: 'safex-consignment-dc01.pdf',
-    notes: 'E-Way bill shipment to Bhiwandi logistics hub.',
+    clientName: 'Zenith Distribution Logistics LLC',
+    receiptName: 'fedex-consignment-dc01.pdf',
+    notes: 'Bill of lading shipment to Dallas logistics hub.',
     createdAt: '2026-02-21T09:30:00.000Z'
   },
   {
@@ -310,10 +317,10 @@ export const DEFAULT_EXPENSES: ExpenseRecord[] = [
     expenseNumber: 'EXP/2026/004',
     title: 'Google Workspace Enterprise Starter Licenses',
     category: 'Software & Subscriptions',
-    vendorName: 'Google Cloud India',
-    amount: 6200,
+    vendorName: 'Google LLC',
+    amount: 620,
     taxDeductible: true,
-    taxAmount: 945.76,
+    taxAmount: 62.00,
     date: '2026-02-25',
     paymentMethod: 'Credit Card',
     isBillable: false,
@@ -329,19 +336,19 @@ export const DEFAULT_PURCHASE_ORDERS: PurchaseOrderRecord[] = [
     id: 'po-1',
     poNumber: 'PO/2026/001',
     vendorId: 'vendor-3',
-    vendorName: 'Godrej Interio Manufacturing Division',
-    vendorEmail: 'b2b@godrejinterio.com',
-    vendorAddress: 'Pirojshanagar, Vikhroli, Mumbai, Maharashtra 400079',
+    vendorName: 'Steelcase Commercial Solutions',
+    vendorEmail: 'b2b@steelcase.com',
+    vendorAddress: '901 44th St SE, Grand Rapids, MI 49508',
     issueDate: '2026-02-18',
     expectedDeliveryDate: '2026-03-08',
     items: [
-      { id: '1', description: 'Ergonomic Executive Mesh Chair', quantity: 10, rate: 12000, amount: 120000, unit: 'Pcs', hsnCode: '940130' },
-      { id: '2', description: 'Motorized Height-Adjustable Standing Desk', quantity: 2, rate: 27000, amount: 54000, unit: 'Pcs', hsnCode: '940310' }
+      { id: '1', description: 'Ergonomic Executive Mesh Chair', quantity: 10, rate: 1200, amount: 12000, unit: 'Pcs', hsnCode: 'CHAIR-EXEC' },
+      { id: '2', description: 'Motorized Height-Adjustable Standing Desk', quantity: 2, rate: 2700, amount: 5400, unit: 'Pcs', hsnCode: 'DESK-STAND' }
     ],
-    subtotal: 174000,
-    taxAmount: 31320,
-    total: 205320,
-    currency: 'INR',
+    subtotal: 17400,
+    taxAmount: 1740,
+    total: 19140,
+    currency: 'USD',
     status: 'Issued',
     notes: 'Procurement order for client office upgrade. Standard 1-year warranty included.',
     createdAt: '2026-02-18T10:00:00.000Z'
@@ -350,20 +357,20 @@ export const DEFAULT_PURCHASE_ORDERS: PurchaseOrderRecord[] = [
     id: 'po-2',
     poNumber: 'PO/2026/002',
     vendorId: 'vendor-2',
-    vendorName: 'SafeX Logistics Fleet & Surface Cargo',
-    vendorEmail: 'dispatch@safexlogistics.com',
-    vendorAddress: 'Plot 18, MIDC Industrial Area, Pune, Maharashtra 411018',
+    vendorName: 'FedEx Freight Direct',
+    vendorEmail: 'dispatch@fedex.com',
+    vendorAddress: '1715 Aaron Brenner Dr, Memphis, TN 38120',
     issueDate: '2026-02-12',
     expectedDeliveryDate: '2026-02-20',
     items: [
-      { id: '1', description: 'Heavy Machinery Freight Transport (32ft Multi-Axle)', quantity: 1, rate: 35000, amount: 35000, unit: 'Flat', hsnCode: '996511' }
+      { id: '1', description: 'Heavy Machinery Freight Transport (32ft Multi-Axle)', quantity: 1, rate: 3500, amount: 3500, unit: 'Flat', hsnCode: 'FRT-HEAVY' }
     ],
-    subtotal: 35000,
-    taxAmount: 6300,
-    total: 41300,
-    currency: 'INR',
+    subtotal: 3500,
+    taxAmount: 350,
+    total: 3850,
+    currency: 'USD',
     status: 'Received',
-    notes: 'Shipment delivered to Pune factory facility on Feb 20.',
+    notes: 'Shipment delivered to factory facility on Feb 20.',
     createdAt: '2026-02-12T09:30:00.000Z'
   }
 ]
@@ -462,7 +469,7 @@ export function useCrmExpenses() {
     payment: {
       amount: number
       date: string
-      paymentMethod: 'Cash' | 'Bank Transfer' | 'UPI' | 'Cheque' | 'Card'
+      paymentMethod: 'Cash' | 'Bank Transfer' | 'Wire Transfer' | 'Cheque' | 'Card'
       reference: string
       notes?: string
     }

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Download, CreditCard, Printer, CheckCircle2, ArrowLeft, QrCode, Loader2 } from "lucide-react"
+import { Download, CreditCard, Printer, CheckCircle2, ArrowLeft, Loader2, Building2, Globe } from "lucide-react"
 import { invoicesApi } from "@/lib/api"
 import { exportElementToPdf } from "@/lib/pdf-export"
 
@@ -37,7 +37,7 @@ const DEFAULT_SHARED_INVOICE = {
   total: 1250,
   balanceDue: 1250,
   notes: "Thank you for your business! Please remit payment before due date.",
-  paymentDetails: "Bank: Silicon Valley Bank\nAccount: 9876543210\nRouting: 121000358\nUPI: business@upi",
+  paymentDetails: "Bank: Silicon Valley Bank\nAccount: 9876543210\nRouting: 121000358\nSWIFT: SVB0US6S\nIBAN: US12SVB0000009876543210",
 }
 
 interface PageProps {
@@ -51,7 +51,7 @@ export default function PublicSharePage({ params }: PageProps) {
   const [invoice, setInvoice] = useState(DEFAULT_SHARED_INVOICE)
   const [isLoading, setIsLoading] = useState(true)
   const [payModalOpen, setPayModalOpen] = useState(false)
-  const [payMethod, setPayMethod] = useState<"upi" | "card" | "netbanking">("upi")
+  const [payMethod, setPayMethod] = useState<"card" | "wire" | "paypal">("card")
   const [isProcessingPay, setIsProcessingPay] = useState(false)
   const [paidSuccess, setPaidSuccess] = useState(false)
 
@@ -435,9 +435,9 @@ export default function PublicSharePage({ params }: PageProps) {
           <div className="space-y-4 py-2">
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: "upi", label: "UPI / QR", icon: QrCode },
                 { id: "card", label: "Credit Card", icon: CreditCard },
-                { id: "netbanking", label: "NetBanking", icon: CheckCircle2 },
+                { id: "wire", label: "Wire / ACH", icon: Building2 },
+                { id: "paypal", label: "PayPal", icon: Globe },
               ].map((m) => (
                 <button
                   key={m.id}
@@ -452,16 +452,6 @@ export default function PublicSharePage({ params }: PageProps) {
               ))}
             </div>
 
-            {payMethod === "upi" && (
-              <div className="p-4 bg-muted/40 rounded-lg text-center space-y-2 border">
-                <p className="text-xs font-semibold text-muted-foreground">Scan with any UPI app</p>
-                <div className="w-32 h-32 mx-auto bg-white p-2 rounded-lg border flex items-center justify-center shadow-xs">
-                  <QrCode className="w-24 h-24 text-primary" />
-                </div>
-                <p className="text-xs font-mono font-medium text-foreground">business@upi</p>
-              </div>
-            )}
-
             {payMethod === "card" && (
               <div className="space-y-3">
                 <div className="space-y-1">
@@ -474,18 +464,35 @@ export default function PublicSharePage({ params }: PageProps) {
                     <Input id="exp" placeholder="MM/YY" defaultValue="12/28" />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="cvv">CVV</Label>
+                    <Label htmlFor="cvv">CVV / CVC</Label>
                     <Input id="cvv" placeholder="123" defaultValue="888" />
                   </div>
                 </div>
               </div>
             )}
 
-            {payMethod === "netbanking" && (
-              <div className="p-3 bg-muted/30 rounded-lg text-xs space-y-1 border">
-                <p className="font-semibold text-foreground">Direct Bank Transfer</p>
-                <p className="text-muted-foreground">Account: 9876543210 (SVB)</p>
-                <p className="text-muted-foreground">IFSC / Swift: SVB0001234</p>
+            {payMethod === "wire" && (
+              <div className="p-3.5 bg-muted/30 rounded-lg text-xs space-y-2 border">
+                <p className="font-semibold text-foreground">Direct International Wire & ACH Transfer</p>
+                <div className="space-y-1 text-muted-foreground text-[11px]">
+                  <div className="flex justify-between"><span className="font-medium text-foreground">Bank:</span> <span>Silicon Valley Bank</span></div>
+                  <div className="flex justify-between"><span className="font-medium text-foreground">Account / IBAN:</span> <span className="font-mono">US12SVB0000009876543210</span></div>
+                  <div className="flex justify-between"><span className="font-medium text-foreground">Routing / ABA:</span> <span className="font-mono">121000358</span></div>
+                  <div className="flex justify-between"><span className="font-medium text-foreground">SWIFT / BIC:</span> <span className="font-mono">SVB0US6S</span></div>
+                </div>
+                <p className="text-[10px] text-muted-foreground italic pt-1 border-t">Include invoice number {invoice.invoiceNumber} as payment reference.</p>
+              </div>
+            )}
+
+            {payMethod === "paypal" && (
+              <div className="p-4 bg-muted/40 rounded-lg text-center space-y-3 border">
+                <p className="text-xs font-semibold text-foreground">Express PayPal & Digital Wallet Checkout</p>
+                <div className="p-3 bg-card border rounded-lg max-w-xs mx-auto text-left space-y-1.5 text-xs">
+                  <div className="flex justify-between"><span className="text-muted-foreground">Beneficiary:</span> <span className="font-semibold">{invoice.billFrom.name}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Invoice Reference:</span> <span className="font-mono">{invoice.invoiceNumber}</span></div>
+                  <div className="flex justify-between"><span className="text-muted-foreground">Total Payable:</span> <span className="font-bold text-foreground">${invoice.balanceDue.toFixed(2)}</span></div>
+                </div>
+                <p className="text-[11px] text-muted-foreground">Proceeding will redirect you to the secure PayPal gateway.</p>
               </div>
             )}
           </div>

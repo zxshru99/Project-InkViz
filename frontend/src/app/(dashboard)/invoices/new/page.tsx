@@ -47,8 +47,8 @@ function InvoiceEditorWorkspace() {
                 quantity: item.quantity,
                 rate: item.price,
                 amount: item.total || item.quantity * item.price,
-                hsnCode: "9983",
-                unit: "Pcs",
+                hsnCode: item.hsnCode || "",
+                unit: item.unit || "Pcs",
                 itemDiscount: 0,
               }))
             : [
@@ -58,7 +58,7 @@ function InvoiceEditorWorkspace() {
                   quantity: 1,
                   rate: inv.totalAmount || 1000,
                   amount: inv.totalAmount || 1000,
-                  hsnCode: "9983",
+                  hsnCode: "",
                   unit: "Pcs",
                   itemDiscount: 0,
                 },
@@ -98,7 +98,7 @@ function InvoiceEditorWorkspace() {
                     quantity: 1,
                     rate: match.amount || 1000,
                     amount: match.amount || 1000,
-                    hsnCode: "9983",
+                    hsnCode: "",
                     unit: "Pcs",
                     itemDiscount: 0,
                   },

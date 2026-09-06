@@ -58,7 +58,7 @@ export function TemplateNexus({ data }: { data: InvoiceData }) {
             <BankDetails data={data} />
             {data.showQRCode && (
                <div className="inline-block mt-4">
-                 <InvoiceQRCode upiId={data.upiId} amount={data.balanceDue} name={data.billFrom.name} />
+                 <InvoiceQRCode invoiceNumber={data.invoiceNumber} amount={data.balanceDue} name={data.billFrom.name} />
                </div>
             )}
           </div>

@@ -55,7 +55,7 @@ export function TemplateHeritage({ data }: { data: InvoiceData }) {
             <BankDetails data={data} />
             {data.showQRCode && (
                <div className="inline-block mt-4 p-1 border-2 border-double border-gray-400">
-                 <InvoiceQRCode upiId={data.upiId} amount={data.balanceDue} name={data.billFrom.name} />
+                 <InvoiceQRCode invoiceNumber={data.invoiceNumber} amount={data.balanceDue} name={data.billFrom.name} />
                </div>
             )}
           </div>

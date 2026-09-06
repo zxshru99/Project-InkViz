@@ -110,22 +110,22 @@ export const DEFAULT_QUOTATIONS: Quotation[] = [
     id: 'quote-1',
     quoteNumber: 'EST/2026/001',
     client: {
-      name: 'Nexus FinTech Solutions Pvt Ltd',
-      email: 'billing@nexusfintech.io',
-      phone: '+91 98765 43210',
-      address: 'Plot 42, Cyber Gateway, Hitech City, Hyderabad, 500081'
+      name: 'Nexus Global Tech Inc.',
+      email: 'billing@nexusglobaltech.io',
+      phone: '+1 (415) 555-0192',
+      address: '500 Howard St, Suite 400, San Francisco, CA 94105'
     },
     issueDate: '2026-02-15',
     expiryDate: '2026-03-15',
     items: [
-      { id: '1', description: 'Cloud Infrastructure & DevOps Setup', quantity: 1, rate: 45000, amount: 45000, hsnCode: '998313', unit: 'Hrs' },
-      { id: '2', description: 'Full-Stack Web Application Development', quantity: 1, rate: 85000, amount: 85000, hsnCode: '998314', unit: 'Flat' }
+      { id: '1', description: 'Cloud Infrastructure & DevOps Setup', quantity: 1, rate: 4500, amount: 4500, hsnCode: 'DEV-001', unit: 'Hrs' },
+      { id: '2', description: 'Full-Stack Web Application Development', quantity: 1, rate: 8500, amount: 8500, hsnCode: 'FULL-002', unit: 'Flat' }
     ],
-    subtotal: 130000,
-    taxRate: 18,
-    taxAmount: 23400,
-    total: 153400,
-    currency: 'INR',
+    subtotal: 13000,
+    taxRate: 10,
+    taxAmount: 1300,
+    total: 14300,
+    currency: 'USD',
     status: 'Sent',
     notes: 'Quotation valid for 30 days. Standard payment terms apply.',
     createdAt: '2026-02-15T09:00:00.000Z'
@@ -136,43 +136,43 @@ export const DEFAULT_QUOTATIONS: Quotation[] = [
     client: {
       name: 'Global LogiTrans Corp',
       email: 'procurement@logitrans.com',
-      phone: '+91 91234 56789',
-      address: '14 Commerce Hub, Andheri East, Mumbai, 400069'
+      phone: '+1 (212) 555-0143',
+      address: '120 Broadway, 18th Floor, New York, NY 10271'
     },
     issueDate: '2026-02-20',
     expiryDate: '2026-03-05',
     items: [
-      { id: '1', description: 'Ergonomic Executive Office Chair', quantity: 12, rate: 14500, amount: 174000, hsnCode: '940130', unit: 'Pcs' }
+      { id: '1', description: 'Ergonomic Executive Office Chair', quantity: 12, rate: 350, amount: 4200, hsnCode: 'CHAIR-EXEC', unit: 'Pcs' }
     ],
-    subtotal: 174000,
-    taxRate: 18,
-    taxAmount: 31320,
-    total: 205320,
-    currency: 'INR',
+    subtotal: 4200,
+    taxRate: 8.875,
+    taxAmount: 372.75,
+    total: 4572.75,
+    currency: 'USD',
     status: 'Accepted',
     convertedInvoiceId: 'INV/2026/0042',
-    notes: 'Bulk discount of 5% already applied.',
+    notes: 'Bulk corporate discount applied.',
     createdAt: '2026-02-20T11:30:00.000Z'
   },
   {
     id: 'quote-3',
     quoteNumber: 'EST/2026/003',
     client: {
-      name: 'Apex HyperScale Analytics',
+      name: 'Apex HyperScale Analytics Ltd',
       email: 'accounts@apexhs.com',
-      phone: '+91 98888 12345',
-      address: 'Tower B, Outer Ring Rd, Bellandur, Bengaluru, 560103'
+      phone: '+44 20 7946 0912',
+      address: '10 Finsbury Square, London EC2A 1AF, United Kingdom'
     },
     issueDate: '2026-01-10',
     expiryDate: '2026-01-25',
     items: [
-      { id: '1', description: 'UI/UX Design System & Mobile App Mockups', quantity: 1, rate: 32000, amount: 32000, hsnCode: '998311', unit: 'Days' }
+      { id: '1', description: 'UI/UX Design System & Mobile App Mockups', quantity: 1, rate: 3200, amount: 3200, hsnCode: 'UIUX-001', unit: 'Days' }
     ],
-    subtotal: 32000,
-    taxRate: 18,
-    taxAmount: 5760,
-    total: 37760,
-    currency: 'INR',
+    subtotal: 3200,
+    taxRate: 20,
+    taxAmount: 640,
+    total: 3840,
+    currency: 'USD',
     status: 'Expired',
     notes: 'Estimate expired on Jan 25, 2026.',
     createdAt: '2026-01-10T14:15:00.000Z'
@@ -192,11 +192,11 @@ export const DEFAULT_PROFORMA: ProformaInvoice[] = [
     },
     issueDate: '2026-02-18',
     dueDate: '2026-03-04',
-    total: 280000,
-    advanceRequired: 140000,
-    advancePaid: 140000,
-    balanceDue: 140000,
-    currency: 'INR',
+    total: 28000,
+    advanceRequired: 14000,
+    advancePaid: 14000,
+    balanceDue: 14000,
+    currency: 'USD',
     status: 'Advance Received',
     notes: '50% advance received via SWIFT wire transfer. Production initiated.',
     createdAt: '2026-02-18T10:00:00.000Z'
@@ -206,64 +206,64 @@ export const DEFAULT_PROFORMA: ProformaInvoice[] = [
     proformaNumber: 'PI/2026/002',
     poNumber: 'PO-ZTH-4410',
     client: {
-      name: 'Zenith Retail Chain',
-      email: 'ap@zenithretail.in',
-      address: 'Sector 62, Noida, Uttar Pradesh, 201309'
+      name: 'Zenith Retail Chain LLC',
+      email: 'ap@zenithretail.com',
+      address: '200 S Michigan Ave, Chicago, IL 60604, USA'
     },
     issueDate: '2026-02-24',
     dueDate: '2026-03-10',
-    total: 95000,
-    advanceRequired: 47500,
+    total: 9500,
+    advanceRequired: 4750,
     advancePaid: 0,
-    balanceDue: 95000,
-    currency: 'INR',
+    balanceDue: 9500,
+    currency: 'USD',
     status: 'Pending Advance',
     notes: 'Advance payment of 50% required before batch dispatch.',
     createdAt: '2026-02-24T12:00:00.000Z'
   }
 ]
 
-// Seed Records for Delivery Challans
+// Seed Records for Delivery Challans / Notes
 export const DEFAULT_CHALLANS: DeliveryChallan[] = [
   {
     id: 'dc-1',
-    challanNumber: 'DC/2026/001',
+    challanNumber: 'DN/2026/001',
     dispatchDate: '2026-02-22',
     client: {
       name: 'Zenith Retail Distribution Hub',
-      address: 'Warehouse #4, Bhiwandi Logistics Park, Thane, 421302',
-      contactPhone: '+91 99000 88776'
+      address: '450 Logistics Way, Suite 10, Dallas, TX 75201',
+      contactPhone: '+1 (214) 555-0188'
     },
-    transporterName: 'BlueDart Express Logistics',
-    vehicleNumber: 'MH-04-AZ-8921',
-    ewayBillNumber: '341098274619',
+    transporterName: 'FedEx Freight Direct',
+    vehicleNumber: 'TRK-9821-US',
+    ewayBillNumber: 'BOL-3410982746',
     purpose: 'Supply of Goods',
     totalPackages: 15,
     totalWeightKg: 180,
     items: [
-      { id: '1', description: 'Ergonomic Executive Office Chair', quantity: 10, unit: 'Pcs', hsnCode: '940130' },
-      { id: '2', description: 'Samsung 990 PRO 2TB NVMe PCIe 4.0 SSD', quantity: 5, unit: 'Pcs', hsnCode: '847170' }
+      { id: '1', description: 'Ergonomic Executive Office Chair', quantity: 10, unit: 'Pcs', hsnCode: 'CHAIR-EXEC' },
+      { id: '2', description: 'Samsung 990 PRO 2TB NVMe PCIe 4.0 SSD', quantity: 5, unit: 'Pcs', hsnCode: 'SSD-2TB' }
     ],
     status: 'In Transit',
     createdAt: '2026-02-22T08:30:00.000Z'
   },
   {
     id: 'dc-2',
-    challanNumber: 'DC/2026/002',
+    challanNumber: 'DN/2026/002',
     dispatchDate: '2026-02-16',
     client: {
-      name: 'Precision Engineering Job Works',
-      address: 'MIDC Industrial Estate, Pune, 411018',
-      contactPhone: '+91 98220 11223'
+      name: 'Precision Engineering Works',
+      address: '88 Tech Ridge Blvd, Austin, TX 78753',
+      contactPhone: '+1 (512) 555-0122'
     },
-    transporterName: 'SafeX Logistics Fleet',
-    vehicleNumber: 'MH-12-PQ-4455',
-    ewayBillNumber: '481920394851',
-    purpose: 'Job Work',
+    transporterName: 'UPS Freight Express',
+    vehicleNumber: 'UPS-FLT-4455',
+    ewayBillNumber: 'BOL-4819203948',
+    purpose: 'Supply of Goods',
     totalPackages: 40,
     totalWeightKg: 450,
     items: [
-      { id: '1', description: 'Custom Corrugated Shipping Boxes (Bundle of 100)', quantity: 40, unit: 'Boxes', hsnCode: '481910' }
+      { id: '1', description: 'Custom Corrugated Shipping Boxes (Bundle of 100)', quantity: 40, unit: 'Boxes', hsnCode: 'BOX-CRGT' }
     ],
     status: 'Delivered',
     convertedInvoiceId: 'INV/2026/0038',
@@ -283,10 +283,10 @@ export const DEFAULT_CREDIT_NOTES: CreditNote[] = [
     },
     issueDate: '2026-02-14',
     reason: 'Defective Goods Return',
-    creditAmount: 8995,
-    taxAdjustment: 1619.10,
-    totalCredit: 10614.10,
-    currency: 'INR',
+    creditAmount: 895,
+    taxAdjustment: 89.50,
+    totalCredit: 984.50,
+    currency: 'USD',
     status: 'Adjusted against Invoice',
     createdAt: '2026-02-14T11:00:00.000Z'
   },
@@ -300,10 +300,10 @@ export const DEFAULT_CREDIT_NOTES: CreditNote[] = [
     },
     issueDate: '2026-02-23',
     reason: 'Price Difference / Rebate',
-    creditAmount: 5200,
-    taxAdjustment: 624,
-    totalCredit: 5824,
-    currency: 'INR',
+    creditAmount: 520,
+    taxAdjustment: 52,
+    totalCredit: 572,
+    currency: 'USD',
     status: 'Open',
     createdAt: '2026-02-23T15:30:00.000Z'
   }
@@ -432,7 +432,7 @@ export function useDocuments() {
       quantity: it.quantity,
       rate: it.rate,
       amount: it.amount,
-      hsnCode: it.hsnCode || '9983',
+      hsnCode: it.hsnCode || '',
       unit: it.unit || 'Pcs',
       itemDiscount: 0,
     }))
@@ -510,7 +510,7 @@ export function useDocuments() {
         quantity: 1,
         rate: pi.total,
         amount: pi.total,
-        hsnCode: '9983',
+        hsnCode: '',
         unit: 'Pcs',
         itemDiscount: 0,
       }
@@ -570,9 +570,9 @@ export function useDocuments() {
       id: it.id,
       description: `${it.description} (Dispatched via ${challan.transporterName})`,
       quantity: it.quantity,
-      rate: 500,
-      amount: it.quantity * 500,
-      hsnCode: it.hsnCode || '481910',
+      rate: 50,
+      amount: it.quantity * 50,
+      hsnCode: it.hsnCode || '',
       unit: it.unit || 'Pcs',
       itemDiscount: 0,
     }))
