@@ -30,18 +30,25 @@ export function InvoicePreviewPanel() {
   };
 
   return (
-    <div className="sticky top-4">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Preview</h2>
-        <div className="text-sm text-muted-foreground flex items-center gap-2">
+    <div className="sticky top-2 sm:top-4 space-y-3">
+      <div className="flex items-center justify-between px-1">
+        <div className="flex items-center gap-2">
+          <h2 className="text-base sm:text-lg font-semibold font-heading">Live Preview</h2>
+          <span className="text-[11px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-mono">
+            A4 Print Ready
+          </span>
+        </div>
+        <div className="text-xs text-muted-foreground flex items-center gap-1.5">
           <span>Template:</span>
-          <span className="capitalize font-medium text-foreground">{data.template}</span>
+          <span className="capitalize font-semibold text-primary">{data.template}</span>
         </div>
       </div>
       
-      {/* The "Paper" wrapper */}
-      <div id="invoice-preview-container" className="shadow-lg min-h-[1056px] bg-white rounded-lg overflow-hidden">
-        {renderTemplate()}
+      {/* Responsive "Paper" wrapper */}
+      <div className="w-full overflow-x-auto touch-scroll scrollbar-none pb-4 rounded-2xl">
+        <div id="invoice-preview-container" className="shadow-lg min-h-[900px] sm:min-h-[1056px] bg-white rounded-2xl overflow-hidden border border-border/40 min-w-[340px]">
+          {renderTemplate()}
+        </div>
       </div>
     </div>
   );

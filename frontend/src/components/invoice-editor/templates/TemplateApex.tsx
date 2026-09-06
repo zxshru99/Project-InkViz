@@ -8,48 +8,48 @@ import { InvoiceSignature } from '../addons/InvoiceSignature';
 
 export function TemplateApex({ data }: { data: InvoiceData }) {
   return (
-    <div className="relative p-10 bg-white text-gray-900 shadow-xl rounded-lg min-h-[1056px] flex flex-col" style={{ fontFamily: data.font }}>
+    <div className="relative p-5 sm:p-10 bg-white text-gray-900 shadow-xl rounded-lg min-h-[900px] sm:min-h-[1056px] flex flex-col" style={{ fontFamily: data.font }}>
       <InvoiceWatermark text={data.showWatermark ? data.watermarkStatus : null} />
       
       {/* Header */}
-      <div className="flex justify-between items-start border-b-4 pb-6 relative z-10" style={{ borderColor: data.themeColor }}>
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b-4 pb-6 relative z-10" style={{ borderColor: data.themeColor }}>
         <div>
-          <h1 className="text-5xl font-black uppercase tracking-tighter" style={{ color: data.themeColor }}>
+          <h1 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter" style={{ color: data.themeColor }}>
             {data.documentType}
           </h1>
-          <p className="text-lg font-bold text-gray-500 mt-1">#{data.invoiceNumber}</p>
+          <p className="text-base sm:text-lg font-bold text-gray-500 mt-1">#{data.invoiceNumber}</p>
         </div>
-        <div className="text-right">
-          <h2 className="text-2xl font-bold">{data.billFrom.name || 'Your Company'}</h2>
+        <div className="text-left sm:text-right">
+          <h2 className="text-xl sm:text-2xl font-bold">{data.billFrom.name || 'Your Company'}</h2>
           <div className="text-gray-500 whitespace-pre-line text-sm mt-1">{data.billFrom.address}</div>
           <div className="text-gray-500 text-sm">{data.billFrom.email}</div>
         </div>
       </div>
 
       {/* Meta */}
-      <div className="grid grid-cols-3 gap-6 mt-8 relative z-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mt-6 sm:mt-8 relative z-10">
         <div className="bg-gray-50 p-4 rounded-md border-l-4" style={{ borderColor: data.themeColor }}>
           <p className="text-xs uppercase font-bold text-gray-400 mb-1">Billed To</p>
-          <p className="font-bold text-lg">{data.client.name || 'Client Name'}</p>
+          <p className="font-bold text-base sm:text-lg">{data.client.name || 'Client Name'}</p>
           <div className="text-sm text-gray-600 whitespace-pre-line mt-1">{data.client.address}</div>
           <div className="text-sm text-gray-600">{data.client.email}</div>
         </div>
         
-        <div className="col-span-2 flex justify-end gap-8">
-          <div className="text-right">
+        <div className="col-span-1 sm:col-span-2 flex flex-wrap sm:flex-nowrap justify-start sm:justify-end gap-4 sm:gap-8">
+          <div className="text-left sm:text-right">
             <p className="text-xs uppercase font-bold text-gray-400 mb-1">Issue Date</p>
-            <p className="font-semibold">{data.issueDate}</p>
+            <p className="font-semibold text-sm sm:text-base">{data.issueDate}</p>
           </div>
-          <div className="text-right">
+          <div className="text-left sm:text-right">
             <p className="text-xs uppercase font-bold text-gray-400 mb-1">
               {data.documentType === 'quotation' ? 'Expiry Date' : 'Due Date'}
             </p>
-            <p className="font-semibold">{data.documentType === 'quotation' ? data.quoteExpiry : data.dueDate}</p>
+            <p className="font-semibold text-sm sm:text-base">{data.documentType === 'quotation' ? data.quoteExpiry : data.dueDate}</p>
           </div>
           {data.poNumber && (
-            <div className="text-right">
+            <div className="text-left sm:text-right">
               <p className="text-xs uppercase font-bold text-gray-400 mb-1">PO Number</p>
-              <p className="font-semibold">{data.poNumber}</p>
+              <p className="font-semibold text-sm sm:text-base">{data.poNumber}</p>
             </div>
           )}
         </div>

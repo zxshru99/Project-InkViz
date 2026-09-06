@@ -59,24 +59,24 @@ export function InvoiceFormPanel() {
   return (
     <div className="space-y-6">
       <Tabs defaultValue="details" className="w-full">
-        <TabsList className="grid grid-cols-3 md:grid-cols-6 mb-4 h-auto">
-          <TabsTrigger value="details">Details</TabsTrigger>
-          <TabsTrigger value="items">Items</TabsTrigger>
-          <TabsTrigger value="taxes">Taxes/Fees</TabsTrigger>
-          <TabsTrigger value="banking">Banking</TabsTrigger>
-          <TabsTrigger value="design">Design</TabsTrigger>
-          <TabsTrigger value="notes">Notes</TabsTrigger>
+        <TabsList className="flex overflow-x-auto scrollbar-none w-full justify-start p-1.5 bg-muted/60 rounded-2xl gap-1 mb-4 touch-scroll">
+          <TabsTrigger value="details" className="rounded-xl text-xs px-3.5 py-2 shrink-0 data-[state=active]:bg-card data-[state=active]:shadow-xs">Details</TabsTrigger>
+          <TabsTrigger value="items" className="rounded-xl text-xs px-3.5 py-2 shrink-0 data-[state=active]:bg-card data-[state=active]:shadow-xs">Items ({data.items.length})</TabsTrigger>
+          <TabsTrigger value="taxes" className="rounded-xl text-xs px-3.5 py-2 shrink-0 data-[state=active]:bg-card data-[state=active]:shadow-xs">Taxes & Fees</TabsTrigger>
+          <TabsTrigger value="banking" className="rounded-xl text-xs px-3.5 py-2 shrink-0 data-[state=active]:bg-card data-[state=active]:shadow-xs">Banking</TabsTrigger>
+          <TabsTrigger value="design" className="rounded-xl text-xs px-3.5 py-2 shrink-0 data-[state=active]:bg-card data-[state=active]:shadow-xs">Design & Theme</TabsTrigger>
+          <TabsTrigger value="notes" className="rounded-xl text-xs px-3.5 py-2 shrink-0 data-[state=active]:bg-card data-[state=active]:shadow-xs">Notes</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details" className="space-y-4">
           <Card className="rounded-2xl border shadow-xs">
             <CardHeader><CardTitle>Invoice Details</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 <div className="space-y-2">
                   <Label>Invoice Type</Label>
                   <Select value={data.documentType} onValueChange={(val: any) => updateData({ documentType: val })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="invoice">Standard Invoice</SelectItem>
                     </SelectContent>
@@ -85,7 +85,7 @@ export function InvoiceFormPanel() {
                 <div className="space-y-2">
                   <Label>Currency</Label>
                   <Select value={data.currency} onValueChange={(val: any) => updateData({ currency: val })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="USD">USD ($ - US Dollar)</SelectItem>
                       <SelectItem value="EUR">EUR (€ - Euro)</SelectItem>
@@ -101,19 +101,19 @@ export function InvoiceFormPanel() {
                 </div>
                 <div className="space-y-2">
                   <Label>Invoice Number</Label>
-                  <Input value={data.invoiceNumber} onChange={(e) => updateData({ invoiceNumber: e.target.value })} />
+                  <Input className="rounded-xl" value={data.invoiceNumber} onChange={(e) => updateData({ invoiceNumber: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>PO Number</Label>
-                  <Input value={data.poNumber} onChange={(e) => updateData({ poNumber: e.target.value })} placeholder="Optional" />
+                  <Input className="rounded-xl" value={data.poNumber} onChange={(e) => updateData({ poNumber: e.target.value })} placeholder="Optional" />
                 </div>
                 <div className="space-y-2">
                   <Label>Issue Date</Label>
-                  <Input type="date" value={data.issueDate} onChange={(e) => updateData({ issueDate: e.target.value })} />
+                  <Input className="rounded-xl" type="date" value={data.issueDate} onChange={(e) => updateData({ issueDate: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Due Date</Label>
-                  <Input type="date" value={data.dueDate} onChange={(e) => updateData({ dueDate: e.target.value })} />
+                  <Input className="rounded-xl" type="date" value={data.dueDate} onChange={(e) => updateData({ dueDate: e.target.value })} />
                 </div>
               </div>
             </CardContent>
@@ -124,18 +124,18 @@ export function InvoiceFormPanel() {
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <h3 className="font-semibold text-sm text-primary">Bill From</h3>
-                <div className="grid gap-4">
-                  <Input placeholder="Company Name" value={data.billFrom.name} onChange={(e) => updateData({ billFrom: { ...data.billFrom, name: e.target.value } })} />
-                  <Input placeholder="Email Address" type="email" value={data.billFrom.email} onChange={(e) => updateData({ billFrom: { ...data.billFrom, email: e.target.value } })} />
-                  <Textarea placeholder="Physical Address" value={data.billFrom.address} onChange={(e) => updateData({ billFrom: { ...data.billFrom, address: e.target.value } })} />
+                <div className="grid gap-3">
+                  <Input className="rounded-xl" placeholder="Company Name" value={data.billFrom.name} onChange={(e) => updateData({ billFrom: { ...data.billFrom, name: e.target.value } })} />
+                  <Input className="rounded-xl" placeholder="Email Address" type="email" value={data.billFrom.email} onChange={(e) => updateData({ billFrom: { ...data.billFrom, email: e.target.value } })} />
+                  <Textarea className="rounded-xl" placeholder="Physical Address" value={data.billFrom.address} onChange={(e) => updateData({ billFrom: { ...data.billFrom, address: e.target.value } })} />
                 </div>
               </div>
               <div className="space-y-4">
                 <h3 className="font-semibold text-sm text-primary">Bill To</h3>
-                <div className="grid gap-4">
-                  <Input placeholder="Client Name" value={data.client.name} onChange={(e) => updateData({ client: { ...data.client, name: e.target.value } })} />
-                  <Input placeholder="Client Email" type="email" value={data.client.email} onChange={(e) => updateData({ client: { ...data.client, email: e.target.value } })} />
-                  <Textarea placeholder="Client Address" value={data.client.address} onChange={(e) => updateData({ client: { ...data.client, address: e.target.value } })} />
+                <div className="grid gap-3">
+                  <Input className="rounded-xl" placeholder="Client Name" value={data.client.name} onChange={(e) => updateData({ client: { ...data.client, name: e.target.value } })} />
+                  <Input className="rounded-xl" placeholder="Client Email" type="email" value={data.client.email} onChange={(e) => updateData({ client: { ...data.client, email: e.target.value } })} />
+                  <Textarea className="rounded-xl" placeholder="Client Address" value={data.client.address} onChange={(e) => updateData({ client: { ...data.client, address: e.target.value } })} />
                 </div>
               </div>
             </CardContent>
@@ -143,8 +143,8 @@ export function InvoiceFormPanel() {
         </TabsContent>
 
         <TabsContent value="items" className="space-y-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
+          <Card className="rounded-2xl border shadow-xs">
+            <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3">
               <div>
                 <CardTitle>Line Items</CardTitle>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -156,7 +156,7 @@ export function InvoiceFormPanel() {
                 variant="outline" 
                 size="sm" 
                 onClick={() => setIsCatalogModalOpen(true)}
-                className="text-xs h-8"
+                className="text-xs h-8 rounded-xl w-full sm:w-auto"
               >
                 <Boxes className="w-3.5 h-3.5 mr-1.5 text-primary" />
                 Browse Catalog ({products.length})
@@ -175,168 +175,179 @@ export function InvoiceFormPanel() {
                 const isAutocompleteOpen = activeAutocompleteId === item.id && matchingProducts.length > 0;
 
                 return (
-                  <div key={item.id} className="grid grid-cols-12 gap-2 items-start border p-4 rounded-md bg-muted/20 relative group">
-                    <div className="col-span-12 md:col-span-5 space-y-2 relative">
-                      <div className="flex items-center justify-between">
-                        <Label className="text-xs">Description / Product</Label>
-                        <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                          <Sparkles className="w-2.5 h-2.5 text-primary" />
-                          Catalog Autocomplete
-                        </span>
-                      </div>
+                  <div key={item.id} className="border p-3.5 sm:p-4 rounded-xl bg-card/60 space-y-3 relative group shadow-xs">
+                    {/* Top: Description + Delete button */}
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1 space-y-1.5 relative">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs">Description / Product</Label>
+                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <Sparkles className="w-2.5 h-2.5 text-primary" />
+                            Catalog Autocomplete
+                          </span>
+                        </div>
 
-                      {/* Autocomplete Input Container */}
-                      <div className="relative">
-                        <Input 
-                          value={item.description} 
-                          onChange={(e) => {
-                            updateItem(item.id, { description: e.target.value });
-                            setActiveAutocompleteId(item.id);
-                          }} 
-                          onFocus={() => setActiveAutocompleteId(item.id)}
-                          onBlur={() => {
-                            setTimeout(() => {
-                              setActiveAutocompleteId((current) => (current === item.id ? null : current));
-                            }, 200);
-                          }}
-                          placeholder="Type product name (e.g. Chair, Cloud, SSD...)" 
-                        />
-
-                        {/* Dropdown Popover */}
-                        {isAutocompleteOpen && (
-                          <div 
-                            className="absolute left-0 right-0 top-full mt-1 bg-popover text-popover-foreground border shadow-xl rounded-md z-50 overflow-hidden divide-y"
-                            onMouseDown={(e) => e.preventDefault()}
-                          >
-                            <div className="p-1.5 bg-muted/50 text-[11px] font-medium text-muted-foreground flex items-center justify-between">
-                              <span>Matching Catalog Items</span>
-                              <span className="text-[10px]">Click to auto-fill</span>
-                            </div>
-                            <div className="max-h-48 overflow-y-auto">
-                              {matchingProducts.map((prod) => (
-                                <button
-                                  key={prod.id}
-                                  type="button"
-                                  onClick={() => handleSelectProduct(item.id, prod)}
-                                  className="w-full text-left p-2.5 hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-between text-xs group/item"
-                                >
-                                  <div className="min-w-0 pr-2">
-                                    <div className="font-semibold truncate group-hover/item:text-primary">
-                                      {prod.name}
-                                    </div>
-                                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
-                                      {prod.sku && <span className="font-mono bg-muted px-1 rounded">{prod.sku}</span>}
-                                      {prod.hsnSac && <span>HSN: {prod.hsnSac}</span>}
-                                      <Badge variant="outline" className="text-[9px] h-4 py-0">
-                                        {prod.type}
-                                      </Badge>
-                                    </div>
-                                  </div>
-                                  <div className="text-right shrink-0">
-                                    <div className="font-bold text-foreground">
-                                      {getCurrencySymbol(data.currency)}{prod.sellingPrice.toLocaleString()}
-                                    </div>
-                                    <div className="text-[10px] text-muted-foreground">
-                                      / {prod.unit}
-                                    </div>
-                                  </div>
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <div className="flex-1 space-y-1">
-                          <Label className="text-xs text-muted-foreground">HSN/SAC</Label>
+                        {/* Autocomplete Input Container */}
+                        <div className="relative">
                           <Input 
-                            className="h-8 text-xs font-mono" 
-                            value={item.hsnCode} 
-                            onChange={(e) => updateItem(item.id, { hsnCode: e.target.value })} 
-                            placeholder="Code" 
+                            value={item.description} 
+                            onChange={(e) => {
+                              updateItem(item.id, { description: e.target.value });
+                              setActiveAutocompleteId(item.id);
+                            }} 
+                            onFocus={() => setActiveAutocompleteId(item.id)}
+                            onBlur={() => {
+                              setTimeout(() => {
+                                setActiveAutocompleteId((current) => (current === item.id ? null : current));
+                              }, 200);
+                            }}
+                            placeholder="Type product name (e.g. Design, Hosting, Product...)" 
+                            className="rounded-xl"
                           />
+
+                          {/* Dropdown Popover */}
+                          {isAutocompleteOpen && (
+                            <div 
+                              className="absolute left-0 right-0 top-full mt-1 bg-popover text-popover-foreground border shadow-xl rounded-xl z-50 overflow-hidden divide-y"
+                              onMouseDown={(e) => e.preventDefault()}
+                            >
+                              <div className="p-1.5 bg-muted/50 text-[11px] font-medium text-muted-foreground flex items-center justify-between">
+                                <span>Matching Catalog Items</span>
+                                <span className="text-[10px]">Click to auto-fill</span>
+                              </div>
+                              <div className="max-h-48 overflow-y-auto touch-scroll">
+                                {matchingProducts.map((prod) => (
+                                  <button
+                                    key={prod.id}
+                                    type="button"
+                                    onClick={() => handleSelectProduct(item.id, prod)}
+                                    className="w-full text-left p-2.5 hover:bg-accent hover:text-accent-foreground transition-colors flex items-center justify-between text-xs group/item"
+                                  >
+                                    <div className="min-w-0 pr-2">
+                                      <div className="font-semibold truncate group-hover/item:text-primary">
+                                        {prod.name}
+                                      </div>
+                                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                                        {prod.sku && <span className="font-mono bg-muted px-1 rounded">{prod.sku}</span>}
+                                        {prod.hsnSac && <span>HSN: {prod.hsnSac}</span>}
+                                        <Badge variant="outline" className="text-[9px] h-4 py-0">
+                                          {prod.type}
+                                        </Badge>
+                                      </div>
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                      <div className="font-bold text-foreground">
+                                        {getCurrencySymbol(data.currency)}{prod.sellingPrice.toLocaleString()}
+                                      </div>
+                                      <div className="text-[10px] text-muted-foreground">
+                                        / {prod.unit}
+                                      </div>
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        <div className="flex-1 space-y-1">
-                          <Label className="text-xs text-muted-foreground">Unit</Label>
-                          <Select 
-                            value={item.unit} 
-                            onValueChange={(val: any) => updateItem(item.id, { unit: val })}
-                          >
-                            <SelectTrigger className="h-8 text-xs">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="Pcs">Pcs</SelectItem>
-                              <SelectItem value="Hrs">Hrs</SelectItem>
-                              <SelectItem value="Days">Days</SelectItem>
-                              <SelectItem value="Kg">Kg</SelectItem>
-                              <SelectItem value="Grams">Grams</SelectItem>
-                              <SelectItem value="Boxes">Boxes</SelectItem>
-                              <SelectItem value="Liters">Liters</SelectItem>
-                              <SelectItem value="Meters">Meters</SelectItem>
-                              <SelectItem value="Flat">Flat</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                      </div>
+
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-9 w-9 p-0 text-destructive shrink-0 mt-5 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity rounded-lg" 
+                        onClick={() => removeItem(item.id)} 
+                        disabled={data.items.length === 1}
+                        aria-label="Delete line item"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {/* Middle: HSN/SAC + Unit */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="space-y-1">
+                        <Label className="text-[11px] text-muted-foreground">HSN/SAC</Label>
+                        <Input 
+                          className="h-8 text-xs font-mono rounded-lg" 
+                          value={item.hsnCode} 
+                          onChange={(e) => updateItem(item.id, { hsnCode: e.target.value })} 
+                          placeholder="Code" 
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-[11px] text-muted-foreground">Unit</Label>
+                        <Select 
+                          value={item.unit} 
+                          onValueChange={(val: any) => updateItem(item.id, { unit: val })}
+                        >
+                          <SelectTrigger className="h-8 text-xs rounded-lg">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Pcs">Pcs</SelectItem>
+                            <SelectItem value="Hrs">Hrs</SelectItem>
+                            <SelectItem value="Days">Days</SelectItem>
+                            <SelectItem value="Kg">Kg</SelectItem>
+                            <SelectItem value="Grams">Grams</SelectItem>
+                            <SelectItem value="Boxes">Boxes</SelectItem>
+                            <SelectItem value="Liters">Liters</SelectItem>
+                            <SelectItem value="Meters">Meters</SelectItem>
+                            <SelectItem value="Flat">Flat</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
-                    <div className="col-span-4 md:col-span-2 space-y-1">
-                      <Label className="text-xs">Qty</Label>
-                      <Input 
-                        type="number" 
-                        min="1"
-                        value={item.quantity} 
-                        onChange={(e) => updateItem(item.id, { quantity: Number(e.target.value) })} 
-                      />
-                    </div>
-
-                    <div className="col-span-4 md:col-span-2 space-y-1">
-                      <Label className="text-xs">Rate</Label>
-                      <Input 
-                        type="number" 
-                        value={item.rate} 
-                        onChange={(e) => updateItem(item.id, { rate: Number(e.target.value) })} 
-                      />
-                      <Label className="text-xs text-muted-foreground">Disc</Label>
-                      <Input 
-                        className="h-8 text-xs" 
-                        type="number" 
-                        value={item.itemDiscount} 
-                        onChange={(e) => updateItem(item.id, { itemDiscount: Number(e.target.value) })} 
-                      />
-                    </div>
-
-                    <div className="col-span-4 md:col-span-3 space-y-1 flex flex-col justify-between h-full">
-                      <Label className="text-xs">Amount</Label>
-                      <div className="flex items-center justify-between mt-2">
-                        <span className="font-semibold text-sm">
+                    {/* Bottom: Qty, Rate, Discount, Amount */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 border-t border-border/40 items-end">
+                      <div className="space-y-1">
+                        <Label className="text-[11px] text-muted-foreground">Qty</Label>
+                        <Input 
+                          type="number" 
+                          min="1"
+                          className="h-8 text-xs rounded-lg"
+                          value={item.quantity} 
+                          onChange={(e) => updateItem(item.id, { quantity: Number(e.target.value) })} 
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-[11px] text-muted-foreground">Rate ({getCurrencySymbol(data.currency)})</Label>
+                        <Input 
+                          type="number" 
+                          className="h-8 text-xs rounded-lg"
+                          value={item.rate} 
+                          onChange={(e) => updateItem(item.id, { rate: Number(e.target.value) })} 
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-[11px] text-muted-foreground">Discount ({getCurrencySymbol(data.currency)})</Label>
+                        <Input 
+                          className="h-8 text-xs rounded-lg" 
+                          type="number" 
+                          value={item.itemDiscount} 
+                          onChange={(e) => updateItem(item.id, { itemDiscount: Number(e.target.value) })} 
+                        />
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <Label className="text-[11px] text-muted-foreground">Total</Label>
+                        <div className="h-8 flex items-center justify-end font-bold text-sm font-heading text-foreground">
                           {getCurrencySymbol(data.currency)} {(item.amount - (Number(item.itemDiscount)||0)).toFixed(2)}
-                        </span>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-8 w-8 p-0 text-destructive opacity-0 group-hover:opacity-100 transition-opacity" 
-                          onClick={() => removeItem(item.id)} 
-                          disabled={data.items.length === 1}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 );
               })}
 
-              <div className="flex gap-2 mt-2">
-                <Button variant="outline" className="flex-1" onClick={addItem}>
+              <div className="flex flex-col sm:flex-row gap-2 mt-2">
+                <Button variant="outline" className="flex-1 rounded-xl" onClick={addItem}>
                   <Plus className="h-4 w-4 mr-2" /> Add Blank Item
                 </Button>
                 <Button 
                   type="button"
                   variant="secondary" 
                   onClick={() => setIsCatalogModalOpen(true)}
+                  className="rounded-xl"
                 >
                   <Boxes className="w-4 h-4 mr-2 text-primary" /> Select From Catalog
                 </Button>
@@ -346,67 +357,65 @@ export function InvoiceFormPanel() {
 
           {/* Quick Catalog Picker Dialog Modal */}
           <Dialog open={isCatalogModalOpen} onOpenChange={setIsCatalogModalOpen}>
-            <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto">
+            <DialogContent className="max-w-3xl max-h-[85vh] w-[95vw] overflow-y-auto rounded-2xl touch-scroll">
               <DialogHeader>
-                <DialogTitle>Products & Services Catalog</DialogTitle>
+                <DialogTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" />
+                  Product & Service Catalog
+                </DialogTitle>
                 <DialogDescription>
-                  Click any item below to populate or add it directly into your invoice.
+                  Select any item to insert it directly into this invoice.
                 </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-4 pt-2">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search catalog by name, SKU, or HSN/SAC..."
+                  <Search className="w-4 h-4 absolute left-3 top-3 text-muted-foreground" />
+                  <Input 
+                    placeholder="Search by name, SKU, or category..." 
+                    className="pl-9 rounded-xl"
                     value={catalogSearch}
                     onChange={(e) => setCatalogSearch(e.target.value)}
-                    className="pl-9"
                   />
                 </div>
 
-                <div className="border rounded-md overflow-hidden max-h-96 overflow-y-auto divide-y">
+                <div className="divide-y max-h-[50vh] overflow-y-auto border rounded-xl touch-scroll">
                   {products
                     .filter(p => 
                       !catalogSearch || 
                       p.name.toLowerCase().includes(catalogSearch.toLowerCase()) || 
-                      p.sku.toLowerCase().includes(catalogSearch.toLowerCase()) || 
-                      p.hsnSac.toLowerCase().includes(catalogSearch.toLowerCase())
+                      p.sku.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+                      p.description.toLowerCase().includes(catalogSearch.toLowerCase()) ||
+                      p.type.toLowerCase().includes(catalogSearch.toLowerCase())
                     )
-                    .map((prod) => (
-                      <div 
-                        key={prod.id} 
-                        className="p-3 hover:bg-muted/40 transition-colors flex items-center justify-between gap-4 text-xs"
-                      >
-                        <div className="min-w-0 flex-1">
+                    .map(prod => (
+                      <div key={prod.id} className="p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-muted/40 transition-colors">
+                        <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-sm text-foreground">{prod.name}</span>
-                            <Badge variant="outline" className="text-[10px] py-0 h-4">
+                            <span className="font-semibold text-sm">{prod.name}</span>
+                            <Badge variant="outline" className="text-[10px] capitalize">
                               {prod.type}
                             </Badge>
                           </div>
-                          <div className="text-muted-foreground text-xs mt-0.5 truncate">
-                            {prod.description}
-                          </div>
-                          <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-1">
-                            {prod.sku && <span>SKU: <strong className="font-mono text-foreground">{prod.sku}</strong></span>}
-                            {prod.hsnSac && <span>HSN: <strong className="font-mono text-foreground">{prod.hsnSac}</strong></span>}
-                            <span>GST: <strong>{prod.taxRate}%</strong></span>
-                            {prod.type === 'Goods' && (
-                              <span>Stock: <strong>{prod.stock} {prod.unit}</strong></span>
-                            )}
+                          <div className="text-xs text-muted-foreground flex flex-wrap items-center gap-2 sm:gap-3">
+                            {prod.sku && <span>SKU: {prod.sku}</span>}
+                            {prod.hsnSac && <span>HSN: {prod.hsnSac}</span>}
+                            <span>Type: {prod.type}</span>
+                            {prod.taxRate > 0 && <span className="text-emerald-600 font-medium">Tax: {prod.taxRate}%</span>}
                           </div>
                         </div>
 
-                        <div className="text-right shrink-0 space-y-1.5">
-                          <div className="text-base font-bold text-foreground">
-                            {getCurrencySymbol(data.currency)}{prod.sellingPrice.toLocaleString()}
-                            <span className="text-xs text-muted-foreground font-normal"> / {prod.unit}</span>
+                        <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+                          <div className="text-left sm:text-right">
+                            <div className="text-base font-bold text-foreground">
+                              {getCurrencySymbol(data.currency)}{prod.sellingPrice.toLocaleString()}
+                              <span className="text-xs text-muted-foreground font-normal"> / {prod.unit}</span>
+                            </div>
                           </div>
                           <Button 
                             type="button"
                             size="sm" 
-                            className="h-7 text-xs"
+                            className="h-8 text-xs rounded-xl"
                             onClick={() => {
                               const firstItem = data.items[0];
                               const isFirstBlank = data.items.length === 1 && !firstItem.description && firstItem.rate === 0;
@@ -439,7 +448,7 @@ export function InvoiceFormPanel() {
                             }}
                           >
                             <Plus className="w-3.5 h-3.5 mr-1" />
-                            Insert to Invoice
+                            Insert
                           </Button>
                         </div>
                       </div>
@@ -449,14 +458,14 @@ export function InvoiceFormPanel() {
             </DialogContent>
           </Dialog>
 
-          <Card>
+          <Card className="rounded-2xl border shadow-xs">
             <CardHeader><CardTitle>Global Discount</CardTitle></CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 <div className="space-y-2">
                   <Label>Discount Type</Label>
                   <Select value={data.discountType} onValueChange={(val: 'percentage'|'fixed') => updateData({ discountType: val })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="rounded-xl"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="percentage">Percentage (%)</SelectItem>
                       <SelectItem value="fixed">Fixed Amount</SelectItem>
@@ -465,7 +474,7 @@ export function InvoiceFormPanel() {
                 </div>
                 <div className="space-y-2">
                   <Label>Discount Value</Label>
-                  <Input type="number" value={data.discountValue} onChange={(e) => updateData({ discountValue: Number(e.target.value) })} />
+                  <Input className="rounded-xl" type="number" value={data.discountValue} onChange={(e) => updateData({ discountValue: Number(e.target.value) })} />
                 </div>
               </div>
             </CardContent>
@@ -473,57 +482,57 @@ export function InvoiceFormPanel() {
         </TabsContent>
 
         <TabsContent value="taxes" className="space-y-4">
-          <Card>
+          <Card className="rounded-2xl border shadow-xs">
             <CardHeader><CardTitle>Taxes (GST/VAT)</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Total Tax Rate (%)</Label>
-                  <Input type="number" value={data.taxRate} onChange={(e) => updateData({ taxRate: Number(e.target.value) })} placeholder="General Tax" />
+                  <Input className="rounded-xl" type="number" value={data.taxRate} onChange={(e) => updateData({ taxRate: Number(e.target.value) })} placeholder="General Tax" />
                   <p className="text-xs text-muted-foreground">Use this for single tax system.</p>
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4 border-t pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 border-t pt-4">
                 <div className="space-y-2">
                   <Label>CGST (%)</Label>
-                  <Input type="number" value={data.cgstRate} onChange={(e) => updateData({ cgstRate: Number(e.target.value) })} />
+                  <Input className="rounded-xl" type="number" value={data.cgstRate} onChange={(e) => updateData({ cgstRate: Number(e.target.value) })} />
                 </div>
                 <div className="space-y-2">
                   <Label>SGST (%)</Label>
-                  <Input type="number" value={data.sgstRate} onChange={(e) => updateData({ sgstRate: Number(e.target.value) })} />
+                  <Input className="rounded-xl" type="number" value={data.sgstRate} onChange={(e) => updateData({ sgstRate: Number(e.target.value) })} />
                 </div>
                 <div className="space-y-2">
                   <Label>IGST (%)</Label>
-                  <Input type="number" value={data.igstRate} onChange={(e) => updateData({ igstRate: Number(e.target.value) })} />
+                  <Input className="rounded-xl" type="number" value={data.igstRate} onChange={(e) => updateData({ igstRate: Number(e.target.value) })} />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="rounded-2xl border shadow-xs">
             <CardHeader><CardTitle>Additional Fees</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
                 <div className="space-y-2">
                   <Label>Shipping Fee</Label>
-                  <Input type="number" value={data.shippingFee} onChange={(e) => updateData({ shippingFee: Number(e.target.value) })} />
+                  <Input className="rounded-xl" type="number" value={data.shippingFee} onChange={(e) => updateData({ shippingFee: Number(e.target.value) })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Packaging Fee</Label>
-                  <Input type="number" value={data.packagingFee} onChange={(e) => updateData({ packagingFee: Number(e.target.value) })} />
+                  <Input className="rounded-xl" type="number" value={data.packagingFee} onChange={(e) => updateData({ packagingFee: Number(e.target.value) })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Handling Fee</Label>
-                  <Input type="number" value={data.handlingFee} onChange={(e) => updateData({ handlingFee: Number(e.target.value) })} />
+                  <Input className="rounded-xl" type="number" value={data.handlingFee} onChange={(e) => updateData({ handlingFee: Number(e.target.value) })} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4 border-t pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 border-t pt-4">
                 <div className="space-y-2">
                   <Label>Amount Paid</Label>
-                  <Input type="number" value={data.amountPaid} onChange={(e) => updateData({ amountPaid: Number(e.target.value) })} />
+                  <Input className="rounded-xl" type="number" value={data.amountPaid} onChange={(e) => updateData({ amountPaid: Number(e.target.value) })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Balance Due</Label>
-                  <div className="h-10 flex items-center px-3 font-semibold text-lg bg-muted rounded-md border">
+                  <div className="h-10 flex items-center px-3 font-semibold text-lg bg-muted rounded-xl border">
                     {data.currency} {data.balanceDue.toFixed(2)}
                   </div>
                 </div>
@@ -533,39 +542,39 @@ export function InvoiceFormPanel() {
         </TabsContent>
 
         <TabsContent value="banking" className="space-y-4">
-          <Card>
+          <Card className="rounded-2xl border shadow-xs">
             <CardHeader><CardTitle>Bank Details</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                 <div className="space-y-2">
                   <Label>Bank Name</Label>
-                  <Input value={data.bankName} onChange={(e) => updateData({ bankName: e.target.value })} />
+                  <Input className="rounded-xl" value={data.bankName} onChange={(e) => updateData({ bankName: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Account Name</Label>
-                  <Input value={data.accountHolderName} onChange={(e) => updateData({ accountHolderName: e.target.value })} />
+                  <Input className="rounded-xl" value={data.accountHolderName} onChange={(e) => updateData({ accountHolderName: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Account Number</Label>
-                  <Input value={data.accountNumber} onChange={(e) => updateData({ accountNumber: e.target.value })} />
+                  <Input className="rounded-xl" value={data.accountNumber} onChange={(e) => updateData({ accountNumber: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>IFSC / Routing Code</Label>
-                  <Input value={data.ifscCode} onChange={(e) => updateData({ ifscCode: e.target.value })} />
+                  <Input className="rounded-xl" value={data.ifscCode} onChange={(e) => updateData({ ifscCode: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>SWIFT / BIC Code</Label>
-                  <Input value={data.swiftCode} onChange={(e) => updateData({ swiftCode: e.target.value })} />
+                  <Input className="rounded-xl" value={data.swiftCode} onChange={(e) => updateData({ swiftCode: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Branch</Label>
-                  <Input value={data.branch} onChange={(e) => updateData({ branch: e.target.value })} />
+                  <Input className="rounded-xl" value={data.branch} onChange={(e) => updateData({ branch: e.target.value })} />
                 </div>
               </div>
               
               <div className="space-y-2 border-t pt-4">
                 <Label>UPI ID (For India)</Label>
-                <Input value={data.upiId} onChange={(e) => updateData({ upiId: e.target.value })} placeholder="e.g. yourname@upi" />
+                <Input className="rounded-xl" value={data.upiId} onChange={(e) => updateData({ upiId: e.target.value })} placeholder="e.g. yourname@upi" />
               </div>
             </CardContent>
           </Card>

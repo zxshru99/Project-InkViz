@@ -8,33 +8,33 @@ import { InvoiceSignature } from '../addons/InvoiceSignature';
 
 export function TemplateLumina({ data }: { data: InvoiceData }) {
   return (
-    <div className="relative p-12 bg-white text-gray-800 shadow-xl rounded-lg min-h-[1056px] flex flex-col" style={{ fontFamily: data.font }}>
+    <div className="relative p-5 sm:p-12 bg-white text-gray-800 shadow-xl rounded-lg min-h-[900px] sm:min-h-[1056px] flex flex-col" style={{ fontFamily: data.font }}>
       <InvoiceWatermark text={data.showWatermark ? data.watermarkStatus : null} />
       
       <div className="absolute top-0 left-0 right-0 h-32 opacity-10" style={{ backgroundColor: data.themeColor }}></div>
       
-      <div className="relative z-10 flex justify-between items-end mb-12">
-        <div className="w-1/2">
-           <h2 className="text-3xl font-bold mb-2">{data.billFrom.name || 'Your Company'}</h2>
+      <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-8 sm:mb-12">
+        <div className="w-full sm:w-1/2">
+           <h2 className="text-2xl sm:text-3xl font-bold mb-2">{data.billFrom.name || 'Your Company'}</h2>
            <div className="text-sm opacity-80 whitespace-pre-line">{data.billFrom.address}</div>
            <div className="text-sm opacity-80">{data.billFrom.email}</div>
         </div>
-        <div className="text-right">
-          <h1 className="text-4xl font-light tracking-widest uppercase mb-2" style={{ color: data.themeColor }}>
+        <div className="text-left sm:text-right">
+          <h1 className="text-3xl sm:text-4xl font-light tracking-widest uppercase mb-1 sm:mb-2" style={{ color: data.themeColor }}>
             {data.documentType}
           </h1>
-          <p className="text-xl">#{data.invoiceNumber}</p>
+          <p className="text-lg sm:text-xl font-medium">#{data.invoiceNumber}</p>
         </div>
       </div>
 
-      <div className="relative z-10 flex justify-between bg-gray-50 p-6 rounded-2xl mb-8">
+      <div className="relative z-10 flex flex-col sm:flex-row justify-between gap-4 bg-gray-50 p-4 sm:p-6 rounded-2xl mb-8">
         <div>
           <p className="text-xs uppercase text-gray-500 mb-1">To</p>
-          <p className="font-bold text-lg">{data.client.name || 'Client Name'}</p>
+          <p className="font-bold text-base sm:text-lg">{data.client.name || 'Client Name'}</p>
           <p className="text-sm whitespace-pre-line">{data.client.address}</p>
           <p className="text-sm">{data.client.email}</p>
         </div>
-        <div className="text-right space-y-2">
+        <div className="text-left sm:text-right space-y-1.5 sm:space-y-2">
           <div>
             <span className="text-gray-500 text-sm mr-4">Date</span>
             <span className="font-semibold">{data.issueDate}</span>

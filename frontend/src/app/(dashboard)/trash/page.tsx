@@ -160,25 +160,25 @@ export default function TrashPage() {
   )
 
   return (
-    <div className="space-y-8 p-4 md:p-8 pt-6 relative">
+    <div className="space-y-6 p-3.5 sm:p-6 md:p-8 pt-4 sm:pt-6 relative">
       {/* Toast */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-primary text-primary-foreground px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-6 right-6 z-50 bg-primary text-primary-foreground px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2 animate-in slide-in-from-bottom-5">
           <Check className="w-4 h-4 text-emerald-400" />
           {toastMessage}
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between space-y-4 md:space-y-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Trash & Archive</h2>
-          <p className="text-muted-foreground mt-1">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Trash & Archive</h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
             Recover deleted invoices or remove them permanently. Items here are safe until deleted.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Link href="/dashboard">
-            <Button variant="outline" size="sm" className="rounded-xl">
+            <Button variant="outline" size="sm" className="rounded-xl h-9">
               <ArrowLeft className="h-4 w-4 mr-1.5" /> Back to Dashboard
             </Button>
           </Link>
@@ -187,15 +187,15 @@ export default function TrashPage() {
             size="sm"
             disabled={trash.length === 0}
             onClick={() => setEmptyConfirmOpen(true)}
-            className="cursor-pointer rounded-xl"
+            className="cursor-pointer rounded-xl h-9"
           >
-            <Trash2 className="h-4 w-4 mr-2" />
-            Empty Trash ({trash.length})
+            <Trash2 className="h-4 w-4 mr-1.5" />
+            Empty ({trash.length})
           </Button>
         </div>
       </div>
 
-      <div className="relative w-full md:w-[400px]">
+      <div className="relative w-full sm:max-w-md">
         <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
         <Input
           type="search"
@@ -206,7 +206,8 @@ export default function TrashPage() {
         />
       </div>
 
-      <div className="rounded-2xl border bg-card/70 backdrop-blur overflow-x-auto shadow-xs">
+      {/* Desktop Table View */}
+      <div className="hidden md:block rounded-2xl border bg-card/70 backdrop-blur overflow-x-auto shadow-xs">
         {filteredTrash.length > 0 ? (
           <table className="w-full text-sm text-left">
             <thead className="bg-muted/40 text-muted-foreground text-xs uppercase tracking-wider font-semibold">
@@ -238,7 +239,7 @@ export default function TrashPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleRestore(item)}
-                        className="cursor-pointer"
+                        className="cursor-pointer rounded-xl"
                       >
                         <RefreshCw className="h-3.5 w-3.5 mr-1.5" /> Restore
                       </Button>
@@ -246,7 +247,7 @@ export default function TrashPage() {
                         variant="destructive"
                         size="sm"
                         onClick={() => handleDeleteForever(item.id)}
-                        className="cursor-pointer"
+                        className="cursor-pointer rounded-xl"
                       >
                         Delete Forever
                       </Button>
@@ -257,15 +258,75 @@ export default function TrashPage() {
             </tbody>
           </table>
         ) : (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="bg-muted p-4 rounded-full mb-4">
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="bg-muted p-4 rounded-full mb-3">
               <Trash2 className="h-8 w-8 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-medium">Trash is empty</h3>
-            <p className="text-sm text-muted-foreground mt-2 max-w-[400px]">
+            <p className="text-sm text-muted-foreground mt-1 max-w-[400px]">
               {search
                 ? "No deleted items match your search query."
                 : "Any deleted invoices or records will appear here so you can easily restore them at any time."}
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Mobile Card List View */}
+      <div className="block md:hidden space-y-3">
+        {filteredTrash.length > 0 ? (
+          filteredTrash.map((item) => (
+            <div
+              key={item.id}
+              className="p-4 rounded-2xl border bg-card/80 backdrop-blur shadow-xs space-y-3"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <div className="font-bold text-base text-foreground tracking-tight">{item.id}</div>
+                  <div className="text-xs text-muted-foreground">{item.client}</div>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-base text-foreground">
+                    ${Number(item.amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </div>
+                  <Badge variant="outline" className="capitalize text-[10px] py-0 px-2 mt-0.5 rounded-md">
+                    {item.type}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="text-[11px] text-muted-foreground flex items-center justify-between pt-1 border-t border-border/40">
+                <span>Deleted on {item.deletedAt}</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleRestore(item)}
+                  className="rounded-xl h-9 cursor-pointer"
+                >
+                  <RefreshCw className="h-3.5 w-3.5 mr-1.5" /> Restore
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDeleteForever(item.id)}
+                  className="rounded-xl h-9 cursor-pointer"
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 text-center border rounded-2xl bg-card/60 p-6">
+            <div className="bg-muted p-3.5 rounded-full mb-3">
+              <Trash2 className="h-6 w-6 text-muted-foreground" />
+            </div>
+            <h3 className="text-base font-semibold">Trash is empty</h3>
+            <p className="text-xs text-muted-foreground mt-1 max-w-[280px]">
+              {search ? "No deleted items match your search query." : "No invoices currently in trash."}
             </p>
           </div>
         )}

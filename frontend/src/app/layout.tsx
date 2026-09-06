@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import { Providers } from "@/components/providers";
 import "./globals.css";
@@ -17,6 +17,17 @@ const outfit = Outfit({
   display: "swap",
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#18181b" },
+  ],
+};
+
 export const metadata: Metadata = {
   title: "Inkviz — Fast & Classy Invoicing SaaS",
   description: "Fast, classy, and beautiful invoice generation and billing for modern businesses and freelancers.",
@@ -30,10 +41,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${plusJakartaSans.variable} ${outfit.variable} h-full antialiased`}
+      className={`${plusJakartaSans.variable} ${outfit.variable} h-full antialiased scroll-smooth`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans overflow-x-clip antialiased">
         <Providers>
           {children}
         </Providers>
@@ -41,3 +52,4 @@ export default function RootLayout({
     </html>
   );
 }
+

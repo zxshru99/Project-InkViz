@@ -26,7 +26,7 @@ export default function AuthLayout({
       </div>
 
       {/* Right side - Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-background">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 bg-background">
         <div className="w-full max-w-md">
           <Link href="/" className="lg:hidden flex items-center justify-center gap-2 font-bold text-2xl text-primary mb-8">
             <span className="bg-primary text-primary-foreground p-1 rounded">

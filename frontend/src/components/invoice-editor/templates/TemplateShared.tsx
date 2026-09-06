@@ -4,8 +4,8 @@ import { Separator } from '@/components/ui/separator';
 
 export function ItemsTable({ data, modern }: { data: InvoiceData, modern?: boolean }) {
   return (
-    <div className="mt-4 flex-grow z-10 relative">
-      <table className="w-full text-sm text-left">
+    <div className="mt-4 flex-grow z-10 relative w-full overflow-x-auto scrollbar-none">
+      <table className="w-full text-sm text-left min-w-[480px]">
         <thead>
           <tr className={`border-gray-200 ${modern ? 'border-b-2 border-black' : 'border-y-2'}`}>
             <th className={`py-3 w-full ${modern ? 'font-bold uppercase text-xs tracking-wider' : 'font-semibold'}`}>Description</th>
@@ -122,7 +122,7 @@ export function BankDetails({ data }: { data: InvoiceData }) {
   return (
     <div className="text-sm text-gray-600 z-10 mt-6 bg-gray-50 p-4 rounded-md relative">
       <p className="font-bold text-gray-900 mb-2 uppercase text-xs tracking-wider">Bank Details</p>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
         {data.bankName && <div><span className="font-semibold">Bank:</span> {data.bankName}</div>}
         {data.accountHolderName && <div><span className="font-semibold">Account Name:</span> {data.accountHolderName}</div>}
         {data.accountNumber && <div><span className="font-semibold">Account No:</span> {data.accountNumber}</div>}

@@ -90,9 +90,9 @@ function SettingsContent() {
   if (!mounted) return null // Prevent hydration mismatch for themes
 
   return (
-    <div className="space-y-8 p-4 md:p-8 pt-6 relative">
+    <div className="space-y-6 sm:space-y-8 p-3.5 sm:p-6 md:p-8 pt-4 sm:pt-6 relative">
       {saveSuccessMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2 animate-in slide-in-from-bottom-5">
+        <div className="fixed bottom-6 right-4 sm:right-6 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2 animate-in slide-in-from-bottom-5">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
@@ -100,14 +100,14 @@ function SettingsContent() {
         </div>
       )}
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Settings</h2>
-        <p className="text-muted-foreground mt-1">Manage your account settings and preferences.</p>
+        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight font-heading">Settings</h2>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5 sm:mt-1">Manage your account settings and preferences.</p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-6 md:gap-8">
         {/* Settings Navigation */}
         <aside className="w-full md:w-64 shrink-0">
-          <nav className="flex flex-row md:flex-col gap-1 overflow-x-auto pb-4 md:pb-0 scrollbar-hide">
+          <nav className="flex flex-row md:flex-col gap-1.5 overflow-x-auto scrollbar-none touch-scroll pb-2 md:pb-0 -mx-3.5 px-3.5 md:mx-0 md:px-0">
             {[
               { id: "profile", label: "Profile" },
               { id: "business", label: "Business Details" },
@@ -120,7 +120,9 @@ function SettingsContent() {
               <Button 
                 key={tab.id}
                 variant={activeTab === tab.id ? "secondary" : "ghost"} 
-                className="justify-start w-full whitespace-nowrap"
+                className={`justify-start w-auto md:w-full whitespace-nowrap shrink-0 rounded-xl text-xs sm:text-sm px-3.5 py-2 ${
+                  activeTab === tab.id ? "font-semibold shadow-xs" : "text-muted-foreground"
+                }`}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
@@ -169,24 +171,25 @@ function SettingsContent() {
           )}
 
           {activeTab === "business" && (
-            <Card>
+            <Card className="rounded-2xl border shadow-xs">
               <CardHeader>
                 <CardTitle>Business Details</CardTitle>
                 <CardDescription>This information will appear on your invoices by default.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                   <div className="grid gap-2">
                     <Label>Business Name</Label>
-                    <Input defaultValue="My Company LLC" />
+                    <Input className="rounded-xl" defaultValue="My Company LLC" />
                   </div>
                   <div className="grid gap-2">
                     <Label>Business Email</Label>
-                    <Input type="email" defaultValue="hello@mycompany.com" />
+                    <Input className="rounded-xl" type="email" defaultValue="hello@mycompany.com" />
                   </div>
                   <div className="grid gap-2">
                     <Label>GSTIN / VAT Number</Label>
                     <Input 
+                      className="rounded-xl"
                       value={settings.gstin} 
                       onChange={e => setSettings({...settings, gstin: e.target.value})} 
                       placeholder="22AAAAA0000A1Z5" 
@@ -195,22 +198,25 @@ function SettingsContent() {
                   <div className="grid gap-2">
                     <Label>PAN Number</Label>
                     <Input 
+                      className="rounded-xl"
                       value={settings.pan} 
                       onChange={e => setSettings({...settings, pan: e.target.value})} 
                       placeholder="ABCDE1234F" 
                     />
                   </div>
-                  <div className="grid gap-2 col-span-2">
+                  <div className="grid gap-2 col-span-1 sm:col-span-2">
                     <Label>Billing Address</Label>
                     <Textarea 
+                      className="rounded-xl"
                       rows={3} 
                       value={settings.billingAddress} 
                       onChange={e => setSettings({...settings, billingAddress: e.target.value})} 
                     />
                   </div>
-                  <div className="grid gap-2 col-span-2">
+                  <div className="grid gap-2 col-span-1 sm:col-span-2">
                     <Label>Shipping Address (Optional)</Label>
                     <Textarea 
+                      className="rounded-xl"
                       rows={3} 
                       value={settings.shippingAddress} 
                       onChange={e => setSettings({...settings, shippingAddress: e.target.value})} 
@@ -218,41 +224,42 @@ function SettingsContent() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter><Button onClick={handleSave}>Save Business Details</Button></CardFooter>
+              <CardFooter><Button onClick={handleSave} className="bg-primary text-primary-foreground font-semibold rounded-xl">Save Business Details</Button></CardFooter>
             </Card>
           )}
 
           {activeTab === "bank" && (
-            <Card>
+            <Card className="rounded-2xl border shadow-xs">
               <CardHeader>
                 <CardTitle>Bank & UPI Details</CardTitle>
                 <CardDescription>Set up the payment details displayed on invoices.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2 col-span-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+                  <div className="grid gap-2 col-span-1 sm:col-span-2">
                     <Label>Bank Name</Label>
-                    <Input value={settings.bankName} onChange={e => setSettings({...settings, bankName: e.target.value})} />
+                    <Input className="rounded-xl" value={settings.bankName} onChange={e => setSettings({...settings, bankName: e.target.value})} />
                   </div>
                   <div className="grid gap-2">
                     <Label>Account Holder Name</Label>
-                    <Input value={settings.accountName} onChange={e => setSettings({...settings, accountName: e.target.value})} />
+                    <Input className="rounded-xl" value={settings.accountName} onChange={e => setSettings({...settings, accountName: e.target.value})} />
                   </div>
                   <div className="grid gap-2">
                     <Label>Account Number</Label>
-                    <Input value={settings.accountNumber} onChange={e => setSettings({...settings, accountNumber: e.target.value})} />
+                    <Input className="rounded-xl" value={settings.accountNumber} onChange={e => setSettings({...settings, accountNumber: e.target.value})} />
                   </div>
                   <div className="grid gap-2">
                     <Label>IFSC Code</Label>
-                    <Input value={settings.ifsc} onChange={e => setSettings({...settings, ifsc: e.target.value})} />
+                    <Input className="rounded-xl" value={settings.ifsc} onChange={e => setSettings({...settings, ifsc: e.target.value})} />
                   </div>
                   <div className="grid gap-2">
                     <Label>Branch</Label>
-                    <Input value={settings.branch} onChange={e => setSettings({...settings, branch: e.target.value})} />
+                    <Input className="rounded-xl" value={settings.branch} onChange={e => setSettings({...settings, branch: e.target.value})} />
                   </div>
-                  <div className="grid gap-2 col-span-2 mt-4 border-t pt-4">
+                  <div className="grid gap-2 col-span-1 sm:col-span-2 mt-2 border-t pt-4">
                     <Label>UPI ID / VPA</Label>
                     <Input 
+                      className="rounded-xl"
                       placeholder="example@upi" 
                       value={settings.upiId} 
                       onChange={e => setSettings({...settings, upiId: e.target.value})} 
@@ -261,12 +268,12 @@ function SettingsContent() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter><Button onClick={handleSave}>Save Bank Details</Button></CardFooter>
+              <CardFooter><Button onClick={handleSave} className="bg-primary text-primary-foreground font-semibold rounded-xl">Save Bank Details</Button></CardFooter>
             </Card>
           )}
 
           {activeTab === "numbering" && (
-            <Card>
+            <Card className="rounded-2xl border shadow-xs">
               <CardHeader>
                 <CardTitle>Document Numbering</CardTitle>
                 <CardDescription>Customize the format of your document numbers.</CardDescription>
@@ -276,7 +283,7 @@ function SettingsContent() {
                   <div className="flex items-center justify-between border-b pb-4">
                     <div>
                       <Label className="text-base">Auto-Increment</Label>
-                      <p className="text-sm text-muted-foreground">Automatically generate the next invoice number.</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">Automatically generate the next invoice number.</p>
                     </div>
                     <Switch 
                       checked={settings.autoIncrement} 
@@ -284,14 +291,14 @@ function SettingsContent() {
                     />
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                     <div className="grid gap-2">
                       <Label>Invoice Prefix</Label>
-                      <Input value={settings.invoicePrefix} onChange={e => setSettings({...settings, invoicePrefix: e.target.value})} />
+                      <Input className="rounded-xl" value={settings.invoicePrefix} onChange={e => setSettings({...settings, invoicePrefix: e.target.value})} />
                     </div>
                     <div className="grid gap-2">
                       <Label>Starting Number</Label>
-                      <Input value={settings.startingNumber} onChange={e => setSettings({...settings, startingNumber: e.target.value})} />
+                      <Input className="rounded-xl" value={settings.startingNumber} onChange={e => setSettings({...settings, startingNumber: e.target.value})} />
                     </div>
                   </div>
                 </div>
@@ -333,24 +340,24 @@ function SettingsContent() {
               <CardContent className="space-y-6">
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold">Theme Mode</h3>
-                  <div className="flex gap-4">
+                  <div className="grid grid-cols-3 gap-2 sm:flex sm:gap-4">
                     <Button 
                       variant={theme === "light" ? "default" : "outline"} 
-                      className="w-32 rounded-xl"
+                      className="w-full sm:w-32 rounded-xl"
                       onClick={() => setTheme("light")}
                     >
                       Light
                     </Button>
                     <Button 
                       variant={theme === "dark" ? "default" : "outline"} 
-                      className="w-32 rounded-xl"
+                      className="w-full sm:w-32 rounded-xl"
                       onClick={() => setTheme("dark")}
                     >
                       Dark
                     </Button>
                     <Button 
                       variant={theme === "system" ? "default" : "outline"} 
-                      className="w-32 rounded-xl"
+                      className="w-full sm:w-32 rounded-xl"
                       onClick={() => setTheme("system")}
                     >
                       System
@@ -391,7 +398,7 @@ function SettingsContent() {
                       ))}
                     </div>
 
-                    <div className="flex items-center gap-4 pt-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2">
                       <Input 
                         type="color" 
                         value={primaryColor}
@@ -399,7 +406,7 @@ function SettingsContent() {
                         className="w-14 h-10 p-1 cursor-pointer rounded-xl" 
                       />
                       <div>
-                        <p className="text-xs font-mono uppercase text-foreground">{primaryColor}</p>
+                        <p className="text-xs font-mono uppercase text-foreground font-semibold">{primaryColor}</p>
                         <p className="text-xs text-muted-foreground">Changes apply instantly to your buttons and highlights.</p>
                       </div>
                     </div>
@@ -410,7 +417,7 @@ function SettingsContent() {
           )}
 
           {activeTab === "notifications" && (
-            <Card>
+            <Card className="rounded-2xl border shadow-xs">
               <CardHeader>
                 <CardTitle>Notifications</CardTitle>
                 <CardDescription>Configure how you receive alerts and updates.</CardDescription>
@@ -419,7 +426,7 @@ function SettingsContent() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label className="text-base">Invoice Viewed</Label>
-                    <p className="text-sm text-muted-foreground">Receive an email when a client views your invoice.</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">Receive an email when a client views your invoice.</p>
                   </div>
                   <Switch defaultChecked />
                 </div>

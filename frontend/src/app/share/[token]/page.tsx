@@ -129,21 +129,21 @@ export default function PublicSharePage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30 py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-h-screen bg-muted/30 py-4 sm:py-8 px-3 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
         {/* Action Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-background p-4 rounded-xl shadow-sm border print-hidden">
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-background p-3.5 sm:p-4 rounded-2xl shadow-xs border print-hidden">
           <div className="flex items-center gap-3">
             <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="text-xs">
+              <Button variant="ghost" size="sm" className="text-xs h-9 rounded-xl">
                 <ArrowLeft className="h-3.5 w-3.5 mr-1" /> Dashboard
               </Button>
             </Link>
             <div>
-              <h1 className="text-lg font-bold flex items-center gap-2">
+              <h1 className="text-base sm:text-lg font-bold flex items-center gap-2">
                 Invoice {invoice.invoiceNumber}
                 {invoice.status === "paid" && (
-                  <span className="text-xs bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 px-2 py-0.5 rounded-full font-semibold">
+                  <span className="text-[10px] sm:text-xs bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 px-2 py-0.5 rounded-full font-semibold">
                     PAID
                   </span>
                 )}
@@ -152,15 +152,15 @@ export default function PublicSharePage({ params }: PageProps) {
             </div>
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            <Button variant="outline" size="sm" onClick={handlePrint} className="flex-1 sm:flex-none cursor-pointer">
-              <Printer className="mr-1.5 h-4 w-4" /> Print
+            <Button variant="outline" size="sm" onClick={handlePrint} className="flex-1 sm:flex-none cursor-pointer rounded-xl h-9 text-xs sm:text-sm">
+              <Printer className="mr-1.5 h-3.5 w-3.5" /> Print
             </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint} className="flex-1 sm:flex-none cursor-pointer">
-              <Download className="mr-1.5 h-4 w-4" /> PDF
+            <Button variant="outline" size="sm" onClick={handlePrint} className="flex-1 sm:flex-none cursor-pointer rounded-xl h-9 text-xs sm:text-sm">
+              <Download className="mr-1.5 h-3.5 w-3.5" /> PDF
             </Button>
             {invoice.status !== "paid" && (
-              <Button size="sm" onClick={() => setPayModalOpen(true)} className="flex-1 sm:flex-none cursor-pointer">
-                <CreditCard className="mr-1.5 h-4 w-4" /> Pay Now
+              <Button size="sm" onClick={() => setPayModalOpen(true)} className="flex-1 sm:flex-none cursor-pointer rounded-xl h-9 text-xs sm:text-sm">
+                <CreditCard className="mr-1.5 h-3.5 w-3.5" /> Pay Now
               </Button>
             )}
           </div>
@@ -169,40 +169,40 @@ export default function PublicSharePage({ params }: PageProps) {
         {/* Invoice Paper */}
         <Card
           id="invoice-preview-container"
-          className="bg-white text-black p-8 sm:p-12 shadow-lg min-h-[800px] flex flex-col mx-auto border-t-8 border-t-primary rounded-t-md relative overflow-hidden"
+          className="bg-white text-black p-4 sm:p-8 md:p-12 shadow-lg min-h-[600px] flex flex-col mx-auto border-t-8 border-t-primary rounded-2xl relative overflow-hidden"
         >
           {/* Watermark for Paid */}
           {invoice.status === "paid" && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-15">
-              <div className="border-8 border-emerald-600 text-emerald-600 font-extrabold text-7xl px-10 py-4 rounded-xl rotate-[-25deg] tracking-widest">
+              <div className="border-8 border-emerald-600 text-emerald-600 font-extrabold text-5xl sm:text-7xl px-8 py-3 rounded-xl rotate-[-25deg] tracking-widest">
                 PAID
               </div>
             </div>
           )}
 
           {/* Header */}
-          <div className="flex justify-between items-start mb-10">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
             <div>
-              <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-1">INVOICE</h1>
-              <p className="text-sm font-semibold text-gray-500 font-mono">#{invoice.invoiceNumber}</p>
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 mb-1">INVOICE</h1>
+              <p className="text-xs sm:text-sm font-semibold text-gray-500 font-mono">#{invoice.invoiceNumber}</p>
             </div>
-            <div className="text-right text-sm text-gray-600">
-              <h2 className="font-bold text-lg text-gray-900 mb-1">{invoice.billFrom.name}</h2>
+            <div className="sm:text-right text-xs sm:text-sm text-gray-600">
+              <h2 className="font-bold text-base sm:text-lg text-gray-900 mb-1">{invoice.billFrom.name}</h2>
               <div className="whitespace-pre-line">{invoice.billFrom.address}</div>
               <div>{invoice.billFrom.email}</div>
             </div>
           </div>
 
           {/* Bill To & Details */}
-          <div className="flex justify-between items-end mb-8 border-b pb-6">
-            <div className="text-sm text-gray-600">
-              <p className="font-semibold text-gray-900 mb-1 uppercase tracking-wider text-xs">Billed To:</p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6 mb-8 border-b pb-6">
+            <div className="text-xs sm:text-sm text-gray-600">
+              <p className="font-semibold text-gray-900 mb-1 uppercase tracking-wider text-[11px]">Billed To:</p>
               <div className="font-bold text-gray-900 text-base">{invoice.client.name}</div>
               <div className="whitespace-pre-line">{invoice.client.address}</div>
               <div>{invoice.client.email}</div>
             </div>
-            <div className="text-sm text-right">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div className="text-xs sm:text-sm w-full sm:w-auto">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1 sm:text-right">
                 <div className="text-gray-500 font-medium">Issue Date:</div>
                 <div className="text-gray-900">{invoice.issueDate}</div>
 
@@ -218,8 +218,8 @@ export default function PublicSharePage({ params }: PageProps) {
           </div>
 
           {/* Items Table */}
-          <div className="mt-2 flex-grow">
-            <table className="w-full text-sm text-left">
+          <div className="mt-2 flex-grow overflow-x-auto touch-scroll">
+            <table className="w-full text-xs sm:text-sm text-left min-w-[480px]">
               <thead>
                 <tr className="border-b-2 border-gray-200">
                   <th className="py-3 text-gray-900 font-semibold w-full">Description</th>
@@ -231,10 +231,10 @@ export default function PublicSharePage({ params }: PageProps) {
               <tbody className="divide-y divide-gray-100">
                 {invoice.items.map((item) => (
                   <tr key={item.id}>
-                    <td className="py-4 text-gray-800">{item.description}</td>
-                    <td className="py-4 text-gray-800 text-center px-4">{item.quantity}</td>
-                    <td className="py-4 text-gray-800 text-right px-4">${item.rate.toFixed(2)}</td>
-                    <td className="py-4 text-gray-900 font-medium text-right">${item.amount.toFixed(2)}</td>
+                    <td className="py-3.5 text-gray-800">{item.description}</td>
+                    <td className="py-3.5 text-gray-800 text-center px-4">{item.quantity}</td>
+                    <td className="py-3.5 text-gray-800 text-right px-4">${item.rate.toFixed(2)}</td>
+                    <td className="py-3.5 text-gray-900 font-medium text-right">${item.amount.toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -243,7 +243,7 @@ export default function PublicSharePage({ params }: PageProps) {
 
           {/* Totals */}
           <div className="flex justify-end mt-6 mb-8">
-            <div className="w-72 text-sm">
+            <div className="w-full sm:w-72 text-xs sm:text-sm">
               <div className="flex justify-between py-1 text-gray-600">
                 <span>Subtotal</span>
                 <span>${invoice.subtotal.toFixed(2)}</span>
@@ -251,12 +251,12 @@ export default function PublicSharePage({ params }: PageProps) {
 
               <Separator className="my-2 bg-gray-200" />
 
-              <div className="flex justify-between py-1 text-base font-bold text-gray-900">
+              <div className="flex justify-between py-1 text-sm sm:text-base font-bold text-gray-900">
                 <span>Total</span>
                 <span>${invoice.total.toFixed(2)}</span>
               </div>
 
-              <div className="flex justify-between py-2 text-base font-bold text-primary">
+              <div className="flex justify-between py-2 text-sm sm:text-base font-bold text-primary">
                 <span>Balance Due</span>
                 <span>${invoice.balanceDue.toFixed(2)}</span>
               </div>
