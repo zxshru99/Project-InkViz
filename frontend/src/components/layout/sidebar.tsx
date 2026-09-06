@@ -106,10 +106,11 @@ export function Sidebar() {
         <p className="text-[12px] text-muted-foreground mb-3 leading-relaxed">
           Fast &amp; beautiful invoices with custom signature templates.
         </p>
-        <Link href="/settings" className="block">
-          <button className="w-full py-2 px-3 text-[11px] font-semibold tracking-wider uppercase text-center rounded-lg border border-border hover:bg-foreground/5 transition-colors text-foreground">
-            Manage Branding
-          </button>
+        <Link
+          href="/settings"
+          className="block w-full py-2 px-3 text-[11px] font-semibold tracking-wider uppercase text-center rounded-lg border border-border hover:bg-foreground/5 transition-colors text-foreground"
+        >
+          Manage Branding
         </Link>
       </div>
     </nav>

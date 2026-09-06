@@ -227,11 +227,12 @@ export default function DashboardPage() {
             Manage invoices, track balances, and send payment links.
           </p>
         </div>
-        <Link href="/invoices/new" className="w-full sm:w-auto">
-          <button className="w-full sm:w-auto h-9 px-5 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity flex items-center justify-center gap-2">
-            <FilePlus2 className="h-3.5 w-3.5" />
-            New Invoice
-          </button>
+        <Link
+          href="/invoices/new"
+          className="w-full sm:w-auto h-9 px-5 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity flex items-center justify-center gap-2"
+        >
+          <FilePlus2 className="h-3.5 w-3.5" />
+          New Invoice
         </Link>
       </div>
 
@@ -402,21 +403,17 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2 pt-2 border-t border-border/40">
                     <Link
                       href={`/invoices/new?id=${encodeURIComponent(inv.id)}`}
-                      className="flex-1"
+                      className="flex-1 h-8 text-[11px] font-semibold tracking-wide rounded-lg border border-border text-foreground hover:bg-foreground/5 transition-colors flex items-center justify-center"
                     >
-                      <button className="w-full h-8 text-[11px] font-semibold tracking-wide rounded-lg border border-border text-foreground hover:bg-foreground/5 transition-colors">
-                        Edit
-                      </button>
+                      Edit
                     </Link>
                     <Link
                       href={`/share/${encodeURIComponent(inv.id)}`}
                       target="_blank"
-                      className="flex-1"
+                      className="flex-1 h-8 text-[11px] font-semibold tracking-wide rounded-lg border border-border text-foreground hover:bg-foreground/5 transition-colors flex items-center justify-center gap-1.5"
                     >
-                      <button className="w-full h-8 text-[11px] font-semibold tracking-wide rounded-lg border border-border text-foreground hover:bg-foreground/5 transition-colors flex items-center justify-center gap-1.5">
-                        <ExternalLink className="h-3 w-3" />
-                        View
-                      </button>
+                      <ExternalLink className="h-3 w-3" />
+                      View
                     </Link>
                     <a
                       href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
@@ -584,11 +581,12 @@ export default function DashboardPage() {
                 : "You don't have any invoices yet. Create your first one now."}
             </p>
             {!search && (
-              <Link href="/invoices/new" className="mt-6">
-                <button className="h-9 px-5 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity flex items-center gap-2">
-                  <FilePlus2 className="h-3.5 w-3.5" />
-                  Create Invoice
-                </button>
+              <Link
+                href="/invoices/new"
+                className="mt-6 h-9 px-5 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity flex items-center gap-2"
+              >
+                <FilePlus2 className="h-3.5 w-3.5" />
+                Create Invoice
               </Link>
             )}
           </div>

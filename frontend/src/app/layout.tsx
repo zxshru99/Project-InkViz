@@ -41,6 +41,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       className={`${plusJakartaSans.variable} ${outfit.variable} h-full antialiased scroll-smooth`}
       suppressHydrationWarning
     >

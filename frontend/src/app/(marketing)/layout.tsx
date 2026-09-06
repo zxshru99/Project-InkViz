@@ -76,15 +76,17 @@ export default function MarketingLayout({
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
-            <Link href="/login">
-              <button className="h-8 px-4 text-[11px] font-semibold tracking-wider uppercase rounded-full border border-border hover:bg-foreground/5 transition-all text-foreground/80">
-                Login
-              </button>
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center h-8 px-4 text-[11px] font-semibold tracking-wider uppercase rounded-full border border-border hover:bg-foreground/5 transition-all text-foreground/80"
+            >
+              Login
             </Link>
-            <Link href="/signup">
-              <button className="h-8 px-4 text-[11px] font-semibold tracking-wider uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity">
-                Start Free
-              </button>
+            <Link
+              href="/signup"
+              className="inline-flex items-center justify-center h-8 px-4 text-[11px] font-semibold tracking-wider uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity"
+            >
+              Start Free
             </Link>
           </div>
 
@@ -118,15 +120,19 @@ export default function MarketingLayout({
             ))}
           </nav>
           <div className="mt-auto flex flex-col gap-3">
-            <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-              <button className="w-full h-12 text-sm font-semibold tracking-wider uppercase rounded-2xl border border-border hover:bg-foreground/5 transition-all text-foreground">
-                Log In
-              </button>
+            <Link
+              href="/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full h-12 flex items-center justify-center text-sm font-semibold tracking-wider uppercase rounded-2xl border border-border hover:bg-foreground/5 transition-all text-foreground"
+            >
+              Log In
             </Link>
-            <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-              <button className="w-full h-12 text-sm font-semibold tracking-wider uppercase rounded-2xl bg-foreground text-background hover:opacity-80 transition-opacity">
-                Get Started Free
-              </button>
+            <Link
+              href="/signup"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full h-12 flex items-center justify-center text-sm font-semibold tracking-wider uppercase rounded-2xl bg-foreground text-background hover:opacity-80 transition-opacity"
+            >
+              Get Started Free
             </Link>
           </div>
         </div>

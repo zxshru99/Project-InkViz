@@ -2,7 +2,7 @@
 
 import { use, useState, useEffect } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import {
@@ -247,10 +247,11 @@ export default function PublicSharePage({ params }: PageProps) {
         {/* Action Header */}
         <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-background p-3.5 sm:p-4 rounded-2xl shadow-xs border print-hidden">
           <div className="flex items-center gap-3">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="sm" className="text-xs h-9 rounded-xl">
-                <ArrowLeft className="h-3.5 w-3.5 mr-1" /> Dashboard
-              </Button>
+            <Link
+              href="/dashboard"
+              className={buttonVariants({ variant: "ghost", size: "sm", className: "text-xs h-9 rounded-xl" })}
+            >
+              <ArrowLeft className="h-3.5 w-3.5 mr-1" /> Dashboard
             </Link>
             <div>
               <h1 className="text-base sm:text-lg font-bold flex items-center gap-2">

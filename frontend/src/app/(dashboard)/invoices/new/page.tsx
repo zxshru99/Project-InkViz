@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Dialog,
@@ -248,10 +248,15 @@ function InvoiceEditorWorkspace() {
       <div className="flex flex-col border-b bg-background z-10 shrink-0 print-hidden">
         <div className="flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-3">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <Link href="/dashboard">
-              <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl text-muted-foreground hover:text-foreground shrink-0">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
+            <Link
+              href="/dashboard"
+              className={buttonVariants({
+                variant: "ghost",
+                size: "icon",
+                className: "h-8 w-8 sm:h-9 sm:w-9 rounded-xl text-muted-foreground hover:text-foreground shrink-0",
+              })}
+            >
+              <ArrowLeft className="h-4 w-4" />
             </Link>
             <div className="min-w-0">
               <h1 className="text-base sm:text-xl font-bold font-heading truncate">

@@ -131,15 +131,17 @@ export default function LandingPage() {
 
         {/* CTA Buttons */}
         <div className="mt-10 flex flex-col sm:flex-row items-center gap-3">
-          <Link href="/signup">
-            <button className="h-11 px-7 text-[12px] font-semibold tracking-[0.12em] uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity">
-              Start Building
-            </button>
+          <Link
+            href="/signup"
+            className="inline-flex items-center justify-center h-11 px-7 text-[12px] font-semibold tracking-[0.12em] uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity"
+          >
+            Start Building
           </Link>
-          <Link href="/dashboard">
-            <button className="h-11 px-7 text-[12px] font-semibold tracking-[0.12em] uppercase rounded-full border border-border text-foreground/80 hover:bg-foreground/5 transition-all">
-              Dashboard
-            </button>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center justify-center h-11 px-7 text-[12px] font-semibold tracking-[0.12em] uppercase rounded-full border border-border text-foreground/80 hover:bg-foreground/5 transition-all"
+          >
+            Dashboard
           </Link>
         </div>
 
@@ -354,10 +356,11 @@ export default function LandingPage() {
             Join freelancers who trust Inkviz to manage their billing.
             Start free, upgrade when you're ready.
           </p>
-          <Link href="/signup">
-            <button className="h-12 px-10 text-[12px] font-semibold tracking-[0.15em] uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity">
-              Create Your Free Account
-            </button>
+          <Link
+            href="/signup"
+            className="inline-flex items-center justify-center h-12 px-10 text-[12px] font-semibold tracking-[0.15em] uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity"
+          >
+            Create Your Free Account
           </Link>
         </div>
       </section>

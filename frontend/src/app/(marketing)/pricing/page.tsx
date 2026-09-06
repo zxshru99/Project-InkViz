@@ -49,10 +49,11 @@ export default function PricingPage() {
             ))}
           </ul>
 
-          <Link href="/signup" className="w-full">
-            <button className="w-full h-11 rounded-xl border border-border text-[12px] font-semibold tracking-[0.1em] uppercase hover:bg-foreground/5 transition-colors text-foreground">
-              Get Started Free
-            </button>
+          <Link
+            href="/signup"
+            className="w-full h-11 flex items-center justify-center rounded-xl border border-border text-[12px] font-semibold tracking-[0.1em] uppercase hover:bg-foreground/5 transition-colors text-foreground"
+          >
+            Get Started Free
           </Link>
         </div>
 
@@ -88,10 +89,11 @@ export default function PricingPage() {
             ))}
           </ul>
 
-          <Link href="/signup" className="w-full">
-            <button className="w-full h-11 rounded-xl bg-foreground text-background text-[12px] font-semibold tracking-[0.1em] uppercase hover:opacity-80 transition-opacity">
-              Start 14-Day Trial
-            </button>
+          <Link
+            href="/signup"
+            className="w-full h-11 flex items-center justify-center rounded-xl bg-foreground text-background text-[12px] font-semibold tracking-[0.1em] uppercase hover:opacity-80 transition-opacity"
+          >
+            Start 14-Day Trial
           </Link>
         </div>
       </div>

@@ -78,11 +78,12 @@ export function Header() {
       {/* Right Controls */}
       <div className="flex items-center gap-2">
         {/* Create Invoice Button */}
-        <Link href="/invoices/new" className="hidden sm:block">
-          <button className="h-8 px-4 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full border border-border text-foreground/80 hover:bg-foreground/5 hover:text-foreground transition-all">
-            <FilePlus2 className="inline-block w-3.5 h-3.5 mr-1.5 -mt-0.5" />
-            New Invoice
-          </button>
+        <Link
+          href="/invoices/new"
+          className="hidden sm:inline-flex items-center h-8 px-4 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full border border-border text-foreground/80 hover:bg-foreground/5 hover:text-foreground transition-all"
+        >
+          <FilePlus2 className="w-3.5 h-3.5 mr-1.5" />
+          New Invoice
         </Link>
 
         <ThemeToggle />

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -177,10 +177,11 @@ export default function TrashPage() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <Link href="/dashboard">
-            <Button variant="outline" size="sm" className="rounded-xl h-9">
-              <ArrowLeft className="h-4 w-4 mr-1.5" /> Back to Dashboard
-            </Button>
+          <Link
+            href="/dashboard"
+            className={buttonVariants({ variant: "outline", size: "sm", className: "rounded-xl h-9" })}
+          >
+            <ArrowLeft className="h-4 w-4 mr-1.5" /> Back to Dashboard
           </Link>
           <Button
             variant="destructive"
