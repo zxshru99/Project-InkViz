@@ -3,8 +3,46 @@ import * as authService from './auth.service';
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const user = await authService.register(req.body);
-    res.status(201).json({ success: true, data: { user } });
+    const result = await authService.register(req.body);
+    res.status(201).json({
+      success: true,
+      message: 'Account created. Please verify your email with the 6-digit OTP code sent to your inbox.',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const verifyEmailOtp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { accessToken, refreshToken, user } = await authService.verifyEmailOtp(req.body);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Email successfully verified.',
+      data: { accessToken, user },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const resendOtp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const result = await authService.resendOtp(req.body);
+    res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result,
+    });
   } catch (error) {
     next(error);
   }
@@ -67,9 +105,11 @@ export const logout = async (req: Request, res: Response, next: NextFunction): P
 
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await authService.forgotPassword(req.body.email);
-    // Always return 200 to prevent email enumeration
-    res.status(200).json({ success: true, data: { message: 'If that email exists, a password reset link has been sent' } });
+    const result = await authService.forgotPassword(req.body.email);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
   } catch (error) {
     next(error);
   }
@@ -77,8 +117,11 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
 export const resetPassword = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    await authService.resetPassword(req.body);
-    res.status(200).json({ success: true, data: { message: 'Password reset successful' } });
+    const result = await authService.resetPassword(req.body);
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
   } catch (error) {
     next(error);
   }

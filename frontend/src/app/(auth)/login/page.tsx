@@ -9,6 +9,8 @@ function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const isRegistered = searchParams.get("registered") === "true"
+  const isReset = searchParams.get("reset") === "true"
+  const isVerified = searchParams.get("verified") === "true"
   const prefillEmail = searchParams.get("email") || ""
 
   const [isLoading, setIsLoading] = useState(false)
@@ -47,11 +49,25 @@ function LoginForm() {
         </p>
       </div>
 
-      {/* Success Banner */}
+      {/* Success Banners */}
       {isRegistered && (
         <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-[13px] font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
           Account created! Please sign in to continue.
+        </div>
+      )}
+
+      {isVerified && (
+        <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-[13px] font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+          Email verified successfully! You can now sign in.
+        </div>
+      )}
+
+      {isReset && (
+        <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-[13px] font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+          Password reset successfully. Sign in with your new password.
         </div>
       )}
 
@@ -84,7 +100,7 @@ function LoginForm() {
             <label htmlFor="password" className="text-[12px] font-mono tracking-[0.1em] uppercase text-muted-foreground">
               Password
             </label>
-            <Link href="#" className="text-[11px] text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/forgot-password" className="text-[11px] text-muted-foreground hover:text-foreground transition-colors">
               Forgot password?
             </Link>
           </div>

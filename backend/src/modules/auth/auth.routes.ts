@@ -4,6 +4,8 @@ import { validate } from '../../middleware/validate';
 import { requireAuth } from '../../middleware/requireAuth';
 import {
   registerSchema,
+  verifyEmailOtpSchema,
+  resendOtpSchema,
   loginSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
@@ -22,6 +24,8 @@ const authLimiter = rateLimit({
 router.use(authLimiter);
 
 router.post('/register', validate(registerSchema), authController.register);
+router.post('/verify-email-otp', validate(verifyEmailOtpSchema), authController.verifyEmailOtp);
+router.post('/resend-otp', validate(resendOtpSchema), authController.resendOtp);
 router.post('/login', validate(loginSchema), authController.login);
 router.post('/refresh', authController.refresh);
 router.post('/logout', requireAuth, authController.logout);

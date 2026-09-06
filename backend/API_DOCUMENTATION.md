@@ -177,7 +177,7 @@ An invoice in Inkviz transitions through various states based on client actions:
 
 ### B. Authentication Module
 
-#### 1. Register User
+#### 1. Register User (with Email OTP)
 * **Endpoint:** `POST /api/v1/auth/register`
 * **Auth:** Public
 * **Request Body:**
@@ -193,12 +193,12 @@ An invoice in Inkviz transitions through various states based on client actions:
   ```json
   {
     "success": true,
+    "message": "Account created. Please verify your email with the 6-digit OTP code sent to your inbox.",
     "data": {
-      "user": {
-        "_id": "66d58f...",
-        "name": "Alex Mercer",
-        "email": "alex.mercer@example.com"
-      }
+      "_id": "66d58f...",
+      "name": "Alex Mercer",
+      "email": "alex.mercer@example.com",
+      "requireOtp": true
     }
   }
   ```
@@ -208,7 +208,65 @@ An invoice in Inkviz transitions through various states based on client actions:
 
 ---
 
-#### 2. Login User
+#### 2. Verify Email OTP
+* **Endpoint:** `POST /api/v1/auth/verify-email-otp`
+* **Auth:** Public
+* **Request Body:**
+  ```json
+  {
+    "email": "alex.mercer@example.com",
+    "otp": "123456"
+  }
+  ```
+* **Validation Rules:** `email` (valid format), `otp` (exactly 6 numeric digits).
+* **Success Response (`200 OK`):**
+  * *Headers:* `Set-Cookie: refreshToken=...; HttpOnly; SameSite=Strict; Path=/; Max-Age=604800`
+  ```json
+  {
+    "success": true,
+    "message": "Email successfully verified.",
+    "data": {
+      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      "user": {
+        "_id": "66d58f...",
+        "name": "Alex Mercer",
+        "email": "alex.mercer@example.com",
+        "plan": "free",
+        "isEmailVerified": true
+      }
+    }
+  }
+  ```
+* **Error Possibilities:**
+  * `400 Bad Request` (`INVALID_OTP` / `OTP_EXPIRED`): Invalid code or expired code (valid for 10 minutes).
+  * `404 Not Found` (`NOT_FOUND`): User not found.
+
+---
+
+#### 3. Resend OTP
+* **Endpoint:** `POST /api/v1/auth/resend-otp`
+* **Auth:** Public
+* **Request Body:**
+  ```json
+  {
+    "email": "alex.mercer@example.com",
+    "type": "verification" // or "password_reset"
+  }
+  ```
+* **Success Response (`200 OK`):**
+  ```json
+  {
+    "success": true,
+    "message": "Verification code resent successfully.",
+    "data": {
+      "message": "Verification code resent successfully."
+    }
+  }
+  ```
+
+---
+
+#### 4. Login User
 * **Endpoint:** `POST /api/v1/auth/login`
 * **Auth:** Public
 * **Request Body:**
@@ -240,7 +298,7 @@ An invoice in Inkviz transitions through various states based on client actions:
 
 ---
 
-#### 3. Refresh Access Token
+#### 5. Refresh Access Token
 * **Endpoint:** `POST /api/v1/auth/refresh`
 * **Auth:** Cookie-based (`refreshToken`)
 * **Success Response (`200 OK`):**
@@ -257,7 +315,7 @@ An invoice in Inkviz transitions through various states based on client actions:
 
 ---
 
-#### 4. Logout User
+#### 6. Logout User
 * **Endpoint:** `POST /api/v1/auth/logout`
 * **Auth:** Protected (Optional header / Cookie)
 * **Success Response (`200 OK`):**
@@ -271,7 +329,7 @@ An invoice in Inkviz transitions through various states based on client actions:
 
 ---
 
-#### 5. Forgot Password
+#### 7. Forgot Password (Send OTP)
 * **Endpoint:** `POST /api/v1/auth/forgot-password`
 * **Auth:** Public
 * **Request Body:**
@@ -285,17 +343,25 @@ An invoice in Inkviz transitions through various states based on client actions:
   {
     "success": true,
     "data": {
-      "message": "If that email exists, a password reset link has been sent"
+      "message": "If an account exists, a reset code has been sent to your email."
     }
   }
   ```
 
 ---
 
-#### 6. Reset Password
+#### 8. Reset Password (with OTP or Token)
 * **Endpoint:** `POST /api/v1/auth/reset-password`
 * **Auth:** Public
-* **Request Body:**
+* **Request Body (OTP Mode):**
+  ```json
+  {
+    "email": "alex.mercer@example.com",
+    "otp": "123456",
+    "password": "NewStrongPassword123!"
+  }
+  ```
+* **Request Body (Legacy Token Mode):**
   ```json
   {
     "token": "a93f1d8c72e945...",
@@ -307,12 +373,12 @@ An invoice in Inkviz transitions through various states based on client actions:
   {
     "success": true,
     "data": {
-      "message": "Password reset successful"
+      "message": "Password has been reset successfully."
     }
   }
   ```
 * **Error Possibilities:**
-  * `400 Bad Request` (`BAD_REQUEST`): Token is invalid or has expired (exceeded 1-hour window).
+  * `400 Bad Request` (`BAD_REQUEST` / `INVALID_OTP`): Code or token is invalid or has expired (15-minute window).
 
 ---
 

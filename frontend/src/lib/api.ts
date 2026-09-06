@@ -70,6 +70,34 @@ export const authApi = {
     const res = await apiClient.post('/auth/register', userData);
     return res.data.data;
   },
+  verifyEmailOtp: async (data: { email: string; otp: string }) => {
+    const res = await apiClient.post('/auth/verify-email-otp', data);
+    if (typeof window !== 'undefined') {
+      if (res.data.data?.accessToken) {
+        localStorage.setItem('inkviz_access_token', res.data.data.accessToken);
+      }
+      if (res.data.data?.user) {
+        localStorage.setItem('inkviz_user', JSON.stringify(res.data.data.user));
+        window.dispatchEvent(new Event('inkviz_auth_changed'));
+      }
+    }
+    return res.data.data;
+  },
+  resendOtp: async (data: { email: string; type?: 'verification' | 'password_reset' }) => {
+    const res = await apiClient.post('/auth/resend-otp', {
+      email: data.email,
+      type: data.type || 'verification',
+    });
+    return res.data.data;
+  },
+  forgotPassword: async (email: string) => {
+    const res = await apiClient.post('/auth/forgot-password', { email });
+    return res.data.data;
+  },
+  resetPasswordWithOtp: async (data: { email: string; otp: string; password: string }) => {
+    const res = await apiClient.post('/auth/reset-password', data);
+    return res.data.data;
+  },
   logout: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('inkviz_access_token');
