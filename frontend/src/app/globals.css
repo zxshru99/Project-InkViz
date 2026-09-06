@@ -307,17 +307,49 @@
 }
 
 /* ============================================================
+   PAGE TRANSITION ANIMATION
+   ============================================================ */
+@keyframes pageTransitionEnter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition {
+  animation: pageTransitionEnter 0.26s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+}
+
+/* ============================================================
    PRINT OPTIMIZATION
    ============================================================ */
 @media print {
+  /* Strictly hide all chrome, modals, dialogs, backdrops, and navigation */
   nav,
   header,
   aside,
+  footer,
   button,
   .print-hidden,
   [data-print-hidden="true"],
-  .no-print {
+  .no-print,
+  [role="dialog"],
+  [data-slot="dialog-portal"],
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"],
+  [data-slot="popover-content"],
+  [data-slot="dropdown-menu-content"],
+  [data-radix-portal],
+  .fixed.inset-0,
+  div:has(> [role="dialog"]) {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 
   body, html {
@@ -326,18 +358,50 @@
     padding: 0 !important;
     margin: 0 !important;
     height: auto !important;
+    min-height: auto !important;
     overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
+  /* Reset all overflow restrictions on ancestor containers */
+  main,
+  #__next,
+  .overflow-hidden,
+  .overflow-y-auto,
+  .overflow-x-auto,
+  [class*="overflow-"] {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    position: static !important;
+  }
+
+  /* Ensure the invoice paper container is visible, unclipped, and full-width */
   #invoice-preview-container,
   .invoice-paper,
   .printable-document {
     box-shadow: none !important;
     border: none !important;
     width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
+    max-width: 210mm !important;
+    margin: 0 auto !important;
     padding: 0 !important;
     display: block !important;
+    visibility: visible !important;
+    background-color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force display of preview panel even on mobile views */
+  .print-force-show {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
   }
 }

@@ -38,13 +38,6 @@ export interface InvoiceRecord {
   source?: string
 }
 
-const DEFAULT_INVOICES: InvoiceRecord[] = [
-  { id: "INV-0012", client: "Acme Corp",        amount: 1250.0,  status: "published", issueDate: "2026-09-04", dueDate: "2026-10-04" },
-  { id: "INV-0011", client: "Globex Inc",       amount: 850.5,   status: "draft",     issueDate: "2026-09-02", dueDate: "2026-10-02" },
-  { id: "INV-0010", client: "Soylent Corp",     amount: 3200.0,  status: "paid",      issueDate: "2026-08-28", dueDate: "2026-09-28" },
-  { id: "INV-0009", client: "Initech",          amount: 450.0,   status: "overdue",   issueDate: "2026-08-15", dueDate: "2026-08-30" },
-  { id: "INV-0008", client: "Stark Industries", amount: 12500.0, status: "paid",      issueDate: "2026-08-01", dueDate: "2026-08-15" },
-]
 
 const STATUS_STYLE: Record<string, string> = {
   published: "bg-blue-500/10 text-blue-700 dark:text-blue-300",
@@ -55,7 +48,8 @@ const STATUS_STYLE: Record<string, string> = {
 }
 
 export default function DashboardPage() {
-  const [invoices, setInvoices] = useState<InvoiceRecord[]>(DEFAULT_INVOICES)
+  const [invoices, setInvoices] = useState<InvoiceRecord[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("all")
   const [search, setSearch] = useState("")
   const [toastMessage, setToastMessage] = useState<string | null>(null)
@@ -68,7 +62,7 @@ export default function DashboardPage() {
   const loadInvoices = async () => {
     try {
       const res = await invoicesApi.list({ limit: 50 })
-      if (res && res.invoices && res.invoices.length > 0) {
+      if (res && res.invoices) {
         const backendRecords: InvoiceRecord[] = res.invoices.map((inv: any) => ({
           id: inv.invoiceNumber || inv._id,
           _id: inv._id,
@@ -83,28 +77,30 @@ export default function DashboardPage() {
         if (typeof window !== "undefined") {
           localStorage.setItem("inkviz_invoices", JSON.stringify(backendRecords))
         }
+        setIsLoading(false)
         return
       }
     } catch (e) {
       // offline fallback below
     }
 
-    if (typeof window === "undefined") return
+    if (typeof window === "undefined") {
+      setIsLoading(false)
+      return
+    }
     try {
       const raw = localStorage.getItem("inkviz_invoices")
-      if (raw) {
+      if (raw !== null) {
         const parsed = JSON.parse(raw)
-        const combined = [...parsed]
-        DEFAULT_INVOICES.forEach((def) => {
-          if (!combined.some((c) => c.id === def.id)) combined.push(def)
-        })
-        setInvoices(combined)
+        setInvoices(Array.isArray(parsed) ? parsed : [])
       } else {
-        localStorage.setItem("inkviz_invoices", JSON.stringify(DEFAULT_INVOICES))
-        setInvoices(DEFAULT_INVOICES)
+        // New user starts clean with 0 invoices
+        setInvoices([])
       }
     } catch (e) {
-      console.error("Failed to load invoices", e)
+      setInvoices([])
+    } finally {
+      setIsLoading(false)
     }
   }
 

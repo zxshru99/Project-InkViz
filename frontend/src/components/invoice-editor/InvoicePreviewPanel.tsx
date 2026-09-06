@@ -31,7 +31,7 @@ export function InvoicePreviewPanel() {
 
   return (
     <div className="sticky top-2 sm:top-4 space-y-3">
-      <div className="flex items-center justify-between px-1">
+      <div className="flex items-center justify-between px-1 print-hidden">
         <div className="flex items-center gap-2">
           <h2 className="text-base sm:text-lg font-semibold font-heading">Live Preview</h2>
           <span className="text-[11px] px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-mono">
@@ -45,8 +45,8 @@ export function InvoicePreviewPanel() {
       </div>
       
       {/* Responsive "Paper" wrapper */}
-      <div className="w-full overflow-x-auto touch-scroll scrollbar-none pb-4 rounded-2xl">
-        <div id="invoice-preview-container" className="shadow-lg min-h-[900px] sm:min-h-[1056px] bg-white rounded-2xl overflow-hidden border border-border/40 min-w-[340px]">
+      <div className="w-full overflow-x-auto touch-scroll scrollbar-none pb-4 rounded-2xl print:overflow-visible print:p-0">
+        <div id="invoice-preview-container" className="shadow-lg min-h-[900px] sm:min-h-[1056px] bg-white rounded-2xl overflow-hidden border border-border/40 min-w-[340px] print:shadow-none print:border-none print:rounded-none print:min-h-0 print:overflow-visible">
           {renderTemplate()}
         </div>
       </div>

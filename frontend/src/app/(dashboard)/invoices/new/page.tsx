@@ -16,8 +16,9 @@ import {
 import { InvoiceProvider, useInvoice } from "@/components/invoice-editor/InvoiceContext"
 import { InvoiceFormPanel } from "@/components/invoice-editor/InvoiceFormPanel"
 import { InvoicePreviewPanel } from "@/components/invoice-editor/InvoicePreviewPanel"
-import { Save, Send, Download, Settings, Copy, Check, ExternalLink, ArrowLeft } from "lucide-react"
+import { Save, Send, Download, Settings, Copy, Check, ExternalLink, ArrowLeft, Loader2 } from "lucide-react"
 import { invoicesApi } from "@/lib/api"
+import { exportElementToPdf } from "@/lib/pdf-export"
 
 function InvoiceEditorWorkspace() {
   const router = useRouter()
@@ -26,6 +27,7 @@ function InvoiceEditorWorkspace() {
   const { data, updateData } = useInvoice()
 
   const [isSaving, setIsSaving] = useState(false)
+  const [isExportingPdf, setIsExportingPdf] = useState(false)
   const [copiedLink, setCopiedLink] = useState(false)
   const [shareModalOpen, setShareModalOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
@@ -216,8 +218,25 @@ function InvoiceEditorWorkspace() {
     setShareModalOpen(true)
   }
 
-  const handleDownloadPDF = () => {
-    window.print()
+  const handleDownloadPDF = async () => {
+    setIsExportingPdf(true)
+    showToast("Generating PDF invoice...")
+    try {
+      const fileName = `invoice-${data.invoiceNumber || "INV-0001"}.pdf`
+      const success = await exportElementToPdf("invoice-preview-container", {
+        filename: fileName,
+        scale: 2,
+      })
+      if (success) {
+        showToast("PDF downloaded successfully!")
+      } else {
+        window.print()
+      }
+    } catch (e) {
+      window.print()
+    } finally {
+      setIsExportingPdf(false)
+    }
   }
 
   const encodedId = encodeURIComponent(data.invoiceNumber || "INV-0001")
@@ -273,11 +292,19 @@ function InvoiceEditorWorkspace() {
             <Button
               variant="outline"
               size="sm"
+              disabled={isExportingPdf}
               onClick={handleDownloadPDF}
               className="h-8 sm:h-9 px-2.5 sm:px-3 text-xs rounded-xl cursor-pointer"
             >
-              <Download className="h-3.5 w-3.5 sm:mr-1.5" />
-              <span className="hidden sm:inline">Download</span> PDF
+              {isExportingPdf ? (
+                <Loader2 className="h-3.5 w-3.5 sm:mr-1.5 animate-spin" />
+              ) : (
+                <Download className="h-3.5 w-3.5 sm:mr-1.5" />
+              )}
+              <span className="hidden sm:inline">
+                {isExportingPdf ? "Generating..." : "Download"}
+              </span>{" "}
+              PDF
             </Button>
             <Button
               variant="outline"
@@ -332,7 +359,7 @@ function InvoiceEditorWorkspace() {
       </div>
 
       {/* Split Pane Workspace */}
-      <div className="flex-1 overflow-hidden grid grid-cols-1 lg:grid-cols-2 relative">
+      <div className="flex-1 overflow-hidden grid grid-cols-1 lg:grid-cols-2 relative print:overflow-visible print:block print:h-auto">
         {/* Left Pane - Form Editor (Scrollable) */}
         <div
           className={`overflow-y-auto p-3.5 sm:p-6 lg:p-8 bg-muted/30 border-r custom-scrollbar touch-scroll pb-24 lg:pb-32 print-hidden ${
@@ -346,11 +373,11 @@ function InvoiceEditorWorkspace() {
 
         {/* Right Pane - Live Preview (Scrollable) */}
         <div
-          className={`overflow-y-auto p-3 sm:p-6 lg:p-8 bg-muted/10 custom-scrollbar touch-scroll pb-24 lg:pb-32 ${
+          className={`overflow-y-auto p-3 sm:p-6 lg:p-8 bg-muted/10 custom-scrollbar touch-scroll pb-24 lg:pb-32 print-force-show print:!block print:overflow-visible print:p-0 print:m-0 ${
             mobileTab === "edit" ? "hidden lg:block" : "block"
           }`}
         >
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto print:max-w-none print:w-full">
             <InvoicePreviewPanel />
           </div>
         </div>
@@ -418,9 +445,19 @@ function InvoiceEditorWorkspace() {
                 </Button>
               </a>
 
-              <Button variant="outline" size="sm" onClick={handleDownloadPDF} className="text-xs rounded-xl">
-                <Download className="h-3.5 w-3.5 mr-1.5" />
-                Print / PDF
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={isExportingPdf}
+                onClick={handleDownloadPDF}
+                className="text-xs rounded-xl cursor-pointer"
+              >
+                {isExportingPdf ? (
+                  <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                ) : (
+                  <Download className="h-3.5 w-3.5 mr-1.5" />
+                )}
+                {isExportingPdf ? "Exporting..." : "Download PDF"}
               </Button>
             </div>
           </div>

@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Download, CreditCard, Printer, CheckCircle2, ArrowLeft, QrCode, Loader2 } from "lucide-react"
 import { invoicesApi } from "@/lib/api"
+import { exportElementToPdf } from "@/lib/pdf-export"
 
 const DEFAULT_SHARED_INVOICE = {
   invoiceNumber: "INV-0012",
@@ -181,6 +182,17 @@ export default function PublicSharePage({ params }: PageProps) {
   const handleDownloadPdf = async () => {
     setIsDownloadingPdf(true)
     try {
+      // First try client-side high-fidelity export of the rendered invoice
+      const success = await exportElementToPdf("invoice-preview-container", {
+        filename: `invoice-${invoice.invoiceNumber || "INV-0001"}.pdf`,
+        scale: 2,
+      })
+      if (success) {
+        setIsDownloadingPdf(false)
+        return
+      }
+
+      // Fallback to backend PDF endpoint if DOM export failed
       const res = await invoicesApi.downloadPublicPdf(token)
       if (res && res.data) {
         const blob = new Blob([res.data], { type: 'application/pdf' })
