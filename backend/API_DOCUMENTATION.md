@@ -38,7 +38,7 @@
 | `Cookie` | Automatic | Holds the `refreshToken` | `refreshToken=def456...` |
 
 ### General Constraints
-* Request body size limit: **10 KB** (prevents memory exhaustion DOS attacks).
+* Request body size limit: **10 MB** (supports rich invoices with digital signatures, stamps, and logos).
 * Rate limits:
   * Global API: **100 requests / 15 mins / IP**
   * Auth endpoints (`/login`, `/register`, `/forgot-password`): **5 requests / 15 mins / IP**

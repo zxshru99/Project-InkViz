@@ -2,9 +2,6 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { useRouter } from "next/navigation"
 import { authApi } from "@/lib/api"
 
@@ -25,18 +22,14 @@ export default function SignupPage() {
       setError("Passwords do not match.")
       return
     }
-
     if (password.length < 8) {
-      setError("Password must be at least 8 characters long.")
+      setError("Password must be at least 8 characters.")
       return
     }
 
     setIsLoading(true)
     try {
-      // 1. Call real backend register
       await authApi.register({ name, email, password })
-
-      // 2. Redirect to login with registered flag and email
       router.push(`/login?registered=true&email=${encodeURIComponent(email)}`)
     } catch (err: any) {
       setError(err.message || "Failed to create account. Please try again.")
@@ -45,74 +38,106 @@ export default function SignupPage() {
     }
   }
 
+  const inputClass =
+    "w-full h-11 px-4 text-[14px] rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-foreground/20 focus:border-foreground/30 transition-all"
+
   return (
-    <div className="space-y-6">
-      <div className="space-y-2 text-center lg:text-left">
-        <h1 className="text-3xl font-bold">Create an account</h1>
-        <p className="text-muted-foreground">Start sending beautiful invoices today</p>
+    <div className="space-y-7">
+      {/* Header */}
+      <div>
+        <div className="mono-badge inline-block mb-4">Get Started</div>
+        <h1 className="text-3xl font-light tracking-[-0.03em] text-foreground mb-1.5">
+          Create an account.
+        </h1>
+        <p className="text-[13px] text-muted-foreground">
+          Start sending beautiful invoices today. Free forever.
+        </p>
       </div>
-      
+
+      {/* Error Banner */}
       {error && (
-        <div className="p-3 bg-destructive/10 text-destructive border border-destructive/20 rounded-md text-sm">
+        <div className="p-3.5 bg-destructive/10 border border-destructive/20 rounded-xl text-[13px] text-destructive animate-in fade-in duration-200">
           {error}
         </div>
       )}
 
+      {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Full Name</Label>
-          <Input
+        <div className="space-y-1.5">
+          <label htmlFor="name" className="text-[12px] font-mono tracking-[0.1em] uppercase text-muted-foreground">
+            Full Name
+          </label>
+          <input
             id="name"
-            placeholder="John Doe"
+            type="text"
+            placeholder="Alex Johnson"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            className={inputClass}
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
+
+        <div className="space-y-1.5">
+          <label htmlFor="email" className="text-[12px] font-mono tracking-[0.1em] uppercase text-muted-foreground">
+            Email
+          </label>
+          <input
             id="email"
             type="email"
-            placeholder="m@example.com"
+            placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className={inputClass}
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="password">Password</Label>
-          <Input
+
+        <div className="space-y-1.5">
+          <label htmlFor="password" className="text-[12px] font-mono tracking-[0.1em] uppercase text-muted-foreground">
+            Password
+          </label>
+          <input
             id="password"
             type="password"
             placeholder="Minimum 8 characters"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className={inputClass}
           />
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="confirm-password">Confirm Password</Label>
-          <Input
+
+        <div className="space-y-1.5">
+          <label htmlFor="confirm-password" className="text-[12px] font-mono tracking-[0.1em] uppercase text-muted-foreground">
+            Confirm Password
+          </label>
+          <input
             id="confirm-password"
             type="password"
             placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
+            className={inputClass}
           />
         </div>
-        <Button type="submit" className="w-full font-bold" disabled={isLoading}>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full h-11 mt-2 text-[12px] font-semibold tracking-[0.12em] uppercase rounded-xl bg-foreground text-background hover:opacity-80 disabled:opacity-50 transition-opacity"
+        >
           {isLoading ? "Creating account..." : "Create account"}
-        </Button>
+        </button>
       </form>
-      
-      <div className="text-center text-sm text-muted-foreground">
+
+      <p className="text-center text-[13px] text-muted-foreground">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-primary hover:underline">
+        <Link href="/login" className="font-medium text-foreground hover:underline underline-offset-4">
           Sign in
         </Link>
-      </div>
+      </p>
     </div>
   )
 }

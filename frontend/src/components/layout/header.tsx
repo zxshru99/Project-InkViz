@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { authApi } from "@/lib/api"
 import { SidebarNavItems, InkvizLogo } from "./sidebar"
-import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,12 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { Menu, X, Settings, Trash2, LogOut, FilePlus2, User } from "lucide-react"
 
 export function Header() {
@@ -46,16 +39,9 @@ export function Header() {
     }
   }, [])
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-    }
-    return () => {
-      document.body.style.overflow = ""
-    }
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
   }, [mobileMenuOpen])
 
   const handleLogout = () => {
@@ -73,96 +59,91 @@ export function Header() {
     : "IZ"
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-background/95 backdrop-blur px-3 sm:px-6 print-hidden">
-      {/* Mobile Hamburger & Brand */}
-      <div className="flex items-center gap-1.5 md:hidden">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 rounded-xl"
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/95 backdrop-blur-md px-4 sm:px-6 print-hidden">
+      {/* Mobile: Hamburger + Brand */}
+      <div className="flex items-center gap-2 md:hidden">
+        <button
           onClick={() => setMobileMenuOpen(true)}
+          className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-foreground/5 transition-colors text-muted-foreground"
           aria-label="Open Navigation"
         >
-          <Menu className="h-5 w-5" />
-        </Button>
+          <Menu className="h-4 w-4" />
+        </button>
         <InkvizLogo />
       </div>
 
-      {/* Spacer for desktop */}
+      {/* Desktop spacer */}
       <div className="hidden md:block" />
 
       {/* Right Controls */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-2">
+        {/* Create Invoice Button */}
         <Link href="/invoices/new" className="hidden sm:block">
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl shadow-xs cursor-pointer font-semibold">
-            <FilePlus2 className="mr-1.5 h-4 w-4" /> Create invoice
-          </Button>
+          <button className="h-8 px-4 text-[11px] font-semibold tracking-[0.1em] uppercase rounded-full border border-border text-foreground/80 hover:bg-foreground/5 hover:text-foreground transition-all">
+            <FilePlus2 className="inline-block w-3.5 h-3.5 mr-1.5 -mt-0.5" />
+            New Invoice
+          </button>
         </Link>
 
         <ThemeToggle />
 
-        {/* User Profile Dropdown */}
+        {/* User Avatar Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              className="relative h-9 w-9 rounded-full p-0 border border-border shadow-xs hover:ring-2 hover:ring-primary/20 cursor-pointer"
-            >
-              <div className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs">
-                {initials}
-              </div>
-            </Button>
+            <button className="w-8 h-8 rounded-full border border-border bg-foreground text-background flex items-center justify-center text-[11px] font-bold hover:opacity-80 transition-opacity cursor-pointer">
+              {initials}
+            </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 rounded-2xl p-1.5" align="end" forceMount>
+          <DropdownMenuContent className="w-52 rounded-xl p-1.5 border-border/60" align="end" forceMount>
             <DropdownMenuLabel className="font-normal p-1">
               <Link
                 href="/settings?tab=profile"
-                className="flex flex-col space-y-1 p-2 hover:bg-muted/60 rounded-xl transition-colors cursor-pointer"
+                className="flex flex-col space-y-0.5 p-2 hover:bg-foreground/5 rounded-lg transition-colors"
               >
-                <p className="text-sm font-semibold leading-none text-foreground">{user?.name || "Inkviz User"}</p>
-                <p className="text-xs leading-none text-muted-foreground truncate mt-0.5">
+                <p className="text-[13px] font-semibold text-foreground">{user?.name || "Inkviz User"}</p>
+                <p className="text-[11px] text-muted-foreground font-mono truncate">
                   {user?.email || "user@inkviz.app"}
                 </p>
               </Link>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem asChild>
-              <Link href="/settings?tab=profile" className="cursor-pointer flex items-center rounded-xl">
-                <User className="mr-2 h-4 w-4 text-primary" />
-                <span>My Profile</span>
+              <Link href="/settings?tab=profile" className="cursor-pointer flex items-center gap-2 rounded-lg text-[13px]">
+                <User className="h-3.5 w-3.5 text-muted-foreground" />
+                My Profile
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/invoices/new" className="cursor-pointer flex items-center rounded-xl">
-                <FilePlus2 className="mr-2 h-4 w-4" />
-                <span>Create invoice</span>
+              <Link href="/invoices/new" className="cursor-pointer flex items-center gap-2 rounded-lg text-[13px]">
+                <FilePlus2 className="h-3.5 w-3.5 text-muted-foreground" />
+                New Invoice
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/settings" className="cursor-pointer flex items-center rounded-xl">
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
+              <Link href="/settings" className="cursor-pointer flex items-center gap-2 rounded-lg text-[13px]">
+                <Settings className="h-3.5 w-3.5 text-muted-foreground" />
+                Settings
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/trash" className="cursor-pointer flex items-center rounded-xl">
-                <Trash2 className="mr-2 h-4 w-4 text-muted-foreground" />
-                <span>Trash</span>
+              <Link href="/trash" className="cursor-pointer flex items-center gap-2 rounded-lg text-[13px]">
+                <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
+                Trash
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator className="my-1" />
             <DropdownMenuItem
               onClick={handleLogout}
-              className="cursor-pointer text-destructive focus:text-destructive flex items-center rounded-xl"
+              className="cursor-pointer text-destructive focus:text-destructive flex items-center gap-2 rounded-lg text-[13px]"
             >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Log out</span>
+              <LogOut className="h-3.5 w-3.5" />
+              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
-      {/* Mobile Slide Drawer */}
+      {/* ── Mobile Full-Screen Drawer ── */}
       {mobileMenuOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex">
           {/* Backdrop */}
@@ -170,41 +151,42 @@ export function Header() {
             className="fixed inset-0 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200"
             onClick={() => setMobileMenuOpen(false)}
           />
-          {/* Slide Drawer Content */}
-          <div className="relative w-72 max-w-[85vw] h-full bg-card border-r shadow-2xl z-10 flex flex-col p-5 animate-in slide-in-from-left duration-250">
-            <div className="flex items-center justify-between pb-4 border-b">
+          {/* Drawer Panel */}
+          <div className="relative w-64 max-w-[80vw] h-full bg-sidebar border-r border-border/60 shadow-2xl z-10 flex flex-col py-6 px-4 animate-in slide-in-from-left duration-250">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6 px-1">
               <InkvizLogo />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 rounded-xl text-muted-foreground"
+              <button
                 onClick={() => setMobileMenuOpen(false)}
+                className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-foreground/5 transition-colors text-muted-foreground"
               >
                 <X className="h-4 w-4" />
-              </Button>
+              </button>
             </div>
-            <div className="flex-1 py-6 overflow-y-auto touch-scroll">
+
+            {/* Nav Items */}
+            <div className="flex-1 overflow-y-auto touch-scroll">
               <SidebarNavItems onNavigate={() => setMobileMenuOpen(false)} />
             </div>
-            {/* User profile & quick logout footer */}
-            <div className="pt-4 border-t space-y-3">
-              <div className="flex items-center gap-3 px-2">
-                <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs shrink-0">
+
+            {/* User Footer */}
+            <div className="pt-4 border-t border-border/60 space-y-3">
+              <div className="flex items-center gap-2.5 px-1">
+                <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center text-[11px] font-bold shrink-0">
                   {initials}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold truncate text-foreground">{user?.name || "Inkviz User"}</p>
-                  <p className="text-xs text-muted-foreground truncate">{user?.email || "user@inkviz.app"}</p>
+                  <p className="text-[13px] font-semibold truncate text-foreground">{user?.name || "Inkviz User"}</p>
+                  <p className="text-[11px] text-muted-foreground font-mono truncate">{user?.email || ""}</p>
                 </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
+              <button
                 onClick={handleLogout}
-                className="w-full text-destructive hover:text-destructive hover:bg-destructive/10 rounded-xl justify-center font-medium"
+                className="w-full h-9 text-[11px] font-semibold tracking-wider uppercase rounded-xl border border-border text-destructive hover:bg-destructive/10 transition-colors flex items-center justify-center gap-2"
               >
-                <LogOut className="h-4 w-4 mr-2" /> Log out
-              </Button>
+                <LogOut className="h-3.5 w-3.5" />
+                Log out
+              </button>
             </div>
           </div>
         </div>

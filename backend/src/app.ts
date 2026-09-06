@@ -58,16 +58,22 @@ app.use(
   })
 );
 
-// 4. Body Parsers (Blueprint requirement: json + urlencoded limit 10kb)
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+// 4. Body Parsers (Increased to 10mb to safely handle invoices with digital signatures, logos, and extensive items)
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-// 5. Data Sanitization (NoSQL injection prevention - Express 5 compatible in-place sanitizer)
+// 5. Data Sanitization (NoSQL injection & prototype pollution prevention)
 const sanitizeNoSql = (obj: any) => {
   if (!obj || typeof obj !== 'object') return;
   for (const key of Object.keys(obj)) {
-    if (key.startsWith('$') || key.includes('.')) {
+    if (
+      key.startsWith('$') ||
+      key.includes('.') ||
+      key === '__proto__' ||
+      key === 'constructor' ||
+      key === 'prototype'
+    ) {
       delete obj[key];
     } else if (typeof obj[key] === 'object' && obj[key] !== null) {
       sanitizeNoSql(obj[key]);

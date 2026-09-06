@@ -3,9 +3,14 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Menu, X, ArrowRight } from "lucide-react"
+import { Menu, X } from "lucide-react"
+
+const navLinks = [
+  { label: "Features", href: "/#features" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "About", href: "/about" },
+]
 
 export default function MarketingLayout({
   children,
@@ -13,154 +18,202 @@ export default function MarketingLayout({
   children: React.ReactNode
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const pathname = usePathname()
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [pathname])
 
-  // Prevent background scroll when mobile drawer is open
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-    }
-    return () => {
-      document.body.style.overflow = ""
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 12)
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : ""
+    return () => { document.body.style.overflow = "" }
   }, [mobileMenuOpen])
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-2.5 font-bold text-xl text-primary shrink-0">
-            <span className="bg-primary text-primary-foreground p-1.5 rounded-xl shadow-xs">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="m9 15 2 2 4-4"/></svg>
+      {/* ── Floating Island Nav ── */}
+      <div
+        className={`floating-island transition-all duration-300 ${
+          scrolled ? "top-3 shadow-xl" : "top-5"
+        }`}
+        style={{ width: "min(calc(100vw - 2rem), 880px)" }}
+      >
+        <div className="flex h-12 items-center justify-between px-5">
+          {/* Brand */}
+          <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-6 h-6 rounded-md bg-foreground text-background flex items-center justify-center transition-transform group-hover:scale-105">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <path d="m9 15 2 2 4-4"/>
+              </svg>
+            </div>
+            <span className="text-[13px] font-semibold tracking-[0.12em] uppercase text-foreground">
+              Inkviz
             </span>
-            <span className="font-heading tracking-tight">Inkviz</span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <Link href="/#features" className="transition-colors hover:text-foreground text-foreground/70">Features</Link>
-            <Link href="/pricing" className="transition-colors hover:text-foreground text-foreground/70">Pricing</Link>
-            <Link href="/about" className="transition-colors hover:text-foreground text-foreground/70">About</Link>
+          {/* Desktop Nav Links */}
+          <nav className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-[12px] font-medium tracking-wide text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
             <Link href="/login">
-              <Button variant="ghost" size="sm" className="rounded-xl font-medium">Login</Button>
+              <button className="h-8 px-4 text-[11px] font-semibold tracking-wider uppercase rounded-full border border-border hover:bg-foreground/5 transition-all text-foreground/80">
+                Login
+              </button>
             </Link>
             <Link href="/signup">
-              <Button size="sm" className="bg-primary text-primary-foreground font-semibold rounded-xl shadow-xs">Get Started</Button>
+              <button className="h-8 px-4 text-[11px] font-semibold tracking-wider uppercase rounded-full bg-foreground text-background hover:opacity-80 transition-opacity">
+                Start Free
+              </button>
             </Link>
           </div>
 
-          {/* Mobile Right Controls */}
-          <div className="flex md:hidden items-center gap-2">
+          {/* Mobile Controls */}
+          <div className="flex md:hidden items-center gap-1.5">
             <ThemeToggle />
-            <Link href="/login" className="hidden xs:inline-flex">
-              <Button variant="ghost" size="sm" className="h-9 px-2.5 text-xs rounded-xl">Login</Button>
-            </Link>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 rounded-xl"
+            <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={mobileMenuOpen ? "Close Menu" : "Open Menu"}
+              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-foreground/5 transition-colors text-foreground/80"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
+              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Slide Drawer */}
-        {mobileMenuOpen && (
-          <div className="fixed inset-0 top-16 z-50 md:hidden bg-background/95 backdrop-blur-md flex flex-col p-6 animate-in fade-in slide-in-from-top-3 duration-200">
-            <nav className="flex flex-col gap-4 text-lg font-medium pt-2">
+      {/* ── Mobile Full-Screen Menu ── */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-[60] md:hidden bg-background/97 backdrop-blur-xl flex flex-col p-8 pt-24 animate-in fade-in duration-200">
+          <nav className="flex flex-col gap-2">
+            {navLinks.map((link) => (
               <Link
-                href="/#features"
+                key={link.href}
+                href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/70 transition-colors"
+                className="py-3 px-4 text-2xl font-light tracking-tight text-foreground hover:text-muted-foreground transition-colors border-b border-border/40"
               >
-                <span>Features</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                {link.label}
               </Link>
-              <Link
-                href="/pricing"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/70 transition-colors"
-              >
-                <span>Pricing</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
-              <Link
-                href="/about"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/70 transition-colors"
-              >
-                <span>About</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
-              <Link
-                href="/privacy"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/70 transition-colors text-muted-foreground text-base"
-              >
-                <span>Privacy Policy</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
-              <Link
-                href="/contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-muted/70 transition-colors text-muted-foreground text-base"
-              >
-                <span>Contact</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </Link>
-            </nav>
+            ))}
+          </nav>
+          <div className="mt-auto flex flex-col gap-3">
+            <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+              <button className="w-full h-12 text-sm font-semibold tracking-wider uppercase rounded-2xl border border-border hover:bg-foreground/5 transition-all text-foreground">
+                Log In
+              </button>
+            </Link>
+            <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
+              <button className="w-full h-12 text-sm font-semibold tracking-wider uppercase rounded-2xl bg-foreground text-background hover:opacity-80 transition-opacity">
+                Get Started Free
+              </button>
+            </Link>
+          </div>
+        </div>
+      )}
 
-            <div className="mt-auto flex flex-col gap-3 pt-6 border-t">
-              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full h-11 rounded-xl text-base font-medium">
-                  Log In
-                </Button>
+      {/* ── Page Content ── */}
+      <main className="flex-1 pt-20">{children}</main>
+
+      {/* ── Architectural Footer ── */}
+      <footer className="border-t border-border/60 mt-24">
+        <div className="max-w-5xl mx-auto px-6 py-12 md:py-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16">
+            {/* Brand Column */}
+            <div className="flex flex-col gap-4">
+              <Link href="/" className="flex items-center gap-2.5">
+                <div className="w-6 h-6 rounded-md bg-foreground text-background flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <path d="m9 15 2 2 4-4"/>
+                  </svg>
+                </div>
+                <span className="text-[13px] font-semibold tracking-[0.12em] uppercase text-foreground">
+                  Inkviz
+                </span>
               </Link>
-              <Link href="/signup" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full h-11 rounded-xl bg-primary text-primary-foreground text-base font-semibold shadow-md shadow-primary/20">
-                  Get Started Free
-                </Button>
-              </Link>
+              <p className="text-[13px] text-muted-foreground leading-relaxed max-w-[220px]">
+                Professional invoicing for solo developers and freelancers.
+              </p>
+              {/* Live Status */}
+              <div className="flex items-center gap-2 mt-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 live-dot" />
+                <span className="mono-badge text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900">
+                  All Systems Operational
+                </span>
+              </div>
+            </div>
+
+            {/* Links Column */}
+            <div className="flex flex-col gap-3">
+              <p className="mono-badge self-start mb-2">Platform</p>
+              {[
+                { label: "Features", href: "/#features" },
+                { label: "Pricing", href: "/pricing" },
+                { label: "Dashboard", href: "/dashboard" },
+                { label: "Create Invoice", href: "/invoices/new" },
+              ].map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Company Column */}
+            <div className="flex flex-col gap-3">
+              <p className="mono-badge self-start mb-2">Company</p>
+              {[
+                { label: "About", href: "/about" },
+                { label: "Contact", href: "/contact" },
+                { label: "Privacy Policy", href: "/privacy" },
+              ].map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
+                  className="text-[13px] text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {l.label}
+                </Link>
+              ))}
             </div>
           </div>
-        )}
-      </header>
 
-      <main className="flex-1">{children}</main>
-
-      <footer className="border-t bg-muted/20">
-        <div className="container mx-auto flex flex-col gap-4 py-8 px-4 sm:px-6 md:flex-row md:justify-between md:items-center text-center md:text-left">
-          <div className="flex flex-col gap-1">
-            <Link href="/" className="flex items-center justify-center md:justify-start gap-2 font-bold text-lg text-primary font-heading">
-              Inkviz
-            </Link>
-            <p className="text-xs text-muted-foreground">Beautiful invoicing for solo developers & freelancers.</p>
-          </div>
-          <div className="flex gap-4 justify-center md:justify-end text-xs text-muted-foreground">
-            <Link href="/privacy" className="hover:underline underline-offset-4">Privacy</Link>
-            <Link href="/contact" className="hover:underline underline-offset-4">Contact</Link>
-          </div>
-          <div className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Inkviz. All rights reserved.
+          {/* Bottom Bar */}
+          <div className="mt-12 pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-[12px] text-muted-foreground font-mono">
+              © {new Date().getFullYear()} Inkviz. All rights reserved.
+            </p>
+            <div className="flex items-center gap-1">
+              <span className="mono-badge">v2.0</span>
+            </div>
           </div>
         </div>
       </footer>
     </div>
   )
 }
-

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Invoice } from './invoice.model';
 import { User } from '../users/user.model';
 import { generateInvoiceNumber } from '../../utils/invoiceNumber';
@@ -184,7 +185,15 @@ export const generateShareToken = async (userId: string, invoiceId: string) => {
 };
 
 export const getPublicInvoice = async (shareToken: string) => {
-  const invoice = await Invoice.findOne({ shareToken, isDeleted: false })
+  const queryConditions: any[] = [
+    { shareToken, isDeleted: false },
+    { invoiceNumber: shareToken, isDeleted: false },
+  ];
+  if (mongoose.isValidObjectId(shareToken)) {
+    queryConditions.push({ _id: shareToken, isDeleted: false });
+  }
+
+  const invoice = await Invoice.findOne({ $or: queryConditions })
     .populate('userId', 'name email businessProfile')
     .lean();
     

@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Download, CreditCard, Printer, CheckCircle2, ArrowLeft, QrCode } from "lucide-react"
+import { Download, CreditCard, Printer, CheckCircle2, ArrowLeft, QrCode, Loader2 } from "lucide-react"
+import { invoicesApi } from "@/lib/api"
 
 const DEFAULT_SHARED_INVOICE = {
   invoiceNumber: "INV-0012",
@@ -47,56 +48,157 @@ export default function PublicSharePage({ params }: PageProps) {
   const token = resolvedParams?.token || "INV-0012"
 
   const [invoice, setInvoice] = useState(DEFAULT_SHARED_INVOICE)
+  const [isLoading, setIsLoading] = useState(true)
   const [payModalOpen, setPayModalOpen] = useState(false)
   const [payMethod, setPayMethod] = useState<"upi" | "card" | "netbanking">("upi")
   const [isProcessingPay, setIsProcessingPay] = useState(false)
   const [paidSuccess, setPaidSuccess] = useState(false)
 
-  // Try to load invoice from localStorage matching the token
+  // Fetch live invoice from backend API with local fallback
   useEffect(() => {
-    if (typeof window === "undefined") return
-    try {
-      const raw = localStorage.getItem("inkviz_invoices")
-      if (raw) {
-        const list = JSON.parse(raw)
-        const found = list.find((i: any) => i.id === token)
-        if (found) {
-          setInvoice((prev) => ({
-            ...prev,
-            invoiceNumber: found.id,
+    let isMounted = true
+
+    const fetchLiveInvoice = async () => {
+      setIsLoading(true)
+
+      // 1. First attempt to load from backend API
+      try {
+        const live = await invoicesApi.getPublic(token)
+        if (live && isMounted) {
+          setInvoice({
+            invoiceNumber: live.invoiceNumber || token,
+            issueDate: live.issueDate ? new Date(live.issueDate).toISOString().split("T")[0] : "2026-09-04",
+            dueDate: live.dueDate ? new Date(live.dueDate).toISOString().split("T")[0] : "2026-10-04",
+            status: live.status || "published",
             client: {
-              name: found.client,
-              email: found.clientEmail || `${found.client.toLowerCase().replace(/\s+/g, "")}@example.com`,
-              address: found.clientAddress || "123 Client Blvd, Suite 200",
+              name: live.clientName || live.client?.name || "Client",
+              email: live.clientEmail || live.client?.email || "",
+              address: live.clientAddress || live.client?.address || "",
             },
-            issueDate: found.issueDate || prev.issueDate,
-            dueDate: found.dueDate || prev.dueDate,
-            status: found.status,
-            total: found.amount,
-            subtotal: found.amount,
-            balanceDue: found.status === "paid" ? 0 : found.amount,
-            items: [
-              {
-                id: "1",
-                description: found.source || "Professional Billing Services",
-                quantity: 1,
-                rate: found.amount,
-                amount: found.amount,
-              },
-            ],
-          }))
-          if (found.status === "paid") {
+            billFrom: {
+              name: live.userId?.businessProfile?.companyName || live.userId?.name || "Inkviz Business",
+              email: live.userId?.email || "",
+              address: live.userId?.businessProfile?.address || "",
+            },
+            items: (live.items && live.items.length > 0)
+              ? live.items.map((it: any, idx: number) => ({
+                  id: it.id || String(idx + 1),
+                  description: it.description || "Service",
+                  quantity: Number(it.quantity) || 1,
+                  rate: Number(it.rate || it.price) || 0,
+                  amount: Number((it.quantity || 1) * (it.rate || it.price || 0)),
+                }))
+              : DEFAULT_SHARED_INVOICE.items,
+            subtotal: Number(live.subtotal || live.totalAmount) || 0,
+            taxAmount: Number(live.taxAmount) || 0,
+            discountAmount: Number(live.discountAmount) || 0,
+            shippingFee: Number(live.shippingFee) || 0,
+            total: Number(live.totalAmount || live.subtotal) || 0,
+            balanceDue: Number(live.balanceDue !== undefined ? live.balanceDue : (live.status === "paid" ? 0 : live.totalAmount)) || 0,
+            notes: live.notes || "",
+            paymentDetails: live.paymentDetails || "",
+          })
+          if (live.status === "paid") {
             setPaidSuccess(true)
           }
+          setIsLoading(false)
+          return
+        }
+      } catch (err) {
+        // Fallback to local storage if offline or previewing locally
+      }
+
+      // 2. LocalStorage fallback
+      if (typeof window !== "undefined") {
+        try {
+          const raw = localStorage.getItem("inkviz_invoices")
+          if (raw) {
+            const list = JSON.parse(raw)
+            const found = list.find((i: any) => i.id === token || i._id === token)
+            if (found && isMounted) {
+              setInvoice((prev) => ({
+                ...prev,
+                invoiceNumber: found.id,
+                client: {
+                  name: found.client,
+                  email: found.clientEmail || `${found.client.toLowerCase().replace(/\s+/g, "")}@example.com`,
+                  address: found.clientAddress || "123 Client Blvd, Suite 200",
+                },
+                issueDate: found.issueDate || prev.issueDate,
+                dueDate: found.dueDate || prev.dueDate,
+                status: found.status,
+                total: found.amount,
+                subtotal: found.amount,
+                balanceDue: found.status === "paid" ? 0 : found.amount,
+                items: found.items && found.items.length > 0
+                  ? found.items.map((it: any, idx: number) => ({
+                      id: it.id || String(idx + 1),
+                      description: it.description || "Service",
+                      quantity: Number(it.quantity) || 1,
+                      rate: Number(it.rate || it.price) || found.amount,
+                      amount: Number((it.quantity || 1) * (it.rate || it.price || found.amount)),
+                    }))
+                  : [
+                      {
+                        id: "1",
+                        description: found.source || "Professional Billing Services",
+                        quantity: 1,
+                        rate: found.amount,
+                        amount: found.amount,
+                      },
+                    ],
+              }))
+              if (found.status === "paid") {
+                setPaidSuccess(true)
+              }
+              setIsLoading(false)
+              return
+            }
+          }
+        } catch (e) {
+          console.error("Failed to load shared invoice", e)
         }
       }
-    } catch (e) {
-      console.error("Failed to load shared invoice", e)
+
+      if (isMounted) {
+        setIsLoading(false)
+      }
+    }
+
+    fetchLiveInvoice()
+
+    return () => {
+      isMounted = false
     }
   }, [token])
 
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false)
+
   const handlePrint = () => {
     window.print()
+  }
+
+  const handleDownloadPdf = async () => {
+    setIsDownloadingPdf(true)
+    try {
+      const res = await invoicesApi.downloadPublicPdf(token)
+      if (res && res.data) {
+        const blob = new Blob([res.data], { type: 'application/pdf' })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `invoice-${invoice.invoiceNumber}.pdf`
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        window.URL.revokeObjectURL(url)
+        return
+      }
+    } catch (e) {
+      window.print()
+    } finally {
+      setIsDownloadingPdf(false)
+    }
   }
 
   const handleSimulatePayment = () => {
@@ -128,6 +230,17 @@ export default function PublicSharePage({ params }: PageProps) {
     }, 1200)
   }
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-muted/30">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground font-medium">Loading invoice...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-muted/30 py-4 sm:py-8 px-3 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
@@ -155,8 +268,19 @@ export default function PublicSharePage({ params }: PageProps) {
             <Button variant="outline" size="sm" onClick={handlePrint} className="flex-1 sm:flex-none cursor-pointer rounded-xl h-9 text-xs sm:text-sm">
               <Printer className="mr-1.5 h-3.5 w-3.5" /> Print
             </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint} className="flex-1 sm:flex-none cursor-pointer rounded-xl h-9 text-xs sm:text-sm">
-              <Download className="mr-1.5 h-3.5 w-3.5" /> PDF
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={isDownloadingPdf}
+              onClick={handleDownloadPdf}
+              className="flex-1 sm:flex-none cursor-pointer rounded-xl h-9 text-xs sm:text-sm"
+            >
+              {isDownloadingPdf ? (
+                <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Download className="mr-1.5 h-3.5 w-3.5" />
+              )}
+              PDF
             </Button>
             {invoice.status !== "paid" && (
               <Button size="sm" onClick={() => setPayModalOpen(true)} className="flex-1 sm:flex-none cursor-pointer rounded-xl h-9 text-xs sm:text-sm">

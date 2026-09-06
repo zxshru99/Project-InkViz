@@ -8,33 +8,32 @@ import { cn } from "@/lib/utils"
 
 export const navItems = [
   { title: "Dashboard", href: "/dashboard", icon: LayoutGrid },
-  { title: "Create invoice", href: "/invoices/new", icon: FilePlus2 },
+  { title: "New Invoice", href: "/invoices/new", icon: FilePlus2 },
   { title: "Trash", href: "/trash", icon: Trash2 },
   { title: "Settings", href: "/settings", icon: Settings },
 ]
 
 export function InkvizLogo() {
   return (
-    <Link href="/dashboard" className="flex items-center gap-3 px-3 group">
-      <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 via-primary to-violet-600 text-white flex items-center justify-center shadow-md shadow-primary/20 transition-transform group-hover:scale-105">
+    <Link href="/dashboard" className="flex items-center gap-2.5 group px-1">
+      <div className="w-7 h-7 rounded-lg bg-foreground text-background flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
+          width="14"
+          height="14"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2.2"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-white drop-shadow-xs"
         >
           <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
           <polyline points="14 2 14 8 20 8" />
           <path d="m9 15 2 2 4-4" />
         </svg>
       </div>
-      <span className="font-bold text-2xl tracking-tight text-foreground font-heading">
+      <span className="text-[13px] font-semibold tracking-[0.1em] uppercase text-foreground">
         Inkviz
       </span>
     </Link>
@@ -47,67 +46,68 @@ export function SidebarNavItems({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
 
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="text-[11px] font-semibold text-muted-foreground/70 uppercase tracking-wider px-3 mb-2">
-          Workspace
-        </p>
-        <div className="space-y-1.5">
-          {navItems.map((item) => {
-            const isActive =
-              item.href === "/dashboard"
-                ? pathname === "/dashboard" || pathname === "/invoices"
-                : pathname.startsWith(item.href)
+    <div className="space-y-1">
+      <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground/60 px-3 mb-3">
+        Workspace
+      </p>
+      {navItems.map((item) => {
+        const isActive =
+          item.href === "/dashboard"
+            ? pathname === "/dashboard" || pathname === "/invoices"
+            : pathname.startsWith(item.href)
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onNavigate}
-                className={cn(
-                  "flex items-center gap-3.5 px-4 py-3 rounded-2xl text-sm font-medium transition-all duration-150",
-                  isActive
-                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/25 font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/60"
-                )}
-              >
-                <item.icon
-                  className={cn(
-                    "h-5 w-5 shrink-0 transition-colors",
-                    isActive ? "text-primary-foreground" : "text-muted-foreground"
-                  )}
-                />
-                <span>{item.title}</span>
-              </Link>
-            )
-          })}
-        </div>
-      </div>
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            onClick={onNavigate}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-150",
+              isActive
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground hover:bg-foreground/5"
+            )}
+          >
+            <item.icon
+              className={cn(
+                "h-4 w-4 shrink-0",
+                isActive ? "text-background" : "text-muted-foreground"
+              )}
+            />
+            <span>{item.title}</span>
+          </Link>
+        )
+      })}
     </div>
   )
 }
 
 export function Sidebar() {
   return (
-    <nav className="hidden md:flex flex-col w-64 border-r bg-card/60 backdrop-blur-md min-h-screen p-4 gap-6 shrink-0 print-hidden">
-      {/* Brand Header */}
-      <div className="py-2">
+    <nav className="hidden md:flex flex-col w-56 border-r border-border/60 bg-sidebar min-h-screen py-6 px-3 gap-6 shrink-0 print-hidden">
+      {/* Brand */}
+      <div className="px-1">
         <InkvizLogo />
       </div>
 
-      {/* Main Clean Navigation */}
+      {/* Main Nav */}
       <div className="flex-1">
         <SidebarNavItems />
       </div>
 
-      {/* Clean Bottom Pro Banner */}
-      <div className="rounded-2xl border bg-gradient-to-b from-muted/50 to-muted/20 p-4">
-        <p className="text-xs font-semibold text-foreground mb-1">Inkviz Pro</p>
-        <p className="text-[11px] text-muted-foreground mb-3 leading-relaxed">
-          Fast & beautiful invoices with custom signature templates.
+      {/* Bottom upgrade panel */}
+      <div className="rounded-xl border border-border/60 bg-background/40 p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <p className="text-[11px] font-mono tracking-wider uppercase text-muted-foreground">
+            All Systems Active
+          </p>
+        </div>
+        <p className="text-[12px] text-muted-foreground mb-3 leading-relaxed">
+          Fast &amp; beautiful invoices with custom signature templates.
         </p>
-        <Link href="/settings" className="block w-full">
-          <button className="w-full py-2 px-3 text-xs font-semibold text-center rounded-xl bg-background border hover:bg-muted/80 transition-colors cursor-pointer text-foreground shadow-xs">
+        <Link href="/settings" className="block">
+          <button className="w-full py-2 px-3 text-[11px] font-semibold tracking-wider uppercase text-center rounded-lg border border-border hover:bg-foreground/5 transition-colors text-foreground">
             Manage Branding
           </button>
         </Link>

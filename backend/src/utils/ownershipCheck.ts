@@ -33,8 +33,14 @@ export const assertOwnership = async <T>(
   let query: any = { userId };
   if (mongoose.isValidObjectId(resourceId)) {
     query._id = resourceId;
-  } else {
+  } else if (model.modelName === 'Invoice') {
     query.invoiceNumber = resourceId;
+  } else if (model.modelName === 'Quotation') {
+    query.quotationNumber = resourceId;
+  } else if (model.modelName === 'Product') {
+    query.sku = resourceId;
+  } else {
+    throw new NotFoundError();
   }
   const doc = await model.findOne(query);
   if (!doc) {

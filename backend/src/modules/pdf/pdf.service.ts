@@ -1,4 +1,5 @@
-import { assertOwnership } from '../../utils/ownershipCheck';
+import mongoose from 'mongoose';
+import { assertOwnership, NotFoundError } from '../../utils/ownershipCheck';
 import { Invoice } from '../invoices/invoice.model';
 import { Template } from '../templates/template.model';
 
@@ -10,7 +11,7 @@ export const generateInvoicePdf = async (userId: string, invoiceId: string): Pro
   // 2. Fetch template
   const template = await Template.findById(invoice.templateId);
   if (!template) {
-    throw new Error('Template not found');
+    throw new NotFoundError('Template not found');
   }
 
   // 3. Compile HTML with global replacement
@@ -51,11 +52,19 @@ export const generateInvoicePdf = async (userId: string, invoiceId: string): Pro
 
 export const generatePublicInvoicePdf = async (shareToken: string): Promise<Buffer> => {
   const puppeteer = (await import('puppeteer')).default;
-  const invoice = await Invoice.findOne({ shareToken, isDeleted: false });
-  if (!invoice) throw new Error('Invoice not found or expired');
+  const queryConditions: any[] = [
+    { shareToken, isDeleted: false },
+    { invoiceNumber: shareToken, isDeleted: false },
+  ];
+  if (mongoose.isValidObjectId(shareToken)) {
+    queryConditions.push({ _id: shareToken, isDeleted: false });
+  }
+
+  const invoice = await Invoice.findOne({ $or: queryConditions });
+  if (!invoice) throw new NotFoundError('Invoice not found or expired');
   
   const template = await Template.findById(invoice.templateId);
-  if (!template) throw new Error('Template not found');
+  if (!template) throw new NotFoundError('Template not found');
 
   let html = template.htmlContent
     .split('{{invoiceNumber}}').join(invoice.invoiceNumber)

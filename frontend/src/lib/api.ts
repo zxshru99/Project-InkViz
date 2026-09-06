@@ -30,10 +30,18 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor for unified error unwrapping
+// Response interceptor for unified error unwrapping and 401 session cleanup
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      const hadToken = localStorage.getItem('inkviz_access_token');
+      if (hadToken) {
+        localStorage.removeItem('inkviz_access_token');
+        localStorage.removeItem('inkviz_user');
+        window.dispatchEvent(new Event('inkviz_auth_changed'));
+      }
+    }
     const errorMsg =
       error.response?.data?.error?.message ||
       error.response?.data?.message ||
@@ -103,6 +111,10 @@ export const invoicesApi = {
     const res = await apiClient.get(`/invoices/${id}`);
     return res.data.data.invoice;
   },
+  getPublic: async (token: string) => {
+    const res = await apiClient.get(`/share/${encodeURIComponent(token)}`);
+    return res.data.data.invoice;
+  },
   create: async (invoiceData: any) => {
     const res = await apiClient.post('/invoices', invoiceData);
     return res.data.data.invoice;
@@ -122,6 +134,20 @@ export const invoicesApi = {
   restore: async (id: string) => {
     const res = await apiClient.post(`/invoices/${id}/restore`);
     return res.data.data;
+  },
+  share: async (id: string) => {
+    const res = await apiClient.post(`/invoices/${id}/share`);
+    return res.data.data.shareToken;
+  },
+  duplicate: async (id: string) => {
+    const res = await apiClient.post(`/invoices/${id}/duplicate`);
+    return res.data.data.invoice;
+  },
+  downloadPdf: async (id: string) => {
+    return await apiClient.get(`/invoices/${id}/download`, { responseType: 'blob' });
+  },
+  downloadPublicPdf: async (token: string) => {
+    return await apiClient.get(`/share/${encodeURIComponent(token)}/download`, { responseType: 'blob' });
   },
 };
 

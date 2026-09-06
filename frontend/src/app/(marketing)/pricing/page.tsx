@@ -1,99 +1,108 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+
+const Check = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-foreground shrink-0"><polyline points="20 6 9 17 4 12" /></svg>
+)
+const Cross = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground/40 shrink-0"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+)
 
 export default function PricingPage() {
   return (
     <div className="py-20 md:py-32 container mx-auto px-4 md:px-6">
-      <div className="flex flex-col items-center text-center space-y-4 mb-16">
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">Simple, transparent pricing</h1>
-        <p className="max-w-[700px] text-muted-foreground md:text-xl">
-          Start for free, upgrade when you need more power. No hidden fees.
+      {/* Header */}
+      <div className="flex flex-col items-center text-center mb-16 md:mb-20">
+        <div className="mono-badge inline-block mb-6">Pricing</div>
+        <h1 className="text-4xl md:text-5xl font-light tracking-[-0.03em] text-foreground mb-4">
+          Simple, transparent pricing.
+        </h1>
+        <p className="max-w-lg text-[15px] text-muted-foreground leading-relaxed">
+          Start for free. Upgrade when you need more power. No hidden fees, no surprises.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        <Card className="flex flex-col">
-          <CardHeader>
-            <CardTitle className="text-2xl">Free</CardTitle>
-            <CardDescription>Perfect for starting freelancers.</CardDescription>
-            <div className="mt-4">
-              <span className="text-4xl font-bold">$0</span>
-              <span className="text-muted-foreground">/month</span>
+      {/* Pricing Cards */}
+      <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {/* Free */}
+        <div className="bento-card p-8 flex flex-col">
+          <div className="mb-6">
+            <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground mb-3">Starter</div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-5xl font-light tracking-tight text-foreground">$0</span>
+              <span className="text-muted-foreground text-sm font-mono">/month</span>
             </div>
-          </CardHeader>
-          <CardContent className="flex-1">
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2"><CheckIcon /> Up to 5 invoices/month</li>
-              <li className="flex items-center gap-2"><CheckIcon /> 1 Basic Template</li>
-              <li className="flex items-center gap-2"><CheckIcon /> PDF Downloads</li>
-              <li className="flex items-center gap-2 text-muted-foreground"><CrossIcon /> Custom Brand Colors</li>
-              <li className="flex items-center gap-2 text-muted-foreground"><CrossIcon /> Public Share Links</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Link href="/signup" className="w-full">
-              <Button variant="outline" className="w-full">Get Started</Button>
-            </Link>
-          </CardFooter>
-        </Card>
-
-        <Card className="flex flex-col border-primary relative shadow-lg">
-          <div className="absolute top-0 right-1/2 translate-x-1/2 -translate-y-1/2">
-            <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
+            <p className="text-[13px] text-muted-foreground mt-2">Perfect for starting freelancers.</p>
           </div>
-          <CardHeader>
-            <CardTitle className="text-2xl text-primary">Pro</CardTitle>
-            <CardDescription>For growing solo businesses.</CardDescription>
-            <div className="mt-4">
-              <span className="text-4xl font-bold">$9</span>
-              <span className="text-muted-foreground">/month</span>
+
+          <ul className="space-y-3 flex-1 mb-8">
+            {[
+              { text: "Up to 5 invoices/month", included: true },
+              { text: "1 Basic Template", included: true },
+              { text: "PDF Downloads", included: true },
+              { text: "Custom Brand Colors", included: false },
+              { text: "Public Share Links", included: false },
+            ].map((item) => (
+              <li key={item.text} className={`flex items-center gap-2.5 text-[13px] ${item.included ? "text-foreground" : "text-muted-foreground/50"}`}>
+                {item.included ? <Check /> : <Cross />}
+                {item.text}
+              </li>
+            ))}
+          </ul>
+
+          <Link href="/signup" className="w-full">
+            <button className="w-full h-11 rounded-xl border border-border text-[12px] font-semibold tracking-[0.1em] uppercase hover:bg-foreground/5 transition-colors text-foreground">
+              Get Started Free
+            </button>
+          </Link>
+        </div>
+
+        {/* Pro */}
+        <div className="relative bento-card p-8 flex flex-col border-foreground/30 ring-1 ring-foreground/10">
+          <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+            <div className="mono-badge bg-foreground text-background border-foreground">Most Popular</div>
+          </div>
+
+          <div className="mb-6">
+            <div className="text-[11px] font-mono tracking-[0.2em] uppercase text-muted-foreground mb-3">Professional</div>
+            <div className="flex items-baseline gap-1">
+              <span className="text-5xl font-light tracking-tight text-foreground">$9</span>
+              <span className="text-muted-foreground text-sm font-mono">/month</span>
             </div>
-          </CardHeader>
-          <CardContent className="flex-1">
-            <ul className="space-y-3 text-sm font-medium">
-              <li className="flex items-center gap-2"><CheckIcon /> Unlimited invoices</li>
-              <li className="flex items-center gap-2"><CheckIcon /> All Premium Templates</li>
-              <li className="flex items-center gap-2"><CheckIcon /> PDF Downloads</li>
-              <li className="flex items-center gap-2"><CheckIcon /> Custom Brand Colors & Fonts</li>
-              <li className="flex items-center gap-2"><CheckIcon /> Magical Public Share Links</li>
-              <li className="flex items-center gap-2"><CheckIcon /> Client Address Book</li>
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Link href="/signup" className="w-full">
-              <Button className="w-full">Upgrade to Pro</Button>
-            </Link>
-          </CardFooter>
-        </Card>
-      </div>
+            <p className="text-[13px] text-muted-foreground mt-2">For serious freelancers &amp; agencies.</p>
+          </div>
 
-      <div className="mt-32 max-w-3xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-10">Frequently Asked Questions</h2>
-        <div className="space-y-8">
-          <div>
-            <h3 className="text-lg font-bold">Can I cancel my Pro subscription?</h3>
-            <p className="text-muted-foreground mt-2">Yes, you can cancel your subscription at any time from your billing settings. You will retain access to Pro features until the end of your billing cycle.</p>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold">What happens if I hit the invoice limit on the Free plan?</h3>
-            <p className="text-muted-foreground mt-2">You won't be able to generate new invoices until the next month, but you can always view, download, and manage your existing invoices.</p>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold">Are my invoices watermarked?</h3>
-            <p className="text-muted-foreground mt-2">No. Even on the Free tier, we never place our logo or branding on your generated PDF invoices. Your brand comes first.</p>
-          </div>
+          <ul className="space-y-3 flex-1 mb-8">
+            {[
+              { text: "Unlimited invoices", included: true },
+              { text: "All Templates", included: true },
+              { text: "PDF Downloads", included: true },
+              { text: "Custom Brand Colors", included: true },
+              { text: "Public Share Links", included: true },
+              { text: "WhatsApp Sharing", included: true },
+              { text: "Bank &amp; UPI Details", included: true },
+            ].map((item) => (
+              <li key={item.text} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                <Check />
+                <span dangerouslySetInnerHTML={{ __html: item.text }} />
+              </li>
+            ))}
+          </ul>
+
+          <Link href="/signup" className="w-full">
+            <button className="w-full h-11 rounded-xl bg-foreground text-background text-[12px] font-semibold tracking-[0.1em] uppercase hover:opacity-80 transition-opacity">
+              Start 14-Day Trial
+            </button>
+          </Link>
         </div>
       </div>
+
+      {/* FAQ hint */}
+      <p className="text-center text-[13px] text-muted-foreground mt-10">
+        Questions?{" "}
+        <Link href="/contact" className="font-medium text-foreground hover:underline underline-offset-4">
+          Talk to us
+        </Link>
+      </p>
     </div>
   )
-}
-
-function CheckIcon() {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><polyline points="20 6 9 17 4 12"/></svg>
-}
-
-function CrossIcon() {
-  return <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 }
